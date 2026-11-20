@@ -1,72 +1,762 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Plan, optimize and inspect your EV charging station's daily schedule with Volt.">
-  <meta name="theme-color" content="#f1f5fc">
-  <title>Volt · Station console</title>
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css">
-  <link rel="stylesheet" href="/static/console.css">
-  <script src="/static/console.js" defer></script>
-</head>
-<body class="console-body">
-  <a class="skip-link" href="#workspace">Skip to console</a>
-  <aside class="sidebar">
-    <a href="/" class="brand" aria-label="Volt home"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M16 1 2 19h10l-1 12L26 12H16z"/></svg>volt<span class="brand-period">.</span></a>
-    <div class="station-selector"><span class="station-symbol" aria-hidden="true">V</span><span><strong>Volt station</strong><small>Planning workspace</small></span><span class="station-chevron" aria-hidden="true">⌄</span></div>
-    <div class="nav-group-label">WORKSPACE</div>
-    <nav class="console-nav" aria-label="Console views">
-      <button class="active" data-view="overview" type="button" aria-current="page"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Overview</span></button>
-      <button data-view="requests" type="button"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Requests</span><span id="request-count" class="nav-count">150</span></button>
-      <button data-view="lab" type="button"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v7l-6 9a1.2 1.2 0 0 0 1 2h14a1.2 1.2 0 0 0 1-2l-6-9V3M7 15h10"/></svg><span>Algorithm lab</span></button>
-      <button data-view="history" type="button"><svg viewBox="0 0 24 24"><path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l3 2"/></svg><span>Run history</span></button>
-    </nav>
-    <div class="sidebar-bottom">
-      <div class="sidebar-note"><span class="note-icon" aria-hidden="true">✧</span><strong>Make every slot count.</strong><p>Small decisions.<br>A more profitable charging day.</p><span class="pill">Offline planning model</span></div>
-      <button type="button" class="settings-link" id="open-settings"><svg viewBox="0 0 24 24"><path d="M12 8v8M8 12h8"/><circle cx="12" cy="12" r="9"/></svg>Station settings</button>
-      <a class="back-home" href="/">Volt home</a>
-    </div>
-  </aside>
-  <div class="console-shell">
-    <header class="console-topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb-current">Overview</strong></div><div class="topbar-right"><span class="synthetic-badge">Synthetic data</span><span class="local-badge" id="connection-state">Connecting</span><span class="avatar" aria-label="Volt workspace">V</span></div></header>
-    <main id="workspace" tabindex="-1">
-      <div class="workspace-heading"><div><span class="eyebrow" id="page-eyebrow">YOUR STATION, AT A GLANCE</span><h1 id="page-title">A better day, by design.</h1><p id="page-subtitle">Find the right sessions. Put every port to work.</p></div><div class="heading-actions"><button class="button secondary" id="open-generate" type="button"><span aria-hidden="true">⟳</span> Generate day</button><button class="button primary" id="optimize" type="button"><svg viewBox="0 0 24 24"><path d="m13 2-8 12h7l-1 8 8-12h-7z"/></svg><span>Optimize schedule</span></button></div></div>
-      <div class="control-strip glass"><div class="control-field"><label for="ports">Charging ports</label><select id="ports" aria-label="Number of charging ports"></select></div><span class="control-divider"></span><div class="control-field algorithm-field"><label for="algorithm">Scheduling method</label><select id="algorithm"><option value="optimal">Optimal · auto-select solver</option><option value="dp">Dynamic programming · 1 port</option><option value="flow">Minimum-cost flow</option><option value="fcfs">First come, first served</option><option value="profit">Highest profit first</option><option value="density">Profit per minute</option><option value="eft">Earliest finish first</option><option value="search">Branch and bound · ≤14 requests</option><option value="subsets">Subset enumeration · ≤14 requests</option></select></div><div class="dataset-meta" id="dataset-meta">Loading your workspace…</div></div>
-      <div class="notice hidden" id="workspace-notice" role="status"></div>
-      <section id="view-overview" class="view-panel" aria-label="Station overview">
-        <div class="metric-grid">
-          <article class="metric glass"><div class="metric-label">Scheduled profit <span class="metric-icon">₹</span></div><strong id="metric-profit">—</strong><span class="metric-caption" id="metric-profit-caption">Ready when you are</span></article>
-          <article class="metric glass"><div class="metric-label">Gain over FCFS <span class="metric-icon">↗</span></div><strong id="metric-gain">—</strong><span class="metric-caption" id="metric-gain-caption">Compare the same demand</span></article>
-          <article class="metric glass"><div class="metric-label">Vehicles served <span class="metric-icon">✓</span></div><strong id="metric-served">—</strong><span class="metric-caption" id="metric-served-caption">Every selected session, assigned</span></article>
-          <article class="metric glass"><div class="metric-label">Port utilization <span class="metric-icon">◴</span></div><strong id="metric-utilization">—</strong><span class="metric-caption">Across a 24-hour planning day</span></article>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Plan, optimize and inspect your EV charging station's daily schedule with Volt."
+    />
+    <meta name="theme-color" content="#f1f5fc" />
+    <title>Volt · Station console</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/console.css" />
+    <script src="/static/console.js" defer></script>
+  </head>
+  <body class="console-body">
+    <a class="skip-link" href="#workspace">Skip to console</a>
+    <aside class="sidebar">
+      <a href="/" class="brand" aria-label="Volt home"
+        ><svg viewBox="0 0 28 32" aria-hidden="true">
+          <path d="M16 1 2 19h10l-1 12L26 12H16z" /></svg
+        >volt<span class="brand-period">.</span></a
+      >
+      <div class="station-selector">
+        <span class="station-symbol" aria-hidden="true">V</span
+        ><span
+          ><strong>Volt station</strong><small>Planning workspace</small></span
+        ><span class="station-chevron" aria-hidden="true">⌄</span>
+      </div>
+      <div class="nav-group-label">WORKSPACE</div>
+      <nav class="console-nav" aria-label="Console views">
+        <button
+          class="active"
+          data-view="overview"
+          aria-label="Overview"
+          type="button"
+          aria-current="page"
+        >
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" /></svg
+          ><span>Overview</span>
+        </button>
+        <button data-view="requests" aria-label="Requests" type="button">
+          <svg viewBox="0 0 24 24">
+            <rect x="4" y="3" width="16" height="18" rx="2" />
+            <path d="M8 8h8M8 12h8M8 16h5" /></svg
+          ><span>Requests</span
+          ><span id="request-count" class="nav-count">150</span>
+        </button>
+        <button data-view="lab" aria-label="Algorithm lab" type="button">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M9 3h6M10 3v7l-6 9a1.2 1.2 0 0 0 1 2h14a1.2 1.2 0 0 0 1-2l-6-9V3M7 15h10"
+            /></svg
+          ><span>Algorithm lab</span>
+        </button>
+        <button data-view="history" aria-label="Run history" type="button">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 11a9 9 0 1 1 2 7M3 4v7h7M12 7v5l3 2" /></svg
+          ><span>Run history</span>
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note">
+          <span class="note-icon" aria-hidden="true">✧</span
+          ><strong>Make every slot count.</strong>
+          <p>Small decisions.<br />A more profitable charging day.</p>
+          <span class="pill">Offline planning model</span>
         </div>
-        <article class="glass schedule-panel"><div class="panel-heading"><div><div class="title-row"><h2>Your charging day</h2><span id="schedule-status" class="pill">Ready to plan</span></div><p id="schedule-subtitle">One clear timeline. Every session in its place.</p></div><div class="panel-actions"><select id="schedule-method" aria-label="Displayed schedule"></select><button class="icon-button" id="export-schedule" type="button" aria-label="Export selected schedule as CSV" title="Export CSV"><svg viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 15v5h16v-5"/></svg></button></div></div><div class="schedule-legend"><span><i class="legend-blue"></i>Standard rate</span><span><i class="legend-purple"></i>Higher surge</span><span><i class="legend-gold"></i>Peak surge</span><small>Select a session to inspect</small></div><div class="timeline-scroll" id="timeline"><div class="empty-state"><span class="empty-icon">⌁</span><h3>Your next great schedule starts here.</h3><p>Run the optimizer to find the best use of your ports.</p></div></div><div class="schedule-footer"><span id="schedule-validation">Fixed slots · Strict deadlines · No overlapping port usage</span><span id="schedule-runtime"></span></div></article>
-        <div class="overview-bottom"><article class="glass comparison-panel"><div class="panel-heading"><div><h2>Same day. Different decisions.</h2><p>How the greedy rules compare with the optimum.</p></div><span class="pill">PROFIT / ₹</span></div><div id="comparison-chart" class="comparison-chart"><p class="muted">Your comparison will appear after optimization.</p></div></article><article class="glass insight-panel"><span class="eyebrow">BEHIND THE DECISION</span><div class="insight-symbol" aria-hidden="true">✧</div><h2 id="insight-title">The right algorithm changes everything.</h2><p id="insight-text">Dynamic programming for one port. Minimum-cost flow for many. An exact answer to a complex day.</p><button class="text-button" type="button" data-view="lab">Explore the algorithm lab <span aria-hidden="true">+</span></button></article></div>
-      </section>
-      <section id="view-requests" class="view-panel hidden" aria-label="Charging requests">
-        <article class="glass requests-panel"><div class="panel-heading"><div><h2>Every request, in one place.</h2><p>Add bookings or import your own fixed-slot demand.</p></div><div class="panel-actions"><a class="button secondary small" href="/api/requests.csv" download>Export CSV</a><button class="button secondary small" id="import-button" type="button">Import CSV</button><button class="button primary small" id="add-request" type="button">+ Add request</button></div></div><div class="table-toolbar"><label class="search-box"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 5 5"/></svg><input id="request-search" type="search" placeholder="Search request ID…" aria-label="Search request ID"></label><select id="request-filter" aria-label="Filter requests by status"><option value="all">All requests</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option><option value="unplanned">Unplanned</option></select><span id="filter-count" class="muted"></span></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Request</th><th>Booking slot</th><th>Duration</th><th>Energy</th><th>Surge</th><th>Profit</th><th>Status</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody id="request-rows"></tbody></table></div><div class="table-pagination"><span id="page-description"></span><div><button class="button secondary small" type="button" id="prev-page">Previous</button><button class="button secondary small" type="button" id="next-page">Next</button></div></div></article>
-        <p class="footnote">CSV columns: request_id, arrival_min, duration_min, energy_kwh, surge_mult. Times are minutes from midnight. Profit is always recalculated from station prices.</p><input class="hidden" type="file" id="csv-file" accept=".csv,text/csv">
-      </section>
-      <section id="view-lab" class="view-panel hidden" aria-label="Algorithm laboratory">
-        <div class="lab-intro glass"><div><span class="eyebrow">FROM THEORY TO A BETTER CHARGING DAY</span><h2>See why the optimum wins.</h2><p>Inspect a DP recurrence, trace residual flow, and verify exact solutions against independent exhaustive searches.</p></div><button class="button primary" id="worked-example" type="button">Load report example</button></div>
-        <div class="lab-tabs" role="tablist" aria-label="Algorithm laboratory tools"><button class="active" type="button" role="tab" aria-selected="true" data-lab="trace">Solver trace</button><button type="button" role="tab" aria-selected="false" data-lab="verify">Correctness</button><button type="button" role="tab" aria-selected="false" data-lab="sensitivity">Port sensitivity</button><button type="button" role="tab" aria-selected="false" data-lab="benchmark">Runtime</button></div>
-        <article class="glass lab-panel" id="lab-trace"><div class="panel-heading"><div><h2 id="trace-title">Inside the solver</h2><p id="trace-subtitle">Optimize a day to inspect its algorithm trace.</p></div><span class="pill" id="trace-complexity">EXACT ALGORITHMS</span></div><div id="trace-content" class="trace-content"><div class="empty-state"><span class="empty-icon">∑</span><h3>Follow the decision.</h3><p>Load the report example for an eight-request DP walkthrough.</p></div></div></article>
-        <article class="glass lab-panel hidden" id="lab-verify"><div class="panel-heading"><div><h2>Trust, then verify.</h2><p>60 deterministic checks: 40 search, 15 subset, and 5 daily DP-versus-flow comparisons.</p></div><button class="button primary small" id="verify-button" type="button">Run verification</button></div><div id="verify-result" class="lab-result"><div class="empty-state"><span class="empty-icon">✓</span><h3>An independent check on every answer.</h3><p>Small synthetic inputs include losses, overlapping intervals and touching endpoints.</p></div></div></article>
-        <article class="glass lab-panel hidden" id="lab-sensitivity"><div class="panel-heading"><div><h2>What is one more port worth?</h2><p>Compare the current demand across one to eight identical ports.</p></div><button class="button primary small" id="sensitivity-button" type="button">Run analysis</button></div><div id="sensitivity-result" class="lab-result"><div class="empty-state"><span class="empty-icon">+</span><h3>Explore your station’s potential.</h3><p>Only port count changes. Requests and prices remain the same.</p></div></div></article>
-        <article class="glass lab-panel hidden" id="lab-benchmark"><div class="panel-heading"><div><h2>Fast, by design.</h2><p>50–1,000 requests. Best of three CPU timings on seeded demand.</p></div><button class="button primary small" id="benchmark-button" type="button">Run benchmark</button></div><div id="benchmark-result" class="lab-result"><div class="empty-state"><span class="empty-icon">◷</span><h3>Watch the complexity become concrete.</h3><p>DP uses one port; flow and FCFS use four. Timings are measured here.</p></div></div></article>
-        <details class="model-notes glass"><summary>Understand the model &amp; complexity</summary><div><p>Each request is a fixed interval [start, deadline). Deadline = start + duration; touching endpoints do not overlap. Profit = round(energy × (tariff × surge − energy cost)). Ports are identical; all bookings are known in advance.</p><p>DP sorts by finish time and finds predecessors with binary search: OPT(j) = max(OPT(j−1), profit(j) + OPT(pred(j))). Time O(n log n), space O(n). DP supports one port.</p><p>Flow builds a node per distinct time, zero-cost idle arcs of capacity k, and request arcs of capacity 1 and cost −profit. A DAG pass initializes potentials; successive Dijkstra searches route k units. Time O(k n log n), space O(n).</p><p>Greedy rules use first-fit port admission with minute bitsets. B is the number of machine words spanning the 1,440-minute day; time O(n log n + n k B), space O(n + k B). Interval coloring assigns the chosen set to physical ports.</p><p>Subset enumeration takes O(2ⁿ n log n); branch and bound takes O(2ⁿ n log k) in the worst case. The UI limits both to 14 requests. Flexible start windows, online arrivals, grid limits and fairness constraints are outside this fixed-slot model.</p></div></details>
-      </section>
-      <section id="view-history" class="view-panel hidden" aria-label="Saved schedules"><article class="glass"><div class="panel-heading"><div><h2>A record of better decisions.</h2><p>Your last 30 runs, saved locally with their original inputs.</p></div><button class="button secondary small" id="refresh-history" type="button">Refresh</button></div><div id="history-content"></div></article></section>
-      <footer class="console-footer"><span>Volt · Make every slot count.</span><span>Fixed-slot planning <i>·</i> Synthetic data <i>·</i> CPU only</span></footer>
-    </main>
-  </div>
-  <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="generate-dialog"><form id="generate-form"><div class="dialog-heading"><span class="eyebrow">A FRESH START</span><button class="close-button" type="button" data-close aria-label="Close dialog">×</button></div><h2>Build a charging day.</h2><p>Reproducible demand, with morning and evening peaks. Replaces current requests; saved runs stay available.</p><label>Number of requests<input name="count" type="number" min="0" max="2000" value="150" required></label><div class="form-grid"><label>Random seed<input name="seed" type="number" min="0" max="4294967295" value="2026" required></label><label>Maximum surge<input name="max_surge" type="number" min="1" max="10" step="0.1" value="2.5" required></label></div><div class="form-error" role="alert"></div><div class="dialog-actions"><button class="button secondary" type="button" data-close>Cancel</button><button class="button primary" type="submit">Generate day</button></div></form></dialog>
-  <dialog id="settings-dialog"><form id="settings-form"><div class="dialog-heading"><span class="eyebrow">STATION SETTINGS</span><button class="close-button" type="button" data-close aria-label="Close dialog">×</button></div><h2>The numbers behind the day.</h2><p>Prices are assumed inputs, not pricing recommendations. Saving recalculates every request’s profit.</p><div class="form-grid"><label>Tariff / kWh (₹)<input name="tariff" type="number" min="0" max="1000" step="0.01" required></label><label>Energy cost / kWh (₹)<input name="energy_cost" type="number" min="0" max="1000" step="0.01" required></label></div><div class="form-error" role="alert"></div><div class="dialog-actions"><button class="button secondary" type="button" data-close>Cancel</button><button class="button primary" type="submit">Save settings</button></div></form></dialog>
-  <dialog id="request-dialog"><form id="request-form"><div class="dialog-heading"><span class="eyebrow" id="request-dialog-label">NEW BOOKING</span><button class="close-button" type="button" data-close aria-label="Close dialog">×</button></div><h2 id="request-dialog-title">Make room for a new arrival.</h2><p>A fixed booking slot with a strict leave-by deadline.</p><input name="request_id" type="hidden"><div class="form-grid"><label>Start time<input name="start" type="time" required></label><label>Duration (minutes)<input name="duration_min" type="number" min="1" max="1440" value="45" required></label><label>Energy (kWh)<input name="energy_kwh" type="number" min="0.01" max="1000" step="0.01" value="24" required></label><label>Surge multiplier<input name="surge_mult" type="number" min="1" max="10" step="0.001" value="1.5" required></label></div><div class="request-preview" id="request-preview"></div><div class="form-error" role="alert"></div><div class="dialog-actions"><button class="button danger hidden" type="button" id="delete-request">Remove request</button><button class="button primary" type="submit">Save booking</button></div></form></dialog>
-  <dialog id="session-dialog"><div class="session-details" id="session-details"></div></dialog>
-  <noscript><div class="noscript">Enable JavaScript to use the station console.</div></noscript>
-</body>
+        <button type="button" class="settings-link" id="open-settings">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 8v8M8 12h8" />
+            <circle cx="12" cy="12" r="9" /></svg
+          >Station settings
+        </button>
+        <a class="back-home" href="/">Volt home</a>
+      </div>
+    </aside>
+    <div class="console-shell">
+      <header class="console-topbar">
+        <div class="breadcrumb">
+          Workspace <span>/</span>
+          <strong id="breadcrumb-current">Overview</strong>
+        </div>
+        <div class="topbar-right">
+          <span class="synthetic-badge">Synthetic data</span
+          ><span class="local-badge" id="connection-state">Connecting</span
+          ><button
+            class="avatar"
+            id="settings-shortcut"
+            type="button"
+            aria-label="Station settings"
+            title="Station settings"
+          >
+            V
+          </button>
+        </div>
+      </header>
+      <main id="workspace" tabindex="-1">
+        <div class="workspace-heading">
+          <div>
+            <span class="eyebrow" id="page-eyebrow"
+              >YOUR STATION, AT A GLANCE</span
+            >
+            <h1 id="page-title">A better day, by design.</h1>
+            <p id="page-subtitle">
+              Find the right sessions. Put every port to work.
+            </p>
+          </div>
+          <div class="heading-actions">
+            <button class="button secondary" id="open-generate" type="button">
+              <span aria-hidden="true">⟳</span> Generate day</button
+            ><button class="button primary" id="optimize" type="button">
+              <svg viewBox="0 0 24 24">
+                <path d="m13 2-8 12h7l-1 8 8-12h-7z" /></svg
+              ><span>Optimize schedule</span>
+            </button>
+          </div>
+        </div>
+        <div class="control-strip glass">
+          <div class="control-field">
+            <label for="ports">Charging ports</label
+            ><select id="ports" aria-label="Number of charging ports"></select>
+          </div>
+          <span class="control-divider"></span>
+          <div class="control-field algorithm-field">
+            <label for="algorithm">Scheduling method</label
+            ><select id="algorithm">
+              <option value="optimal">Optimal · auto-select solver</option>
+              <option value="dp">Dynamic programming · 1 port</option>
+              <option value="flow">Minimum-cost flow</option>
+              <option value="fcfs">First come, first served</option>
+              <option value="profit">Highest profit first</option>
+              <option value="density">Profit per minute</option>
+              <option value="eft">Earliest finish first</option>
+              <option value="search">Branch and bound · ≤14 requests</option>
+              <option value="subsets">Subset enumeration · ≤14 requests</option>
+            </select>
+          </div>
+          <div class="dataset-meta" id="dataset-meta">
+            Loading your workspace…
+          </div>
+        </div>
+        <div class="notice hidden" id="workspace-notice" role="status"></div>
+        <section
+          id="view-overview"
+          class="view-panel"
+          aria-label="Station overview"
+        >
+          <div class="metric-grid">
+            <article class="metric glass">
+              <div class="metric-label">
+                Scheduled profit <span class="metric-icon">₹</span>
+              </div>
+              <strong id="metric-profit">—</strong
+              ><span class="metric-caption" id="metric-profit-caption"
+                >Ready when you are</span
+              >
+            </article>
+            <article class="metric glass">
+              <div class="metric-label">
+                Gain over FCFS <span class="metric-icon">↗</span>
+              </div>
+              <strong id="metric-gain">—</strong
+              ><span class="metric-caption" id="metric-gain-caption"
+                >Compare the same demand</span
+              >
+            </article>
+            <article class="metric glass">
+              <div class="metric-label">
+                Vehicles served <span class="metric-icon">✓</span>
+              </div>
+              <strong id="metric-served">—</strong
+              ><span class="metric-caption" id="metric-served-caption"
+                >Every selected session, assigned</span
+              >
+            </article>
+            <article class="metric glass">
+              <div class="metric-label">
+                Port utilization <span class="metric-icon">◴</span>
+              </div>
+              <strong id="metric-utilization">—</strong
+              ><span class="metric-caption">Across a 24-hour planning day</span>
+            </article>
+          </div>
+          <article class="glass schedule-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="title-row">
+                  <h2>Your charging day</h2>
+                  <span id="schedule-status" class="pill">Ready to plan</span>
+                </div>
+                <p id="schedule-subtitle">
+                  One clear timeline. Every session in its place.
+                </p>
+              </div>
+              <div class="panel-actions">
+                <select
+                  id="schedule-method"
+                  aria-label="Displayed schedule"
+                ></select
+                ><button
+                  class="icon-button"
+                  id="export-schedule"
+                  type="button"
+                  aria-label="Export selected schedule as CSV"
+                  title="Export CSV"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 3v12m-4-4 4 4 4-4M4 15v5h16v-5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="schedule-legend">
+              <span><i class="legend-blue"></i>Standard rate</span
+              ><span><i class="legend-purple"></i>Higher surge</span
+              ><span><i class="legend-gold"></i>Peak surge</span
+              ><small>Select a session to inspect</small>
+            </div>
+            <div class="timeline-scroll" id="timeline">
+              <div class="empty-state">
+                <span class="empty-icon">⌁</span>
+                <h3>Your next great schedule starts here.</h3>
+                <p>Run the optimizer to find the best use of your ports.</p>
+              </div>
+            </div>
+            <div class="schedule-footer">
+              <span id="schedule-validation"
+                >Fixed slots · Strict deadlines · No overlapping port
+                usage</span
+              ><span id="schedule-runtime"></span>
+            </div>
+          </article>
+          <div class="overview-bottom">
+            <article class="glass comparison-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>Same day. Different decisions.</h2>
+                  <p>How the greedy rules compare with the optimum.</p>
+                </div>
+                <span class="pill">PROFIT / ₹</span>
+              </div>
+              <div id="comparison-chart" class="comparison-chart">
+                <p class="muted">
+                  Your comparison will appear after optimization.
+                </p>
+              </div>
+            </article>
+            <article class="glass insight-panel">
+              <span class="eyebrow">BEHIND THE DECISION</span>
+              <div class="insight-symbol" aria-hidden="true">✧</div>
+              <h2 id="insight-title">
+                The right algorithm changes everything.
+              </h2>
+              <p id="insight-text">
+                Dynamic programming for one port. Minimum-cost flow for many. An
+                exact answer to a complex day.
+              </p>
+              <button class="text-button" type="button" data-view="lab">
+                Explore the algorithm lab <span aria-hidden="true">+</span>
+              </button>
+            </article>
+          </div>
+        </section>
+        <section
+          id="view-requests"
+          class="view-panel hidden"
+          aria-label="Charging requests"
+        >
+          <article class="glass requests-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Every request, in one place.</h2>
+                <p>Add bookings or import your own fixed-slot demand.</p>
+              </div>
+              <div class="panel-actions">
+                <a
+                  class="button secondary small"
+                  href="/api/requests.csv"
+                  download
+                  >Export CSV</a
+                ><button
+                  class="button secondary small"
+                  id="import-button"
+                  type="button"
+                >
+                  Import CSV</button
+                ><button
+                  class="button primary small"
+                  id="add-request"
+                  type="button"
+                >
+                  + Add request
+                </button>
+              </div>
+            </div>
+            <div class="table-toolbar">
+              <label class="search-box"
+                ><svg viewBox="0 0 24 24">
+                  <circle cx="10" cy="10" r="6" />
+                  <path d="m15 15 5 5" /></svg
+                ><input
+                  id="request-search"
+                  type="search"
+                  placeholder="Search request ID…"
+                  aria-label="Search request ID" /></label
+              ><select
+                id="request-filter"
+                aria-label="Filter requests by status"
+              >
+                <option value="all">All requests</option>
+                <option value="accepted">Accepted</option>
+                <option value="rejected">Rejected</option>
+                <option value="unplanned">Unplanned</option></select
+              ><span id="filter-count" class="muted"></span>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Request</th>
+                    <th>Booking slot</th>
+                    <th>Duration</th>
+                    <th>Energy</th>
+                    <th>Surge</th>
+                    <th>Profit</th>
+                    <th>Status</th>
+                    <th><span class="sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody id="request-rows"></tbody>
+              </table>
+            </div>
+            <div class="table-pagination">
+              <span id="page-description"></span>
+              <div>
+                <button
+                  class="button secondary small"
+                  type="button"
+                  id="prev-page"
+                >
+                  Previous</button
+                ><button
+                  class="button secondary small"
+                  type="button"
+                  id="next-page"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </article>
+          <p class="footnote">
+            CSV columns: request_id, arrival_min, duration_min, energy_kwh,
+            surge_mult. Times are minutes from midnight. Profit is always
+            recalculated from station prices.
+          </p>
+          <input
+            class="hidden"
+            type="file"
+            id="csv-file"
+            accept=".csv,text/csv"
+          />
+        </section>
+        <section
+          id="view-lab"
+          class="view-panel hidden"
+          aria-label="Algorithm laboratory"
+        >
+          <div class="lab-intro glass">
+            <div>
+              <span class="eyebrow">FROM THEORY TO A BETTER CHARGING DAY</span>
+              <h2>See why the optimum wins.</h2>
+              <p>
+                Inspect a DP recurrence, trace residual flow, and verify exact
+                solutions against independent exhaustive searches.
+              </p>
+            </div>
+            <button class="button primary" id="worked-example" type="button">
+              Load report example
+            </button>
+          </div>
+          <div
+            class="lab-tabs"
+            role="tablist"
+            aria-label="Algorithm laboratory tools"
+          >
+            <button
+              class="active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              data-lab="trace"
+            >
+              Solver trace</button
+            ><button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              data-lab="verify"
+            >
+              Correctness</button
+            ><button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              data-lab="sensitivity"
+            >
+              Port sensitivity</button
+            ><button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              data-lab="benchmark"
+            >
+              Runtime
+            </button>
+          </div>
+          <article class="glass lab-panel" id="lab-trace">
+            <div class="panel-heading">
+              <div>
+                <h2 id="trace-title">Inside the solver</h2>
+                <p id="trace-subtitle">
+                  Optimize a day to inspect its algorithm trace.
+                </p>
+              </div>
+              <span class="pill" id="trace-complexity">EXACT ALGORITHMS</span>
+            </div>
+            <div id="trace-content" class="trace-content">
+              <div class="empty-state">
+                <span class="empty-icon">∑</span>
+                <h3>Follow the decision.</h3>
+                <p>
+                  Load the report example for an eight-request DP walkthrough.
+                </p>
+              </div>
+            </div>
+          </article>
+          <article class="glass lab-panel hidden" id="lab-verify">
+            <div class="panel-heading">
+              <div>
+                <h2>Trust, then verify.</h2>
+                <p>
+                  60 deterministic checks: 40 search, 15 subset, and 5 daily
+                  DP-versus-flow comparisons.
+                </p>
+              </div>
+              <button
+                class="button primary small"
+                id="verify-button"
+                type="button"
+              >
+                Run verification
+              </button>
+            </div>
+            <div id="verify-result" class="lab-result">
+              <div class="empty-state">
+                <span class="empty-icon">✓</span>
+                <h3>An independent check on every answer.</h3>
+                <p>
+                  Small synthetic inputs include losses, overlapping intervals
+                  and touching endpoints.
+                </p>
+              </div>
+            </div>
+          </article>
+          <article class="glass lab-panel hidden" id="lab-sensitivity">
+            <div class="panel-heading">
+              <div>
+                <h2>What is one more port worth?</h2>
+                <p>
+                  Compare the current demand across one to eight identical
+                  ports.
+                </p>
+              </div>
+              <button
+                class="button primary small"
+                id="sensitivity-button"
+                type="button"
+              >
+                Run analysis
+              </button>
+            </div>
+            <div id="sensitivity-result" class="lab-result">
+              <div class="empty-state">
+                <span class="empty-icon">+</span>
+                <h3>Explore your station’s potential.</h3>
+                <p>
+                  Only port count changes. Requests and prices remain the same.
+                </p>
+              </div>
+            </div>
+          </article>
+          <article class="glass lab-panel hidden" id="lab-benchmark">
+            <div class="panel-heading">
+              <div>
+                <h2>Fast, by design.</h2>
+                <p>
+                  50–1,000 requests. Best of three CPU timings on seeded demand.
+                </p>
+              </div>
+              <button
+                class="button primary small"
+                id="benchmark-button"
+                type="button"
+              >
+                Run benchmark
+              </button>
+            </div>
+            <div id="benchmark-result" class="lab-result">
+              <div class="empty-state">
+                <span class="empty-icon">◷</span>
+                <h3>Watch the complexity become concrete.</h3>
+                <p>
+                  DP uses one port; flow and FCFS use four. Timings are measured
+                  here.
+                </p>
+              </div>
+            </div>
+          </article>
+          <details class="model-notes glass">
+            <summary>Understand the model &amp; complexity</summary>
+            <div>
+              <p>
+                Each request is a fixed interval [start, deadline). Deadline =
+                start + duration; touching endpoints do not overlap. Profit =
+                round(energy × (tariff × surge − energy cost)). Ports are
+                identical; all bookings are known in advance.
+              </p>
+              <p>
+                DP sorts by finish time and finds predecessors with binary
+                search: OPT(j) = max(OPT(j−1), profit(j) + OPT(pred(j))). Time
+                O(n log n), space O(n). DP supports one port.
+              </p>
+              <p>
+                Flow builds a node per distinct time, zero-cost idle arcs of
+                capacity k, and request arcs of capacity 1 and cost −profit. A
+                DAG pass initializes potentials; successive Dijkstra searches
+                route k units. Time O(k n log n), space O(n).
+              </p>
+              <p>
+                Greedy rules use first-fit port admission with minute bitsets. B
+                is the number of machine words spanning the 1,440-minute day;
+                time O(n log n + n k B), space O(n + k B). Interval coloring
+                assigns the chosen set to physical ports.
+              </p>
+              <p>
+                Subset enumeration takes O(2ⁿ n log n); branch and bound takes
+                O(2ⁿ n log k) in the worst case. The UI limits both to 14
+                requests. Flexible start windows, online arrivals, grid limits
+                and fairness constraints are outside this fixed-slot model.
+              </p>
+            </div>
+          </details>
+        </section>
+        <section
+          id="view-history"
+          class="view-panel hidden"
+          aria-label="Saved schedules"
+        >
+          <article class="glass">
+            <div class="panel-heading">
+              <div>
+                <h2>A record of better decisions.</h2>
+                <p>
+                  Your last 30 runs, saved locally with their original inputs.
+                </p>
+              </div>
+              <button
+                class="button secondary small"
+                id="refresh-history"
+                type="button"
+              >
+                Refresh
+              </button>
+            </div>
+            <div id="history-content"></div>
+          </article>
+        </section>
+        <footer class="console-footer">
+          <span>Volt · Make every slot count.</span
+          ><span
+            >Fixed-slot planning <i>·</i> Synthetic data <i>·</i> CPU only</span
+          >
+        </footer>
+      </main>
+    </div>
+    <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+    <dialog id="generate-dialog" aria-label="Generate synthetic demand">
+      <form id="generate-form">
+        <div class="dialog-heading">
+          <span class="eyebrow">A FRESH START</span
+          ><button
+            class="close-button"
+            type="button"
+            data-close
+            aria-label="Close dialog"
+          >
+            ×
+          </button>
+        </div>
+        <h2>Build a charging day.</h2>
+        <p>
+          Reproducible demand, with morning and evening peaks. Replaces current
+          requests; saved runs stay available.
+        </p>
+        <label
+          >Number of requests<input
+            name="count"
+            type="number"
+            min="0"
+            max="2000"
+            value="150"
+            required
+        /></label>
+        <div class="form-grid">
+          <label
+            >Random seed<input
+              name="seed"
+              type="number"
+              min="0"
+              max="4294967295"
+              value="2026"
+              required /></label
+          ><label
+            >Maximum surge<input
+              name="max_surge"
+              type="number"
+              min="1"
+              max="10"
+              step="0.1"
+              value="2.5"
+              required
+          /></label>
+        </div>
+        <div class="form-error" role="alert"></div>
+        <div class="dialog-actions">
+          <button class="button secondary" type="button" data-close>
+            Cancel</button
+          ><button class="button primary" type="submit">Generate day</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="settings-dialog" aria-label="Station settings">
+      <form id="settings-form">
+        <div class="dialog-heading">
+          <span class="eyebrow">STATION SETTINGS</span
+          ><button
+            class="close-button"
+            type="button"
+            data-close
+            aria-label="Close dialog"
+          >
+            ×
+          </button>
+        </div>
+        <h2>The numbers behind the day.</h2>
+        <p>
+          Prices are assumed inputs, not pricing recommendations. Saving
+          recalculates every request’s profit.
+        </p>
+        <div class="form-grid">
+          <label
+            >Tariff / kWh (₹)<input
+              name="tariff"
+              type="number"
+              min="0"
+              max="1000"
+              step="0.01"
+              required /></label
+          ><label
+            >Energy cost / kWh (₹)<input
+              name="energy_cost"
+              type="number"
+              min="0"
+              max="1000"
+              step="0.01"
+              required
+          /></label>
+        </div>
+        <div class="form-error" role="alert"></div>
+        <div class="dialog-actions">
+          <button class="button secondary" type="button" data-close>
+            Cancel</button
+          ><button class="button primary" type="submit">Save settings</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="request-dialog" aria-label="Edit charging request">
+      <form id="request-form">
+        <div class="dialog-heading">
+          <span class="eyebrow" id="request-dialog-label">NEW BOOKING</span
+          ><button
+            class="close-button"
+            type="button"
+            data-close
+            aria-label="Close dialog"
+          >
+            ×
+          </button>
+        </div>
+        <h2 id="request-dialog-title">Make room for a new arrival.</h2>
+        <p>A fixed booking slot with a strict leave-by deadline.</p>
+        <input name="request_id" type="hidden" />
+        <div class="form-grid">
+          <label>Start time<input name="start" type="time" required /></label
+          ><label
+            >Duration (minutes)<input
+              name="duration_min"
+              type="number"
+              min="1"
+              max="1440"
+              value="45"
+              required /></label
+          ><label
+            >Energy (kWh)<input
+              name="energy_kwh"
+              type="number"
+              min="0.01"
+              max="1000"
+              step="0.01"
+              value="24"
+              required /></label
+          ><label
+            >Surge multiplier<input
+              name="surge_mult"
+              type="number"
+              min="1"
+              max="10"
+              step="0.001"
+              value="1.5"
+              required
+          /></label>
+        </div>
+        <div class="request-preview" id="request-preview"></div>
+        <div class="form-error" role="alert"></div>
+        <div class="dialog-actions">
+          <button
+            class="button danger hidden"
+            type="button"
+            id="delete-request"
+          >
+            Remove request</button
+          ><button class="button primary" type="submit">Save booking</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="session-dialog" aria-label="Charging session details">
+      <div class="session-details" id="session-details"></div>
+    </dialog>
+    <noscript
+      ><div class="noscript">
+        Enable JavaScript to use the station console.
+      </div></noscript
+    >
+  </body>
 </html>

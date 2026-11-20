@@ -67,3 +67,32 @@ def test_limits_and_bad_algorithms(client):
     assert client.post("/api/generate", json={"revision": revision, "count": 2001}).status_code == 422
     assert client.get("/api/runs/missing").status_code == 404
     assert client.get("/api/health").json()["status"] == "ok"
+
+
+def test_report_example_repricing_and_origin_protection(client):
+    state = client.get("/api/state").json()
+    example = client.post("/api/example", json={"revision": state["revision"]}).json()
+    assert example["settings"]["ports"] == 1
+    result = client.post("/api/optimize", json={"revision": example["revision"], "algorithm": "dp"}).json()
+    assert result["selected"]["profit_inr"] == 240
+    assert len(result["selected"]["trace"]["rows"]) == 8
+    payload = {"revision": example["revision"], "requests": example["requests"], "settings": example["settings"]}
+    repriced = client.put("/api/state", json=payload).json()
+    assert [r["profit_inr"] for r in repriced["requests"]] == [r["profit_inr"] for r in example["requests"]]
+    blocked = client.post("/api/generate", json={"revision": repriced["revision"]},
+                          headers={"Origin": "https://unrelated.example"})
+    assert blocked.status_code == 403
+    allowed = client.post("/api/generate", json={"revision": repriced["revision"], "count": 0},
+                          headers={"Origin": "http://testserver"})
+    assert allowed.status_code == 200
+    empty = client.post("/api/optimize", json={"revision": allowed.json()["revision"]}).json()
+    assert empty["selected"]["profit_inr"] == 0
+    assert client.get(f"/api/runs/{empty['id']}/export").text.startswith("request_id,")
+
+
+def test_pages_assets_and_headers(client):
+    for path in ("/", "/console", "/static/console.js", "/static/console.css", "/static/inter.woff2"):
+        response = client.get(path)
+        assert response.status_code == 200
+        assert response.headers["X-Content-Type-Options"] == "nosniff"
+    assert client.get("/api/state").headers["Cache-Control"] == "no-store"

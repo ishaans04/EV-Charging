@@ -1,64 +1,203 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Volt finds the most profitable charging schedule. Explore exact scheduling algorithms in a simple station console.">
-  <meta name="theme-color" content="#17317c">
-  <title>Volt · Make every slot count</title>
-  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="/static/landing.js" defer></script>
-</head>
-<body class="landing">
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="hero-backdrop" aria-hidden="true"></div>
-  <header class="landing-nav wrap">
-    <a href="/" class="brand" aria-label="Volt home"><svg viewBox="0 0 28 32" aria-hidden="true"><path d="M16 1 2 19h10l-1 12L26 12H16z"/></svg>volt<span class="brand-period">.</span></a>
-    <span class="nav-caption">Intelligence for every charging slot.</span>
-    <a href="/console" class="nav-console">Enter console <span class="keycap">V</span></a>
-  </header>
-  <main id="main" class="hero wrap">
-    <div class="hero-copy">
-      <span class="announcement"><span>VOLT 1.0</span> Better decisions. Fully charged.</span>
-      <h1>Finally, charging slots<br>that work <span class="hero-emphasis">smarter.</span></h1>
-      <p>Overlapping requests. Limited ports. One optimal schedule.<br class="desktop-break"> Turn your station’s potential into profit, with algorithms you can trust.</p>
-      <a class="hero-cta" href="/console">Directly enter console <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m13 2-8 12h7l-1 8 8-12h-7z"/></svg></span></a>
-      <div class="hero-note">No setup. No sign-up. Just a better schedule.</div>
-    </div>
-    <div class="hero-stage">
-      <div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
-      <div class="floating-card demand-card">
-        <span class="eyebrow">THE CHALLENGE</span>
-        <div class="incoming-row"><span class="mini-car">01</span><span><strong>Overlapping arrivals</strong><small>Different needs. Same charging port.</small></span></div>
-        <div class="request-stripes" aria-hidden="true"><i></i><i></i><i></i></div>
-        <span class="card-meta">A little complexity. A lot of possibility.</span>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Volt finds the most profitable charging schedule. Explore exact scheduling algorithms in a simple station console."
+    />
+    <meta name="theme-color" content="#17317c" />
+    <title>Volt · Make every slot count</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/landing.js" defer></script>
+  </head>
+  <body class="landing">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="hero-backdrop" aria-hidden="true"></div>
+    <header class="landing-nav wrap">
+      <a href="/" class="brand" aria-label="Volt home"
+        ><svg viewBox="0 0 28 32" aria-hidden="true">
+          <path d="M16 1 2 19h10l-1 12L26 12H16z" /></svg
+        >volt<span class="brand-period">.</span></a
+      >
+      <span class="nav-caption">Intelligence for every charging slot.</span>
+      <a href="/console" class="nav-console"
+        >Enter console <span class="keycap">V</span></a
+      >
+    </header>
+    <main id="main" class="hero wrap">
+      <div class="hero-copy">
+        <span class="announcement"
+          ><span>VOLT 1.0</span> Better decisions. Fully charged.</span
+        >
+        <h1>
+          Finally, charging slots<br />that work
+          <span class="hero-emphasis">smarter.</span>
+        </h1>
+        <p>
+          Overlapping requests. Limited ports. One optimal schedule.<br
+            class="desktop-break"
+          />
+          Turn your station’s potential into profit, with algorithms you can
+          trust.
+        </p>
+        <a class="hero-cta" href="/console"
+          >Directly enter console
+          <span aria-hidden="true"
+            ><svg viewBox="0 0 24 24">
+              <path d="m13 2-8 12h7l-1 8 8-12h-7z" /></svg></span
+        ></a>
+        <div class="hero-note">
+          No setup. No sign-up. Just a better schedule.
+        </div>
       </div>
-      <svg class="charger-art" viewBox="0 0 440 430" role="img" aria-label="Illustrated Volt electric vehicle charging station">
-        <defs><linearGradient id="charger-front" x2="1" y2="1"><stop stop-color="#fff1af"/><stop offset="1" stop-color="#e5b747"/></linearGradient><linearGradient id="charger-side" x2="0" y2="1"><stop stop-color="#dba936"/><stop offset="1" stop-color="#a67b25"/></linearGradient><linearGradient id="base" x2="0" y2="1"><stop stop-color="#f0f3f9"/><stop offset="1" stop-color="#c9d6ec"/></linearGradient></defs>
-        <ellipse cx="233" cy="372" rx="150" ry="25" fill="#17317c" opacity=".12"/>
-        <path d="m60 332 184-62 151 62-179 65z" fill="url(#base)"/><path d="m60 332 156 54 179-54v11l-179 63-156-56z" fill="#b4c3df"/>
-        <path d="m166 75 94-29 47 25-94 31z" fill="#fff1b4"/><path d="m166 75 47 27v239l-47-25z" fill="url(#charger-side)"/><path d="m213 102 94-31v240l-94 30z" fill="url(#charger-front)"/>
-        <path d="m229 128 60-19v69l-60 19z" fill="#1c397b"/><path d="m236 135 46-15v45l-46 15z" fill="#284c97"/>
-        <path d="m263 130-16 27 13-4-3 18 18-30-14 5z" fill="#f6dd78"/>
-        <path d="m237 222 43-14m-43 23 43-14m-43 23 43-14" stroke="#bd963e" stroke-width="2"/>
-        <path d="m237 277 42-14" stroke="#17317c" stroke-width="5" stroke-linecap="round"/>
-        <path d="M179 172c-65-9-88 21-88 60v51c0 49 50 58 50 12v-75" fill="none" stroke="#1d3371" stroke-width="10" stroke-linecap="round"/>
-        <path d="m134 211 18 9v27l-18-9z" fill="#152853"/><path d="m134 211 7-8 18 9-7 8z" fill="#354b7b"/>
-        <path d="m226 307 68-22" stroke="#e3bc51" stroke-width="3"/>
-        <text x="238" y="259" transform="rotate(-18 238 259)" fill="#17317c" font-size="22" font-family="Arial, sans-serif" font-weight="700">volt.</text>
-      </svg>
-      <div class="floating-card outcome-card">
-        <div class="card-heading"><span class="eyebrow">THE VOLT EFFECT</span><span class="pill">One-port example</span></div>
-        <div class="demo-tabs" role="group" aria-label="Compare demo schedules"><button type="button" data-demo="fcfs" aria-pressed="false">First come, first served</button><button class="active" type="button" data-demo="optimal" aria-pressed="true">Optimal</button></div>
-        <div class="demo-profit"><strong id="demo-profit">₹240</strong><span id="demo-gain">+41.2% profit</span></div>
-        <div class="mini-timeline" id="demo-timeline" aria-label="Optimal schedule"><i style="left:15.38%;width:15.38%">R1</i><i style="left:30.76%;width:30.76%">R5</i><i style="left:61.53%;width:38.46%">R4</i></div>
-        <div class="timeline-labels"><span>00:00</span><span>01:00</span><span>02:10</span></div>
-        <div class="verified-line"><span aria-hidden="true">✓</span><span id="demo-caption">Three sessions. Zero overlaps. Maximum value.</span></div>
+      <div class="hero-stage">
+        <div class="orbit orbit-one" aria-hidden="true"></div>
+        <div class="orbit orbit-two" aria-hidden="true"></div>
+        <div class="floating-card demand-card">
+          <span class="eyebrow">THE CHALLENGE</span>
+          <div class="incoming-row">
+            <span class="mini-car">01</span
+            ><span
+              ><strong>Overlapping arrivals</strong
+              ><small>Different needs. Same charging port.</small></span
+            >
+          </div>
+          <div class="request-stripes" aria-hidden="true">
+            <i></i><i></i><i></i>
+          </div>
+          <span class="card-meta"
+            >A little complexity. A lot of possibility.</span
+          >
+        </div>
+        <svg
+          class="charger-art"
+          viewBox="0 0 440 430"
+          role="img"
+          aria-label="Illustrated Volt electric vehicle charging station"
+        >
+          <defs>
+            <linearGradient id="charger-front" x2="1" y2="1">
+              <stop stop-color="#fff1af" />
+              <stop offset="1" stop-color="#e5b747" />
+            </linearGradient>
+            <linearGradient id="charger-side" x2="0" y2="1">
+              <stop stop-color="#dba936" />
+              <stop offset="1" stop-color="#a67b25" />
+            </linearGradient>
+            <linearGradient id="base" x2="0" y2="1">
+              <stop stop-color="#f0f3f9" />
+              <stop offset="1" stop-color="#c9d6ec" />
+            </linearGradient>
+          </defs>
+          <ellipse
+            cx="233"
+            cy="372"
+            rx="150"
+            ry="25"
+            fill="#17317c"
+            opacity=".12"
+          />
+          <path d="m60 332 184-62 151 62-179 65z" fill="url(#base)" />
+          <path d="m60 332 156 54 179-54v11l-179 63-156-56z" fill="#b4c3df" />
+          <path d="m166 75 94-29 47 25-94 31z" fill="#fff1b4" />
+          <path d="m166 75 47 27v239l-47-25z" fill="url(#charger-side)" />
+          <path d="m213 102 94-31v240l-94 30z" fill="url(#charger-front)" />
+          <path d="m229 128 60-19v69l-60 19z" fill="#1c397b" />
+          <path d="m236 135 46-15v45l-46 15z" fill="#284c97" />
+          <path d="m263 130-16 27 13-4-3 18 18-30-14 5z" fill="#f6dd78" />
+          <path
+            d="m237 222 43-14m-43 23 43-14m-43 23 43-14"
+            stroke="#bd963e"
+            stroke-width="2"
+          />
+          <path
+            d="m237 277 42-14"
+            stroke="#17317c"
+            stroke-width="5"
+            stroke-linecap="round"
+          />
+          <path
+            d="M179 172c-65-9-88 21-88 60v51c0 49 50 58 50 12v-75"
+            fill="none"
+            stroke="#1d3371"
+            stroke-width="10"
+            stroke-linecap="round"
+          />
+          <path d="m134 211 18 9v27l-18-9z" fill="#152853" />
+          <path d="m134 211 7-8 18 9-7 8z" fill="#354b7b" />
+          <path d="m226 307 68-22" stroke="#e3bc51" stroke-width="3" />
+          <text
+            x="238"
+            y="259"
+            transform="rotate(-18 238 259)"
+            fill="#17317c"
+            font-size="22"
+            font-family="Arial, sans-serif"
+            font-weight="700"
+          >
+            volt.
+          </text>
+        </svg>
+        <div class="floating-card outcome-card">
+          <div class="card-heading">
+            <span class="eyebrow">THE VOLT EFFECT</span
+            ><span class="pill">One-port example</span>
+          </div>
+          <div
+            class="demo-tabs"
+            role="group"
+            aria-label="Compare demo schedules"
+          >
+            <button type="button" data-demo="fcfs" aria-pressed="false">
+              First come, first served</button
+            ><button
+              class="active"
+              type="button"
+              data-demo="optimal"
+              aria-pressed="true"
+            >
+              Optimal
+            </button>
+          </div>
+          <div class="demo-profit">
+            <strong id="demo-profit">₹240</strong
+            ><span id="demo-gain">+41.2% profit</span>
+          </div>
+          <div
+            class="mini-timeline"
+            id="demo-timeline"
+            aria-label="Optimal schedule"
+          >
+            <i style="left: 15.38%; width: 15.38%">R1</i
+            ><i style="left: 30.76%; width: 30.76%">R5</i
+            ><i style="left: 61.53%; width: 38.46%">R4</i>
+          </div>
+          <div class="timeline-labels">
+            <span>00:00</span><span>01:00</span><span>02:10</span>
+          </div>
+          <div class="verified-line">
+            <span aria-hidden="true">✓</span
+            ><span id="demo-caption"
+              >Three sessions. Zero overlaps. Maximum value.</span
+            >
+          </div>
+        </div>
+        <div class="stage-caption">
+          <span class="caption-rule"></span>Good decisions start with the right
+          algorithm.<span class="caption-rule"></span>
+        </div>
       </div>
-      <div class="stage-caption"><span class="caption-rule"></span>Good decisions start with the right algorithm.<span class="caption-rule"></span></div>
-    </div>
-    <footer class="landing-footer"><span>DESIGN &amp; ANALYSIS OF ALGORITHMS</span><div><span>Dynamic programming</span><span>Minimum-cost flow</span><span>Greedy analysis</span></div><span>Built to make every slot count.</span></footer>
-  </main>
-</body>
+      <footer class="landing-footer">
+        <span>DESIGN &amp; ANALYSIS OF ALGORITHMS</span>
+        <div>
+          <span>Dynamic programming</span><span>Minimum-cost flow</span
+          ><span>Greedy analysis</span>
+        </div>
+        <span>Built to make every slot count.</span>
+      </footer>
+    </main>
+  </body>
 </html>

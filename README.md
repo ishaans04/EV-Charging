@@ -81,6 +81,8 @@ Install the development dependencies in the same virtual environment:
 
 Use `--quick` for a smaller experiment run and `--output artifacts/quick-results.json` to preserve the committed full results. Figure input and output paths are configurable with `make_figs.py --input ... --output ...`.
 
+The automated Python suite passes **138 tests**, and the DOM integration test exercises the main console workflows against the running API.
+
 The committed full experiment used 40 days, seeds 40000–40039, 150 requests/day, four ports, tariff ₹18/kWh, energy cost ₹9/kWh, and maximum surge 2.5. It passed **1,850** exact-solver checks: 1,500 against branch and bound, 150 against subset enumeration, and 200 full-day DP-versus-flow comparisons.
 
 | Method | Measured mean daily profit |

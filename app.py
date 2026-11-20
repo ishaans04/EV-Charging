@@ -143,6 +143,11 @@ def create_app(db_path=None):
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
             "img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'")
+        if request.url.path in ("/docs", "/redoc"):
+            response.headers["Content-Security-Policy"] = (
+                "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+                "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+                "img-src 'self' data: https://fastapi.tiangolo.com; frame-ancestors 'none'")
         if request.url.path.startswith("/api/"):
             response.headers["Cache-Control"] = "no-store"
         return response
