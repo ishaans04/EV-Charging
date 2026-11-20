@@ -1,0 +1,5162 @@
+{
+  "generated_at": "2026-11-20T18:25:39.659492+00:00",
+  "python": "3.14.5",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "mode": "full",
+  "config": {
+    "days": 40,
+    "seeds": [
+      40000,
+      40001,
+      40002,
+      40003,
+      40004,
+      40005,
+      40006,
+      40007,
+      40008,
+      40009,
+      40010,
+      40011,
+      40012,
+      40013,
+      40014,
+      40015,
+      40016,
+      40017,
+      40018,
+      40019,
+      40020,
+      40021,
+      40022,
+      40023,
+      40024,
+      40025,
+      40026,
+      40027,
+      40028,
+      40029,
+      40030,
+      40031,
+      40032,
+      40033,
+      40034,
+      40035,
+      40036,
+      40037,
+      40038,
+      40039
+    ],
+    "requests": 150,
+    "ports": 4,
+    "tariff": 18,
+    "energy_cost": 9,
+    "max_surge": 2.5,
+    "generator": "Python random.Random; synthetic assumptions from report"
+  },
+  "correctness": {
+    "passed": 1850,
+    "failed": 0,
+    "checks": {
+      "search": 1500,
+      "subsets": 150,
+      "dp_vs_flow": 200
+    },
+    "search_seed_start": 70000,
+    "daily_seed_start": 80000
+  },
+  "quality": [
+    {
+      "algorithm": "flow",
+      "name": "Minimum-cost flow",
+      "mean_profit": 43192.875,
+      "sd_profit": 1626.2378983171795,
+      "mean_accepted": 62.25,
+      "mean_utilization": 55.12586805555556
+    },
+    {
+      "algorithm": "fcfs",
+      "name": "First come, first served",
+      "mean_profit": 34252.7,
+      "sd_profit": 1598.7115196547884,
+      "mean_accepted": 64.8,
+      "mean_utilization": 55.16710069444444
+    },
+    {
+      "algorithm": "profit",
+      "name": "Highest profit",
+      "mean_profit": 39605.3,
+      "sd_profit": 2055.074085631926,
+      "mean_accepted": 51.275,
+      "mean_utilization": 52.53038194444444
+    },
+    {
+      "algorithm": "density",
+      "name": "Profit per minute",
+      "mean_profit": 38950.975,
+      "sd_profit": 2005.7613873411558,
+      "mean_accepted": 60.825,
+      "mean_utilization": 46.959635416666664
+    },
+    {
+      "algorithm": "eft",
+      "name": "Earliest finish",
+      "mean_profit": 31783.325,
+      "sd_profit": 1911.7611747032013,
+      "mean_accepted": 70.325,
+      "mean_utilization": 48.430989583333336
+    }
+  ],
+  "capacity": [
+    {
+      "ports": 1,
+      "methods": [
+        {
+          "algorithm": "dp",
+          "name": "Dynamic programming",
+          "mean_profit": 13791.475,
+          "sd_profit": 784.7887185047372,
+          "mean_accepted": 17.45,
+          "mean_utilization": 60.720486111111114
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 9740.2,
+          "sd_profit": 802.4794653495454,
+          "mean_accepted": 18.65,
+          "mean_utilization": 62.439236111111114
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 12495.2,
+          "sd_profit": 1099.2518014890506,
+          "mean_accepted": 13.2,
+          "mean_utilization": 58.00347222222222
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 12470.35,
+          "sd_profit": 1167.4329399287863,
+          "mean_accepted": 17.525,
+          "mean_utilization": 50.763888888888886
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 8929.55,
+          "sd_profit": 731.2559603088234,
+          "mean_accepted": 22.8,
+          "mean_utilization": 54.18402777777778
+        }
+      ]
+    },
+    {
+      "ports": 2,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 25222.025,
+          "sd_profit": 1234.8765014032572,
+          "mean_accepted": 33.2,
+          "mean_utilization": 59.153645833333336
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 18626.375,
+          "sd_profit": 1188.138420829527,
+          "mean_accepted": 35.9,
+          "mean_utilization": 59.94357638888889
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 22931.725,
+          "sd_profit": 1585.8907387510687,
+          "mean_accepted": 26.375,
+          "mean_utilization": 56.43663194444444
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 22710.65,
+          "sd_profit": 1533.5012486095925,
+          "mean_accepted": 33.925,
+          "mean_utilization": 49.52690972222222
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 17152.225,
+          "sd_profit": 1257.9658078493028,
+          "mean_accepted": 41.5,
+          "mean_utilization": 52.14409722222222
+        }
+      ]
+    },
+    {
+      "ports": 3,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 34967.225,
+          "sd_profit": 1523.4067000371072,
+          "mean_accepted": 48.7,
+          "mean_utilization": 57.175925925925924
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 26625.6,
+          "sd_profit": 1423.111610665255,
+          "mean_accepted": 51.25,
+          "mean_utilization": 57.74016203703704
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 31835.675,
+          "sd_profit": 2040.4716698000025,
+          "mean_accepted": 39.05,
+          "mean_utilization": 54.69618055555556
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 31530.775,
+          "sd_profit": 1998.7894090981863,
+          "mean_accepted": 48.4,
+          "mean_utilization": 48.527199074074076
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 24704.475,
+          "sd_profit": 1493.2830117580286,
+          "mean_accepted": 57.1,
+          "mean_utilization": 50.182291666666664
+        }
+      ]
+    },
+    {
+      "ports": 4,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 43192.875,
+          "sd_profit": 1626.2378983171795,
+          "mean_accepted": 62.25,
+          "mean_utilization": 55.12586805555556
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 34252.7,
+          "sd_profit": 1598.7115196547884,
+          "mean_accepted": 64.8,
+          "mean_utilization": 55.16710069444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 39605.3,
+          "sd_profit": 2055.074085631926,
+          "mean_accepted": 51.275,
+          "mean_utilization": 52.53038194444444
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 38950.975,
+          "sd_profit": 2005.7613873411558,
+          "mean_accepted": 60.825,
+          "mean_utilization": 46.959635416666664
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 31783.325,
+          "sd_profit": 1911.7611747032013,
+          "mean_accepted": 70.325,
+          "mean_utilization": 48.430989583333336
+        }
+      ]
+    },
+    {
+      "ports": 5,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 50092.75,
+          "sd_profit": 1820.6433879686176,
+          "mean_accepted": 73.875,
+          "mean_utilization": 52.970486111111114
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 41252.6,
+          "sd_profit": 1890.9521926457567,
+          "mean_accepted": 76.575,
+          "mean_utilization": 52.588541666666664
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 46304.65,
+          "sd_profit": 2084.195627291381,
+          "mean_accepted": 62.425,
+          "mean_utilization": 50.432291666666664
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 45617.65,
+          "sd_profit": 2014.5379256410522,
+          "mean_accepted": 72.025,
+          "mean_utilization": 45.38194444444444
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 38021.675,
+          "sd_profit": 2230.476784577338,
+          "mean_accepted": 81.5,
+          "mean_utilization": 46.49131944444444
+        }
+      ]
+    },
+    {
+      "ports": 6,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 55984.6,
+          "sd_profit": 2013.6407236899447,
+          "mean_accepted": 84.525,
+          "mean_utilization": 50.413773148148145
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 47097.65,
+          "sd_profit": 1956.491385369647,
+          "mean_accepted": 87.25,
+          "mean_utilization": 49.973958333333336
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 52086.875,
+          "sd_profit": 2112.346042789197,
+          "mean_accepted": 72,
+          "mean_utilization": 48.0078125
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 51418.375,
+          "sd_profit": 2281.759776199513,
+          "mean_accepted": 81.525,
+          "mean_utilization": 43.767361111111114
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 43696.275,
+          "sd_profit": 2326.349170029606,
+          "mean_accepted": 90.975,
+          "mean_utilization": 44.590567129629626
+        }
+      ]
+    },
+    {
+      "ports": 7,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 61005.5,
+          "sd_profit": 2150.5995347749795,
+          "mean_accepted": 93.375,
+          "mean_utilization": 48.06671626984127
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 52434.825,
+          "sd_profit": 2171.3093991993132,
+          "mean_accepted": 95.975,
+          "mean_utilization": 47.53224206349206
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 57228.3,
+          "sd_profit": 2292.0746754738857,
+          "mean_accepted": 81.125,
+          "mean_utilization": 45.80233134920635
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 56413.175,
+          "sd_profit": 2362.824330064254,
+          "mean_accepted": 90.2,
+          "mean_utilization": 42.161458333333336
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 48692.75,
+          "sd_profit": 2355.601188983072,
+          "mean_accepted": 99.225,
+          "mean_utilization": 42.76289682539682
+        }
+      ]
+    },
+    {
+      "ports": 8,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 65314.775,
+          "sd_profit": 2341.166863213781,
+          "mean_accepted": 101.225,
+          "mean_utilization": 45.76063368055556
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 57049.975,
+          "sd_profit": 2395.6070424681666,
+          "mean_accepted": 103.85,
+          "mean_utilization": 45.129123263888886
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 61669.025,
+          "sd_profit": 2487.7123204065547,
+          "mean_accepted": 89.625,
+          "mean_utilization": 43.82378472222222
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 60763.3,
+          "sd_profit": 2460.5511181701154,
+          "mean_accepted": 97.8,
+          "mean_utilization": 40.515407986111114
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 53318.5,
+          "sd_profit": 2462.1889573179515,
+          "mean_accepted": 106.225,
+          "mean_utilization": 40.99392361111111
+        }
+      ]
+    }
+  ],
+  "surge": [
+    {
+      "max_surge": 1,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 16529.325,
+          "sd_profit": 569.3991159153026,
+          "mean_accepted": 63.675,
+          "mean_utilization": 56.31727430555556
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 14310.575,
+          "sd_profit": 595.4787295174298,
+          "mean_accepted": 64.8,
+          "mean_utilization": 55.16710069444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 14754.525,
+          "sd_profit": 649.0705381247392,
+          "mean_accepted": 48.8,
+          "mean_utilization": 53.50043402777778
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 14804.475,
+          "sd_profit": 609.1730833784603,
+          "mean_accepted": 60.8,
+          "mean_utilization": 47.02690972222222
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 13217.65,
+          "sd_profit": 754.8841157456741,
+          "mean_accepted": 70.325,
+          "mean_utilization": 48.430989583333336
+        }
+      ]
+    },
+    {
+      "max_surge": 1.5,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 25066.25,
+          "sd_profit": 849.0601968934346,
+          "mean_accepted": 63.025,
+          "mean_utilization": 55.83116319444444
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 20958.125,
+          "sd_profit": 833.4064846098472,
+          "mean_accepted": 64.8,
+          "mean_utilization": 55.16710069444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 22475.2,
+          "sd_profit": 1096.145559302909,
+          "mean_accepted": 49.525,
+          "mean_utilization": 53.19878472222222
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 22411,
+          "sd_profit": 1075.1447368276538,
+          "mean_accepted": 61.15,
+          "mean_utilization": 46.79253472222222
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 19406.725,
+          "sd_profit": 1075.5084423729015,
+          "mean_accepted": 70.325,
+          "mean_utilization": 48.430989583333336
+        }
+      ]
+    },
+    {
+      "max_surge": 2,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 34068.85,
+          "sd_profit": 1221.733941198706,
+          "mean_accepted": 62.6,
+          "mean_utilization": 55.37543402777778
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 27605.875,
+          "sd_profit": 1193.8090984162998,
+          "mean_accepted": 64.8,
+          "mean_utilization": 55.16710069444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 30968.75,
+          "sd_profit": 1572.266414920569,
+          "mean_accepted": 50.65,
+          "mean_utilization": 52.734375
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 30715.15,
+          "sd_profit": 1497.9052304759402,
+          "mean_accepted": 61.225,
+          "mean_utilization": 47.154947916666664
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 25594.95,
+          "sd_profit": 1476.7401026481373,
+          "mean_accepted": 70.325,
+          "mean_utilization": 48.430989583333336
+        }
+      ]
+    },
+    {
+      "max_surge": 2.5,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 43192.875,
+          "sd_profit": 1626.2378983171795,
+          "mean_accepted": 62.25,
+          "mean_utilization": 55.12586805555556
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 34252.7,
+          "sd_profit": 1598.7115196547884,
+          "mean_accepted": 64.8,
+          "mean_utilization": 55.16710069444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 39605.3,
+          "sd_profit": 2055.074085631926,
+          "mean_accepted": 51.275,
+          "mean_utilization": 52.53038194444444
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 38950.975,
+          "sd_profit": 2005.7613873411558,
+          "mean_accepted": 60.825,
+          "mean_utilization": 46.959635416666664
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 31783.325,
+          "sd_profit": 1911.7611747032013,
+          "mean_accepted": 70.325,
+          "mean_utilization": 48.430989583333336
+        }
+      ]
+    },
+    {
+      "max_surge": 3,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 52366.275,
+          "sd_profit": 2045.6731070475155,
+          "mean_accepted": 61.875,
+          "mean_utilization": 55.021701388888886
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 40901.075,
+          "sd_profit": 2019.9486841349365,
+          "mean_accepted": 64.8,
+          "mean_utilization": 55.16710069444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 48109.95,
+          "sd_profit": 2564.007209778255,
+          "mean_accepted": 51.45,
+          "mean_utilization": 52.38715277777778
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 47336.8,
+          "sd_profit": 2494.3925132697964,
+          "mean_accepted": 60.7,
+          "mean_utilization": 46.98784722222222
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 37972.925,
+          "sd_profit": 2360.0821735748186,
+          "mean_accepted": 70.325,
+          "mean_utilization": 48.430989583333336
+        }
+      ]
+    }
+  ],
+  "demand": [
+    {
+      "n": 40,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 20886.35,
+          "sd_profit": 1638.241216858917,
+          "mean_accepted": 32.85,
+          "mean_utilization": 30.66189236111111
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 19369.9,
+          "sd_profit": 1830.3517218395555,
+          "mean_accepted": 33.15,
+          "mean_utilization": 30.13671875
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 20550.55,
+          "sd_profit": 1673.0320540402547,
+          "mean_accepted": 31.675,
+          "mean_utilization": 30.065104166666668
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 19874.9,
+          "sd_profit": 1736.1676895259416,
+          "mean_accepted": 32.275,
+          "mean_utilization": 28.038194444444443
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 18555.675,
+          "sd_profit": 1734.9466612284346,
+          "mean_accepted": 33.175,
+          "mean_utilization": 28.235677083333332
+        }
+      ]
+    },
+    {
+      "n": 80,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 31899.275,
+          "sd_profit": 1827.3311909476772,
+          "mean_accepted": 48.275,
+          "mean_utilization": 44.322916666666664
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 27701.25,
+          "sd_profit": 1980.282481144598,
+          "mean_accepted": 49.475,
+          "mean_utilization": 43.674045138888886
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 30258.55,
+          "sd_profit": 1870.6550881908613,
+          "mean_accepted": 42.85,
+          "mean_utilization": 42.467447916666664
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 29382.925,
+          "sd_profit": 1876.7851315822504,
+          "mean_accepted": 47.375,
+          "mean_utilization": 38.595920138888886
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 25355.875,
+          "sd_profit": 2139.498829255257,
+          "mean_accepted": 51.325,
+          "mean_utilization": 39.21440972222222
+        }
+      ]
+    },
+    {
+      "n": 120,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 39137.6,
+          "sd_profit": 1739.496004225922,
+          "mean_accepted": 57.475,
+          "mean_utilization": 51.50390625
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 32023.775,
+          "sd_profit": 1869.9815779635576,
+          "mean_accepted": 59.65,
+          "mean_utilization": 51.037326388888886
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 36259.95,
+          "sd_profit": 1804.187336767955,
+          "mean_accepted": 48.625,
+          "mean_utilization": 49.12977430555556
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 35659.6,
+          "sd_profit": 2049.499986550816,
+          "mean_accepted": 56.425,
+          "mean_utilization": 44.33159722222222
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 29670.45,
+          "sd_profit": 1893.3759287823186,
+          "mean_accepted": 63.45,
+          "mean_utilization": 45.49913194444444
+        }
+      ]
+    },
+    {
+      "n": 160,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 44270.95,
+          "sd_profit": 1730.1742160686356,
+          "mean_accepted": 63.6,
+          "mean_utilization": 55.95269097222222
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 34834.5,
+          "sd_profit": 1466.5774215271874,
+          "mean_accepted": 65.85,
+          "mean_utilization": 55.92881944444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 40264.175,
+          "sd_profit": 2019.4706959167956,
+          "mean_accepted": 51.7,
+          "mean_utilization": 53.17491319444444
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 39897.025,
+          "sd_profit": 1962.0103176432233,
+          "mean_accepted": 62.05,
+          "mean_utilization": 47.604166666666664
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 32301.575,
+          "sd_profit": 1773.5414359410947,
+          "mean_accepted": 72.35,
+          "mean_utilization": 49.22743055555556
+        }
+      ]
+    },
+    {
+      "n": 200,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 48730.825,
+          "sd_profit": 1897.8593188723892,
+          "mean_accepted": 67.75,
+          "mean_utilization": 59.075520833333336
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 37517.625,
+          "sd_profit": 1886.0832660671324,
+          "mean_accepted": 71.2,
+          "mean_utilization": 59.56163194444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 43906.7,
+          "sd_profit": 2349.9595326575745,
+          "mean_accepted": 53.725,
+          "mean_utilization": 55.998263888888886
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 44084.35,
+          "sd_profit": 2245.0806569943666,
+          "mean_accepted": 66.15,
+          "mean_utilization": 50.30164930555556
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 34603.175,
+          "sd_profit": 2088.9385954999325,
+          "mean_accepted": 78.95,
+          "mean_utilization": 51.877170138888886
+        }
+      ]
+    },
+    {
+      "n": 250,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 52651.025,
+          "sd_profit": 1960.8318941989119,
+          "mean_accepted": 70.9,
+          "mean_utilization": 61.484375
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 39745.325,
+          "sd_profit": 1930.799069171316,
+          "mean_accepted": 76.85,
+          "mean_utilization": 62.174479166666664
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 46851.05,
+          "sd_profit": 2388.346761642068,
+          "mean_accepted": 54.9,
+          "mean_utilization": 58.125
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 47523.525,
+          "sd_profit": 2144.462385409429,
+          "mean_accepted": 69.725,
+          "mean_utilization": 52.25694444444444
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 36420.6,
+          "sd_profit": 2004.6413171079785,
+          "mean_accepted": 86.075,
+          "mean_utilization": 54.490017361111114
+        }
+      ]
+    },
+    {
+      "n": 300,
+      "methods": [
+        {
+          "algorithm": "flow",
+          "name": "Minimum-cost flow",
+          "mean_profit": 55674.65,
+          "sd_profit": 1774.050450963586,
+          "mean_accepted": 74.075,
+          "mean_utilization": 63.23567708333333
+        },
+        {
+          "algorithm": "fcfs",
+          "name": "First come, first served",
+          "mean_profit": 41263.8,
+          "sd_profit": 2346.9758195251816,
+          "mean_accepted": 80.65,
+          "mean_utilization": 64.24913194444444
+        },
+        {
+          "algorithm": "profit",
+          "name": "Highest profit",
+          "mean_profit": 48980.2,
+          "sd_profit": 2102.072654822817,
+          "mean_accepted": 55.4,
+          "mean_utilization": 59.811197916666664
+        },
+        {
+          "algorithm": "density",
+          "name": "Profit per minute",
+          "mean_profit": 50144.575,
+          "sd_profit": 2026.684647619712,
+          "mean_accepted": 73.15,
+          "mean_utilization": 53.70225694444444
+        },
+        {
+          "algorithm": "eft",
+          "name": "Earliest finish",
+          "mean_profit": 37733.5,
+          "sd_profit": 1988.956059124536,
+          "mean_accepted": 91.475,
+          "mean_utilization": 56.048177083333336
+        }
+      ]
+    }
+  ],
+  "timing_ms": [
+    {
+      "n": 100,
+      "dp": 0.3229,
+      "flow": 3.6091,
+      "fcfs": 0.3758
+    },
+    {
+      "n": 500,
+      "dp": 1.6063,
+      "flow": 8.6157,
+      "fcfs": 2.0339
+    },
+    {
+      "n": 1000,
+      "dp": 3.6409,
+      "flow": 12.6041,
+      "fcfs": 4.047
+    },
+    {
+      "n": 5000,
+      "dp": 39.9409,
+      "flow": 108.4058,
+      "fcfs": 39.5512
+    },
+    {
+      "n": 10000,
+      "dp": 49.6002,
+      "flow": 99.2453,
+      "fcfs": 61.0885
+    },
+    {
+      "n": 50000,
+      "dp": 909.5648,
+      "flow": 1138.0009,
+      "fcfs": 479.5999
+    }
+  ],
+  "brute_timing_ms": [
+    {
+      "n": 10,
+      "subsets": 11.0853
+    },
+    {
+      "n": 12,
+      "subsets": 68.2586
+    },
+    {
+      "n": 14,
+      "subsets": 324.7669
+    },
+    {
+      "n": 16,
+      "subsets": 2442.4887
+    },
+    {
+      "n": 18,
+      "subsets": 16991.9678
+    }
+  ],
+  "case_study": {
+    "seed": 2026,
+    "requests": [
+      {
+        "request_id": 1,
+        "arrival_min": 470,
+        "duration_min": 30,
+        "energy_kwh": 14.05,
+        "surge_mult": 1.709,
+        "profit_inr": 306,
+        "deadline_min": 500
+      },
+      {
+        "request_id": 2,
+        "arrival_min": 960,
+        "duration_min": 40,
+        "energy_kwh": 14.26,
+        "surge_mult": 1.673,
+        "profit_inr": 301,
+        "deadline_min": 1000
+      },
+      {
+        "request_id": 3,
+        "arrival_min": 575,
+        "duration_min": 35,
+        "energy_kwh": 14.62,
+        "surge_mult": 1.3,
+        "profit_inr": 211,
+        "deadline_min": 610
+      },
+      {
+        "request_id": 4,
+        "arrival_min": 1110,
+        "duration_min": 40,
+        "energy_kwh": 20.0,
+        "surge_mult": 2.404,
+        "profit_inr": 685,
+        "deadline_min": 1150
+      },
+      {
+        "request_id": 5,
+        "arrival_min": 970,
+        "duration_min": 60,
+        "energy_kwh": 22.08,
+        "surge_mult": 1.547,
+        "profit_inr": 416,
+        "deadline_min": 1030
+      },
+      {
+        "request_id": 6,
+        "arrival_min": 545,
+        "duration_min": 55,
+        "energy_kwh": 28.68,
+        "surge_mult": 1.436,
+        "profit_inr": 483,
+        "deadline_min": 600
+      },
+      {
+        "request_id": 7,
+        "arrival_min": 1155,
+        "duration_min": 40,
+        "energy_kwh": 26.0,
+        "surge_mult": 1.617,
+        "profit_inr": 523,
+        "deadline_min": 1195
+      },
+      {
+        "request_id": 8,
+        "arrival_min": 800,
+        "duration_min": 55,
+        "energy_kwh": 19.32,
+        "surge_mult": 1.765,
+        "profit_inr": 440,
+        "deadline_min": 855
+      },
+      {
+        "request_id": 9,
+        "arrival_min": 1170,
+        "duration_min": 35,
+        "energy_kwh": 23.46,
+        "surge_mult": 1.746,
+        "profit_inr": 526,
+        "deadline_min": 1205
+      },
+      {
+        "request_id": 10,
+        "arrival_min": 1075,
+        "duration_min": 90,
+        "energy_kwh": 47.38,
+        "surge_mult": 1.804,
+        "profit_inr": 1112,
+        "deadline_min": 1165
+      },
+      {
+        "request_id": 11,
+        "arrival_min": 1070,
+        "duration_min": 65,
+        "energy_kwh": 33.2,
+        "surge_mult": 2.474,
+        "profit_inr": 1180,
+        "deadline_min": 1135
+      },
+      {
+        "request_id": 12,
+        "arrival_min": 540,
+        "duration_min": 50,
+        "energy_kwh": 34.98,
+        "surge_mult": 2.43,
+        "profit_inr": 1215,
+        "deadline_min": 590
+      },
+      {
+        "request_id": 13,
+        "arrival_min": 1135,
+        "duration_min": 65,
+        "energy_kwh": 23.47,
+        "surge_mult": 1.511,
+        "profit_inr": 427,
+        "deadline_min": 1200
+      },
+      {
+        "request_id": 14,
+        "arrival_min": 1315,
+        "duration_min": 30,
+        "energy_kwh": 18.6,
+        "surge_mult": 1.721,
+        "profit_inr": 409,
+        "deadline_min": 1345
+      },
+      {
+        "request_id": 15,
+        "arrival_min": 385,
+        "duration_min": 50,
+        "energy_kwh": 24.29,
+        "surge_mult": 1.446,
+        "profit_inr": 414,
+        "deadline_min": 435
+      },
+      {
+        "request_id": 16,
+        "arrival_min": 890,
+        "duration_min": 80,
+        "energy_kwh": 30.38,
+        "surge_mult": 1.49,
+        "profit_inr": 541,
+        "deadline_min": 970
+      },
+      {
+        "request_id": 17,
+        "arrival_min": 1110,
+        "duration_min": 25,
+        "energy_kwh": 13.05,
+        "surge_mult": 2.244,
+        "profit_inr": 410,
+        "deadline_min": 1135
+      },
+      {
+        "request_id": 18,
+        "arrival_min": 1050,
+        "duration_min": 60,
+        "energy_kwh": 21.75,
+        "surge_mult": 1.832,
+        "profit_inr": 521,
+        "deadline_min": 1110
+      },
+      {
+        "request_id": 19,
+        "arrival_min": 785,
+        "duration_min": 45,
+        "energy_kwh": 23.13,
+        "surge_mult": 1.154,
+        "profit_inr": 272,
+        "deadline_min": 830
+      },
+      {
+        "request_id": 20,
+        "arrival_min": 595,
+        "duration_min": 40,
+        "energy_kwh": 29.02,
+        "surge_mult": 2.5,
+        "profit_inr": 1045,
+        "deadline_min": 635
+      },
+      {
+        "request_id": 21,
+        "arrival_min": 1070,
+        "duration_min": 65,
+        "energy_kwh": 34.93,
+        "surge_mult": 1.694,
+        "profit_inr": 751,
+        "deadline_min": 1135
+      },
+      {
+        "request_id": 22,
+        "arrival_min": 535,
+        "duration_min": 20,
+        "energy_kwh": 10.74,
+        "surge_mult": 2.002,
+        "profit_inr": 290,
+        "deadline_min": 555
+      },
+      {
+        "request_id": 23,
+        "arrival_min": 1150,
+        "duration_min": 55,
+        "energy_kwh": 19.77,
+        "surge_mult": 1.498,
+        "profit_inr": 355,
+        "deadline_min": 1205
+      },
+      {
+        "request_id": 24,
+        "arrival_min": 500,
+        "duration_min": 25,
+        "energy_kwh": 9.5,
+        "surge_mult": 2.07,
+        "profit_inr": 268,
+        "deadline_min": 525
+      },
+      {
+        "request_id": 25,
+        "arrival_min": 680,
+        "duration_min": 25,
+        "energy_kwh": 15.95,
+        "surge_mult": 1.72,
+        "profit_inr": 350,
+        "deadline_min": 705
+      },
+      {
+        "request_id": 26,
+        "arrival_min": 755,
+        "duration_min": 55,
+        "energy_kwh": 41.03,
+        "surge_mult": 1.427,
+        "profit_inr": 685,
+        "deadline_min": 810
+      },
+      {
+        "request_id": 27,
+        "arrival_min": 1175,
+        "duration_min": 50,
+        "energy_kwh": 25.22,
+        "surge_mult": 2.423,
+        "profit_inr": 873,
+        "deadline_min": 1225
+      },
+      {
+        "request_id": 28,
+        "arrival_min": 1100,
+        "duration_min": 55,
+        "energy_kwh": 26.36,
+        "surge_mult": 1.79,
+        "profit_inr": 612,
+        "deadline_min": 1155
+      },
+      {
+        "request_id": 29,
+        "arrival_min": 1090,
+        "duration_min": 80,
+        "energy_kwh": 30.36,
+        "surge_mult": 1.792,
+        "profit_inr": 706,
+        "deadline_min": 1170
+      },
+      {
+        "request_id": 30,
+        "arrival_min": 965,
+        "duration_min": 60,
+        "energy_kwh": 43.14,
+        "surge_mult": 1.275,
+        "profit_inr": 602,
+        "deadline_min": 1025
+      },
+      {
+        "request_id": 31,
+        "arrival_min": 370,
+        "duration_min": 65,
+        "energy_kwh": 48.19,
+        "surge_mult": 1.372,
+        "profit_inr": 756,
+        "deadline_min": 435
+      },
+      {
+        "request_id": 32,
+        "arrival_min": 1330,
+        "duration_min": 45,
+        "energy_kwh": 20.64,
+        "surge_mult": 1.737,
+        "profit_inr": 460,
+        "deadline_min": 1375
+      },
+      {
+        "request_id": 33,
+        "arrival_min": 1075,
+        "duration_min": 40,
+        "energy_kwh": 12.56,
+        "surge_mult": 2.136,
+        "profit_inr": 370,
+        "deadline_min": 1115
+      },
+      {
+        "request_id": 34,
+        "arrival_min": 1170,
+        "duration_min": 55,
+        "energy_kwh": 26.99,
+        "surge_mult": 2.5,
+        "profit_inr": 972,
+        "deadline_min": 1225
+      },
+      {
+        "request_id": 35,
+        "arrival_min": 955,
+        "duration_min": 110,
+        "energy_kwh": 60,
+        "surge_mult": 1.72,
+        "profit_inr": 1318,
+        "deadline_min": 1065
+      },
+      {
+        "request_id": 36,
+        "arrival_min": 700,
+        "duration_min": 90,
+        "energy_kwh": 33.6,
+        "surge_mult": 1.514,
+        "profit_inr": 613,
+        "deadline_min": 790
+      },
+      {
+        "request_id": 37,
+        "arrival_min": 540,
+        "duration_min": 55,
+        "energy_kwh": 28.09,
+        "surge_mult": 2.5,
+        "profit_inr": 1011,
+        "deadline_min": 595
+      },
+      {
+        "request_id": 38,
+        "arrival_min": 530,
+        "duration_min": 35,
+        "energy_kwh": 24.88,
+        "surge_mult": 1.976,
+        "profit_inr": 661,
+        "deadline_min": 565
+      },
+      {
+        "request_id": 39,
+        "arrival_min": 585,
+        "duration_min": 35,
+        "energy_kwh": 21.83,
+        "surge_mult": 1.583,
+        "profit_inr": 426,
+        "deadline_min": 620
+      },
+      {
+        "request_id": 40,
+        "arrival_min": 485,
+        "duration_min": 40,
+        "energy_kwh": 26.14,
+        "surge_mult": 2.341,
+        "profit_inr": 866,
+        "deadline_min": 525
+      },
+      {
+        "request_id": 41,
+        "arrival_min": 610,
+        "duration_min": 35,
+        "energy_kwh": 23.86,
+        "surge_mult": 1.514,
+        "profit_inr": 435,
+        "deadline_min": 645
+      },
+      {
+        "request_id": 42,
+        "arrival_min": 1100,
+        "duration_min": 100,
+        "energy_kwh": 38.09,
+        "surge_mult": 1.778,
+        "profit_inr": 876,
+        "deadline_min": 1200
+      },
+      {
+        "request_id": 43,
+        "arrival_min": 750,
+        "duration_min": 20,
+        "energy_kwh": 8.5,
+        "surge_mult": 1.142,
+        "profit_inr": 98,
+        "deadline_min": 770
+      },
+      {
+        "request_id": 44,
+        "arrival_min": 510,
+        "duration_min": 35,
+        "energy_kwh": 15.9,
+        "surge_mult": 1.544,
+        "profit_inr": 299,
+        "deadline_min": 545
+      },
+      {
+        "request_id": 45,
+        "arrival_min": 1065,
+        "duration_min": 50,
+        "energy_kwh": 25.11,
+        "surge_mult": 1.599,
+        "profit_inr": 497,
+        "deadline_min": 1115
+      },
+      {
+        "request_id": 46,
+        "arrival_min": 1055,
+        "duration_min": 50,
+        "energy_kwh": 36.16,
+        "surge_mult": 1.932,
+        "profit_inr": 932,
+        "deadline_min": 1105
+      },
+      {
+        "request_id": 47,
+        "arrival_min": 635,
+        "duration_min": 35,
+        "energy_kwh": 22.93,
+        "surge_mult": 1.275,
+        "profit_inr": 320,
+        "deadline_min": 670
+      },
+      {
+        "request_id": 48,
+        "arrival_min": 490,
+        "duration_min": 40,
+        "energy_kwh": 20.29,
+        "surge_mult": 2.156,
+        "profit_inr": 605,
+        "deadline_min": 530
+      },
+      {
+        "request_id": 49,
+        "arrival_min": 1055,
+        "duration_min": 70,
+        "energy_kwh": 25.26,
+        "surge_mult": 1.545,
+        "profit_inr": 475,
+        "deadline_min": 1125
+      },
+      {
+        "request_id": 50,
+        "arrival_min": 1290,
+        "duration_min": 55,
+        "energy_kwh": 28.88,
+        "surge_mult": 1.386,
+        "profit_inr": 461,
+        "deadline_min": 1345
+      },
+      {
+        "request_id": 51,
+        "arrival_min": 525,
+        "duration_min": 45,
+        "energy_kwh": 33.04,
+        "surge_mult": 1.259,
+        "profit_inr": 451,
+        "deadline_min": 570
+      },
+      {
+        "request_id": 52,
+        "arrival_min": 540,
+        "duration_min": 40,
+        "energy_kwh": 13.38,
+        "surge_mult": 1.948,
+        "profit_inr": 349,
+        "deadline_min": 580
+      },
+      {
+        "request_id": 53,
+        "arrival_min": 1070,
+        "duration_min": 50,
+        "energy_kwh": 24.38,
+        "surge_mult": 1.96,
+        "profit_inr": 641,
+        "deadline_min": 1120
+      },
+      {
+        "request_id": 54,
+        "arrival_min": 540,
+        "duration_min": 80,
+        "energy_kwh": 43.65,
+        "surge_mult": 1.542,
+        "profit_inr": 819,
+        "deadline_min": 620
+      },
+      {
+        "request_id": 55,
+        "arrival_min": 545,
+        "duration_min": 50,
+        "energy_kwh": 24.32,
+        "surge_mult": 2.08,
+        "profit_inr": 692,
+        "deadline_min": 595
+      },
+      {
+        "request_id": 56,
+        "arrival_min": 1025,
+        "duration_min": 25,
+        "energy_kwh": 13.19,
+        "surge_mult": 2.5,
+        "profit_inr": 475,
+        "deadline_min": 1050
+      },
+      {
+        "request_id": 57,
+        "arrival_min": 490,
+        "duration_min": 35,
+        "energy_kwh": 17.11,
+        "surge_mult": 2.004,
+        "profit_inr": 463,
+        "deadline_min": 525
+      },
+      {
+        "request_id": 58,
+        "arrival_min": 590,
+        "duration_min": 65,
+        "energy_kwh": 23.58,
+        "surge_mult": 1.482,
+        "profit_inr": 417,
+        "deadline_min": 655
+      },
+      {
+        "request_id": 59,
+        "arrival_min": 520,
+        "duration_min": 45,
+        "energy_kwh": 14.92,
+        "surge_mult": 1.691,
+        "profit_inr": 320,
+        "deadline_min": 565
+      },
+      {
+        "request_id": 60,
+        "arrival_min": 610,
+        "duration_min": 70,
+        "energy_kwh": 36.65,
+        "surge_mult": 1.775,
+        "profit_inr": 841,
+        "deadline_min": 680
+      },
+      {
+        "request_id": 61,
+        "arrival_min": 790,
+        "duration_min": 25,
+        "energy_kwh": 15.89,
+        "surge_mult": 1.485,
+        "profit_inr": 282,
+        "deadline_min": 815
+      },
+      {
+        "request_id": 62,
+        "arrival_min": 1115,
+        "duration_min": 95,
+        "energy_kwh": 37.22,
+        "surge_mult": 1.715,
+        "profit_inr": 814,
+        "deadline_min": 1210
+      },
+      {
+        "request_id": 63,
+        "arrival_min": 390,
+        "duration_min": 50,
+        "energy_kwh": 18.53,
+        "surge_mult": 1.375,
+        "profit_inr": 292,
+        "deadline_min": 440
+      },
+      {
+        "request_id": 64,
+        "arrival_min": 560,
+        "duration_min": 65,
+        "energy_kwh": 46.74,
+        "surge_mult": 1.79,
+        "profit_inr": 1085,
+        "deadline_min": 625
+      },
+      {
+        "request_id": 65,
+        "arrival_min": 1000,
+        "duration_min": 60,
+        "energy_kwh": 31.15,
+        "surge_mult": 1.912,
+        "profit_inr": 792,
+        "deadline_min": 1060
+      },
+      {
+        "request_id": 66,
+        "arrival_min": 1225,
+        "duration_min": 40,
+        "energy_kwh": 26.02,
+        "surge_mult": 1.949,
+        "profit_inr": 679,
+        "deadline_min": 1265
+      },
+      {
+        "request_id": 67,
+        "arrival_min": 495,
+        "duration_min": 35,
+        "energy_kwh": 24.88,
+        "surge_mult": 1.752,
+        "profit_inr": 561,
+        "deadline_min": 530
+      },
+      {
+        "request_id": 68,
+        "arrival_min": 1140,
+        "duration_min": 15,
+        "energy_kwh": 8,
+        "surge_mult": 1.412,
+        "profit_inr": 131,
+        "deadline_min": 1155
+      },
+      {
+        "request_id": 69,
+        "arrival_min": 1030,
+        "duration_min": 75,
+        "energy_kwh": 39.73,
+        "surge_mult": 2.5,
+        "profit_inr": 1430,
+        "deadline_min": 1105
+      },
+      {
+        "request_id": 70,
+        "arrival_min": 505,
+        "duration_min": 45,
+        "energy_kwh": 15.81,
+        "surge_mult": 2.5,
+        "profit_inr": 569,
+        "deadline_min": 550
+      },
+      {
+        "request_id": 71,
+        "arrival_min": 1155,
+        "duration_min": 60,
+        "energy_kwh": 21.08,
+        "surge_mult": 1.848,
+        "profit_inr": 511,
+        "deadline_min": 1215
+      },
+      {
+        "request_id": 72,
+        "arrival_min": 770,
+        "duration_min": 25,
+        "energy_kwh": 9.58,
+        "surge_mult": 1.478,
+        "profit_inr": 169,
+        "deadline_min": 795
+      },
+      {
+        "request_id": 73,
+        "arrival_min": 935,
+        "duration_min": 120,
+        "energy_kwh": 47.6,
+        "surge_mult": 1.765,
+        "profit_inr": 1084,
+        "deadline_min": 1055
+      },
+      {
+        "request_id": 74,
+        "arrival_min": 1280,
+        "duration_min": 30,
+        "energy_kwh": 9.69,
+        "surge_mult": 1.202,
+        "profit_inr": 122,
+        "deadline_min": 1310
+      },
+      {
+        "request_id": 75,
+        "arrival_min": 530,
+        "duration_min": 65,
+        "energy_kwh": 33.78,
+        "surge_mult": 1.864,
+        "profit_inr": 829,
+        "deadline_min": 595
+      },
+      {
+        "request_id": 76,
+        "arrival_min": 1010,
+        "duration_min": 35,
+        "energy_kwh": 21.79,
+        "surge_mult": 1.298,
+        "profit_inr": 313,
+        "deadline_min": 1045
+      },
+      {
+        "request_id": 77,
+        "arrival_min": 1085,
+        "duration_min": 45,
+        "energy_kwh": 14.82,
+        "surge_mult": 1.207,
+        "profit_inr": 189,
+        "deadline_min": 1130
+      },
+      {
+        "request_id": 78,
+        "arrival_min": 1240,
+        "duration_min": 35,
+        "energy_kwh": 22.5,
+        "surge_mult": 1.737,
+        "profit_inr": 501,
+        "deadline_min": 1275
+      },
+      {
+        "request_id": 79,
+        "arrival_min": 1010,
+        "duration_min": 35,
+        "energy_kwh": 24.36,
+        "surge_mult": 1.872,
+        "profit_inr": 602,
+        "deadline_min": 1045
+      },
+      {
+        "request_id": 80,
+        "arrival_min": 580,
+        "duration_min": 25,
+        "energy_kwh": 15.05,
+        "surge_mult": 1.89,
+        "profit_inr": 377,
+        "deadline_min": 605
+      },
+      {
+        "request_id": 81,
+        "arrival_min": 1100,
+        "duration_min": 55,
+        "energy_kwh": 26.3,
+        "surge_mult": 2.318,
+        "profit_inr": 861,
+        "deadline_min": 1155
+      },
+      {
+        "request_id": 82,
+        "arrival_min": 970,
+        "duration_min": 55,
+        "energy_kwh": 18.76,
+        "surge_mult": 1.839,
+        "profit_inr": 452,
+        "deadline_min": 1025
+      },
+      {
+        "request_id": 83,
+        "arrival_min": 515,
+        "duration_min": 100,
+        "energy_kwh": 38.05,
+        "surge_mult": 1.481,
+        "profit_inr": 672,
+        "deadline_min": 615
+      },
+      {
+        "request_id": 84,
+        "arrival_min": 615,
+        "duration_min": 85,
+        "energy_kwh": 32.85,
+        "surge_mult": 1.539,
+        "profit_inr": 614,
+        "deadline_min": 700
+      },
+      {
+        "request_id": 85,
+        "arrival_min": 525,
+        "duration_min": 55,
+        "energy_kwh": 40.96,
+        "surge_mult": 1.591,
+        "profit_inr": 804,
+        "deadline_min": 580
+      },
+      {
+        "request_id": 86,
+        "arrival_min": 480,
+        "duration_min": 40,
+        "energy_kwh": 28.86,
+        "surge_mult": 1.742,
+        "profit_inr": 645,
+        "deadline_min": 520
+      },
+      {
+        "request_id": 87,
+        "arrival_min": 595,
+        "duration_min": 35,
+        "energy_kwh": 24.17,
+        "surge_mult": 1.525,
+        "profit_inr": 446,
+        "deadline_min": 630
+      },
+      {
+        "request_id": 88,
+        "arrival_min": 1035,
+        "duration_min": 45,
+        "energy_kwh": 14.69,
+        "surge_mult": 2.157,
+        "profit_inr": 438,
+        "deadline_min": 1080
+      },
+      {
+        "request_id": 89,
+        "arrival_min": 1000,
+        "duration_min": 40,
+        "energy_kwh": 28.1,
+        "surge_mult": 1.242,
+        "profit_inr": 375,
+        "deadline_min": 1040
+      },
+      {
+        "request_id": 90,
+        "arrival_min": 1185,
+        "duration_min": 35,
+        "energy_kwh": 16.53,
+        "surge_mult": 1.604,
+        "profit_inr": 328,
+        "deadline_min": 1220
+      },
+      {
+        "request_id": 91,
+        "arrival_min": 980,
+        "duration_min": 30,
+        "energy_kwh": 18.75,
+        "surge_mult": 1.619,
+        "profit_inr": 378,
+        "deadline_min": 1010
+      },
+      {
+        "request_id": 92,
+        "arrival_min": 625,
+        "duration_min": 30,
+        "energy_kwh": 18.71,
+        "surge_mult": 1.886,
+        "profit_inr": 467,
+        "deadline_min": 655
+      },
+      {
+        "request_id": 93,
+        "arrival_min": 1140,
+        "duration_min": 40,
+        "energy_kwh": 14.43,
+        "surge_mult": 2.472,
+        "profit_inr": 512,
+        "deadline_min": 1180
+      },
+      {
+        "request_id": 94,
+        "arrival_min": 925,
+        "duration_min": 65,
+        "energy_kwh": 23.36,
+        "surge_mult": 1.494,
+        "profit_inr": 418,
+        "deadline_min": 990
+      },
+      {
+        "request_id": 95,
+        "arrival_min": 525,
+        "duration_min": 25,
+        "energy_kwh": 8,
+        "surge_mult": 2.5,
+        "profit_inr": 288,
+        "deadline_min": 550
+      },
+      {
+        "request_id": 96,
+        "arrival_min": 1380,
+        "duration_min": 60,
+        "energy_kwh": 21.19,
+        "surge_mult": 1.845,
+        "profit_inr": 513,
+        "deadline_min": 1440
+      },
+      {
+        "request_id": 97,
+        "arrival_min": 590,
+        "duration_min": 45,
+        "energy_kwh": 32.49,
+        "surge_mult": 2.353,
+        "profit_inr": 1084,
+        "deadline_min": 635
+      },
+      {
+        "request_id": 98,
+        "arrival_min": 1015,
+        "duration_min": 45,
+        "energy_kwh": 30.65,
+        "surge_mult": 1.318,
+        "profit_inr": 451,
+        "deadline_min": 1060
+      },
+      {
+        "request_id": 99,
+        "arrival_min": 525,
+        "duration_min": 75,
+        "energy_kwh": 28.7,
+        "surge_mult": 2.445,
+        "profit_inr": 1005,
+        "deadline_min": 600
+      },
+      {
+        "request_id": 100,
+        "arrival_min": 810,
+        "duration_min": 30,
+        "energy_kwh": 19.12,
+        "surge_mult": 1.615,
+        "profit_inr": 384,
+        "deadline_min": 840
+      },
+      {
+        "request_id": 101,
+        "arrival_min": 1120,
+        "duration_min": 30,
+        "energy_kwh": 19.97,
+        "surge_mult": 2.098,
+        "profit_inr": 574,
+        "deadline_min": 1150
+      },
+      {
+        "request_id": 102,
+        "arrival_min": 1080,
+        "duration_min": 30,
+        "energy_kwh": 13.74,
+        "surge_mult": 2.0,
+        "profit_inr": 371,
+        "deadline_min": 1110
+      },
+      {
+        "request_id": 103,
+        "arrival_min": 755,
+        "duration_min": 45,
+        "energy_kwh": 20.58,
+        "surge_mult": 1.426,
+        "profit_inr": 343,
+        "deadline_min": 800
+      },
+      {
+        "request_id": 104,
+        "arrival_min": 1140,
+        "duration_min": 45,
+        "energy_kwh": 15.41,
+        "surge_mult": 1.881,
+        "profit_inr": 383,
+        "deadline_min": 1185
+      },
+      {
+        "request_id": 105,
+        "arrival_min": 505,
+        "duration_min": 130,
+        "energy_kwh": 52.0,
+        "surge_mult": 1.866,
+        "profit_inr": 1279,
+        "deadline_min": 635
+      },
+      {
+        "request_id": 106,
+        "arrival_min": 405,
+        "duration_min": 35,
+        "energy_kwh": 22.35,
+        "surge_mult": 1.132,
+        "profit_inr": 254,
+        "deadline_min": 440
+      },
+      {
+        "request_id": 107,
+        "arrival_min": 615,
+        "duration_min": 60,
+        "energy_kwh": 31.28,
+        "surge_mult": 1.478,
+        "profit_inr": 551,
+        "deadline_min": 675
+      },
+      {
+        "request_id": 108,
+        "arrival_min": 1090,
+        "duration_min": 65,
+        "energy_kwh": 33.06,
+        "surge_mult": 2.218,
+        "profit_inr": 1022,
+        "deadline_min": 1155
+      },
+      {
+        "request_id": 109,
+        "arrival_min": 800,
+        "duration_min": 30,
+        "energy_kwh": 12.1,
+        "surge_mult": 1.191,
+        "profit_inr": 150,
+        "deadline_min": 830
+      },
+      {
+        "request_id": 110,
+        "arrival_min": 595,
+        "duration_min": 40,
+        "energy_kwh": 14.04,
+        "surge_mult": 2.343,
+        "profit_inr": 466,
+        "deadline_min": 635
+      },
+      {
+        "request_id": 111,
+        "arrival_min": 580,
+        "duration_min": 50,
+        "energy_kwh": 24.83,
+        "surge_mult": 2.225,
+        "profit_inr": 771,
+        "deadline_min": 630
+      },
+      {
+        "request_id": 112,
+        "arrival_min": 585,
+        "duration_min": 60,
+        "energy_kwh": 30.26,
+        "surge_mult": 1.57,
+        "profit_inr": 583,
+        "deadline_min": 645
+      },
+      {
+        "request_id": 113,
+        "arrival_min": 1200,
+        "duration_min": 70,
+        "energy_kwh": 52.41,
+        "surge_mult": 1.568,
+        "profit_inr": 1008,
+        "deadline_min": 1270
+      },
+      {
+        "request_id": 114,
+        "arrival_min": 1240,
+        "duration_min": 30,
+        "energy_kwh": 18.52,
+        "surge_mult": 1.186,
+        "profit_inr": 229,
+        "deadline_min": 1270
+      },
+      {
+        "request_id": 115,
+        "arrival_min": 570,
+        "duration_min": 30,
+        "energy_kwh": 19.6,
+        "surge_mult": 2.158,
+        "profit_inr": 585,
+        "deadline_min": 600
+      },
+      {
+        "request_id": 116,
+        "arrival_min": 1315,
+        "duration_min": 30,
+        "energy_kwh": 12.97,
+        "surge_mult": 1.219,
+        "profit_inr": 168,
+        "deadline_min": 1345
+      },
+      {
+        "request_id": 117,
+        "arrival_min": 1055,
+        "duration_min": 40,
+        "energy_kwh": 26.34,
+        "surge_mult": 1.755,
+        "profit_inr": 595,
+        "deadline_min": 1095
+      },
+      {
+        "request_id": 118,
+        "arrival_min": 470,
+        "duration_min": 40,
+        "energy_kwh": 26.24,
+        "surge_mult": 1.542,
+        "profit_inr": 492,
+        "deadline_min": 510
+      },
+      {
+        "request_id": 119,
+        "arrival_min": 800,
+        "duration_min": 40,
+        "energy_kwh": 27.72,
+        "surge_mult": 1.266,
+        "profit_inr": 382,
+        "deadline_min": 840
+      },
+      {
+        "request_id": 120,
+        "arrival_min": 630,
+        "duration_min": 50,
+        "energy_kwh": 18.58,
+        "surge_mult": 1.83,
+        "profit_inr": 445,
+        "deadline_min": 680
+      }
+    ],
+    "methods": [
+      {
+        "algorithm": "flow",
+        "name": "Minimum-cost flow",
+        "exact": true,
+        "complexity": "O(k n log n)",
+        "profit_inr": 35474,
+        "accepted": 58,
+        "rejected": 62,
+        "ports": 4,
+        "utilization": 47.48263888888889,
+        "runtime_ms": 11.966,
+        "schedule": [
+          {
+            "request_id": 31,
+            "arrival_min": 370,
+            "duration_min": 65,
+            "energy_kwh": 48.19,
+            "surge_mult": 1.372,
+            "profit_inr": 756,
+            "deadline_min": 435,
+            "port": 1
+          },
+          {
+            "request_id": 15,
+            "arrival_min": 385,
+            "duration_min": 50,
+            "energy_kwh": 24.29,
+            "surge_mult": 1.446,
+            "profit_inr": 414,
+            "deadline_min": 435,
+            "port": 2
+          },
+          {
+            "request_id": 63,
+            "arrival_min": 390,
+            "duration_min": 50,
+            "energy_kwh": 18.53,
+            "surge_mult": 1.375,
+            "profit_inr": 292,
+            "deadline_min": 440,
+            "port": 3
+          },
+          {
+            "request_id": 106,
+            "arrival_min": 405,
+            "duration_min": 35,
+            "energy_kwh": 22.35,
+            "surge_mult": 1.132,
+            "profit_inr": 254,
+            "deadline_min": 440,
+            "port": 4
+          },
+          {
+            "request_id": 1,
+            "arrival_min": 470,
+            "duration_min": 30,
+            "energy_kwh": 14.05,
+            "surge_mult": 1.709,
+            "profit_inr": 306,
+            "deadline_min": 500,
+            "port": 3
+          },
+          {
+            "request_id": 86,
+            "arrival_min": 480,
+            "duration_min": 40,
+            "energy_kwh": 28.86,
+            "surge_mult": 1.742,
+            "profit_inr": 645,
+            "deadline_min": 520,
+            "port": 4
+          },
+          {
+            "request_id": 40,
+            "arrival_min": 485,
+            "duration_min": 40,
+            "energy_kwh": 26.14,
+            "surge_mult": 2.341,
+            "profit_inr": 866,
+            "deadline_min": 525,
+            "port": 1
+          },
+          {
+            "request_id": 48,
+            "arrival_min": 490,
+            "duration_min": 40,
+            "energy_kwh": 20.29,
+            "surge_mult": 2.156,
+            "profit_inr": 605,
+            "deadline_min": 530,
+            "port": 2
+          },
+          {
+            "request_id": 24,
+            "arrival_min": 500,
+            "duration_min": 25,
+            "energy_kwh": 9.5,
+            "surge_mult": 2.07,
+            "profit_inr": 268,
+            "deadline_min": 525,
+            "port": 3
+          },
+          {
+            "request_id": 85,
+            "arrival_min": 525,
+            "duration_min": 55,
+            "energy_kwh": 40.96,
+            "surge_mult": 1.591,
+            "profit_inr": 804,
+            "deadline_min": 580,
+            "port": 1
+          },
+          {
+            "request_id": 38,
+            "arrival_min": 530,
+            "duration_min": 35,
+            "energy_kwh": 24.88,
+            "surge_mult": 1.976,
+            "profit_inr": 661,
+            "deadline_min": 565,
+            "port": 2
+          },
+          {
+            "request_id": 12,
+            "arrival_min": 540,
+            "duration_min": 50,
+            "energy_kwh": 34.98,
+            "surge_mult": 2.43,
+            "profit_inr": 1215,
+            "deadline_min": 590,
+            "port": 3
+          },
+          {
+            "request_id": 37,
+            "arrival_min": 540,
+            "duration_min": 55,
+            "energy_kwh": 28.09,
+            "surge_mult": 2.5,
+            "profit_inr": 1011,
+            "deadline_min": 595,
+            "port": 4
+          },
+          {
+            "request_id": 115,
+            "arrival_min": 570,
+            "duration_min": 30,
+            "energy_kwh": 19.6,
+            "surge_mult": 2.158,
+            "profit_inr": 585,
+            "deadline_min": 600,
+            "port": 2
+          },
+          {
+            "request_id": 111,
+            "arrival_min": 580,
+            "duration_min": 50,
+            "energy_kwh": 24.83,
+            "surge_mult": 2.225,
+            "profit_inr": 771,
+            "deadline_min": 630,
+            "port": 1
+          },
+          {
+            "request_id": 97,
+            "arrival_min": 590,
+            "duration_min": 45,
+            "energy_kwh": 32.49,
+            "surge_mult": 2.353,
+            "profit_inr": 1084,
+            "deadline_min": 635,
+            "port": 3
+          },
+          {
+            "request_id": 20,
+            "arrival_min": 595,
+            "duration_min": 40,
+            "energy_kwh": 29.02,
+            "surge_mult": 2.5,
+            "profit_inr": 1045,
+            "deadline_min": 635,
+            "port": 4
+          },
+          {
+            "request_id": 60,
+            "arrival_min": 610,
+            "duration_min": 70,
+            "energy_kwh": 36.65,
+            "surge_mult": 1.775,
+            "profit_inr": 841,
+            "deadline_min": 680,
+            "port": 2
+          },
+          {
+            "request_id": 120,
+            "arrival_min": 630,
+            "duration_min": 50,
+            "energy_kwh": 18.58,
+            "surge_mult": 1.83,
+            "profit_inr": 445,
+            "deadline_min": 680,
+            "port": 1
+          },
+          {
+            "request_id": 47,
+            "arrival_min": 635,
+            "duration_min": 35,
+            "energy_kwh": 22.93,
+            "surge_mult": 1.275,
+            "profit_inr": 320,
+            "deadline_min": 670,
+            "port": 3
+          },
+          {
+            "request_id": 25,
+            "arrival_min": 680,
+            "duration_min": 25,
+            "energy_kwh": 15.95,
+            "surge_mult": 1.72,
+            "profit_inr": 350,
+            "deadline_min": 705,
+            "port": 1
+          },
+          {
+            "request_id": 36,
+            "arrival_min": 700,
+            "duration_min": 90,
+            "energy_kwh": 33.6,
+            "surge_mult": 1.514,
+            "profit_inr": 613,
+            "deadline_min": 790,
+            "port": 2
+          },
+          {
+            "request_id": 43,
+            "arrival_min": 750,
+            "duration_min": 20,
+            "energy_kwh": 8.5,
+            "surge_mult": 1.142,
+            "profit_inr": 98,
+            "deadline_min": 770,
+            "port": 1
+          },
+          {
+            "request_id": 26,
+            "arrival_min": 755,
+            "duration_min": 55,
+            "energy_kwh": 41.03,
+            "surge_mult": 1.427,
+            "profit_inr": 685,
+            "deadline_min": 810,
+            "port": 4
+          },
+          {
+            "request_id": 103,
+            "arrival_min": 755,
+            "duration_min": 45,
+            "energy_kwh": 20.58,
+            "surge_mult": 1.426,
+            "profit_inr": 343,
+            "deadline_min": 800,
+            "port": 3
+          },
+          {
+            "request_id": 72,
+            "arrival_min": 770,
+            "duration_min": 25,
+            "energy_kwh": 9.58,
+            "surge_mult": 1.478,
+            "profit_inr": 169,
+            "deadline_min": 795,
+            "port": 1
+          },
+          {
+            "request_id": 61,
+            "arrival_min": 790,
+            "duration_min": 25,
+            "energy_kwh": 15.89,
+            "surge_mult": 1.485,
+            "profit_inr": 282,
+            "deadline_min": 815,
+            "port": 2
+          },
+          {
+            "request_id": 8,
+            "arrival_min": 800,
+            "duration_min": 55,
+            "energy_kwh": 19.32,
+            "surge_mult": 1.765,
+            "profit_inr": 440,
+            "deadline_min": 855,
+            "port": 1
+          },
+          {
+            "request_id": 119,
+            "arrival_min": 800,
+            "duration_min": 40,
+            "energy_kwh": 27.72,
+            "surge_mult": 1.266,
+            "profit_inr": 382,
+            "deadline_min": 840,
+            "port": 3
+          },
+          {
+            "request_id": 100,
+            "arrival_min": 810,
+            "duration_min": 30,
+            "energy_kwh": 19.12,
+            "surge_mult": 1.615,
+            "profit_inr": 384,
+            "deadline_min": 840,
+            "port": 4
+          },
+          {
+            "request_id": 16,
+            "arrival_min": 890,
+            "duration_min": 80,
+            "energy_kwh": 30.38,
+            "surge_mult": 1.49,
+            "profit_inr": 541,
+            "deadline_min": 970,
+            "port": 1
+          },
+          {
+            "request_id": 73,
+            "arrival_min": 935,
+            "duration_min": 120,
+            "energy_kwh": 47.6,
+            "surge_mult": 1.765,
+            "profit_inr": 1084,
+            "deadline_min": 1055,
+            "port": 3
+          },
+          {
+            "request_id": 35,
+            "arrival_min": 955,
+            "duration_min": 110,
+            "energy_kwh": 60,
+            "surge_mult": 1.72,
+            "profit_inr": 1318,
+            "deadline_min": 1065,
+            "port": 4
+          },
+          {
+            "request_id": 30,
+            "arrival_min": 965,
+            "duration_min": 60,
+            "energy_kwh": 43.14,
+            "surge_mult": 1.275,
+            "profit_inr": 602,
+            "deadline_min": 1025,
+            "port": 2
+          },
+          {
+            "request_id": 91,
+            "arrival_min": 980,
+            "duration_min": 30,
+            "energy_kwh": 18.75,
+            "surge_mult": 1.619,
+            "profit_inr": 378,
+            "deadline_min": 1010,
+            "port": 1
+          },
+          {
+            "request_id": 79,
+            "arrival_min": 1010,
+            "duration_min": 35,
+            "energy_kwh": 24.36,
+            "surge_mult": 1.872,
+            "profit_inr": 602,
+            "deadline_min": 1045,
+            "port": 1
+          },
+          {
+            "request_id": 69,
+            "arrival_min": 1030,
+            "duration_min": 75,
+            "energy_kwh": 39.73,
+            "surge_mult": 2.5,
+            "profit_inr": 1430,
+            "deadline_min": 1105,
+            "port": 2
+          },
+          {
+            "request_id": 46,
+            "arrival_min": 1055,
+            "duration_min": 50,
+            "energy_kwh": 36.16,
+            "surge_mult": 1.932,
+            "profit_inr": 932,
+            "deadline_min": 1105,
+            "port": 1
+          },
+          {
+            "request_id": 117,
+            "arrival_min": 1055,
+            "duration_min": 40,
+            "energy_kwh": 26.34,
+            "surge_mult": 1.755,
+            "profit_inr": 595,
+            "deadline_min": 1095,
+            "port": 3
+          },
+          {
+            "request_id": 11,
+            "arrival_min": 1070,
+            "duration_min": 65,
+            "energy_kwh": 33.2,
+            "surge_mult": 2.474,
+            "profit_inr": 1180,
+            "deadline_min": 1135,
+            "port": 4
+          },
+          {
+            "request_id": 81,
+            "arrival_min": 1100,
+            "duration_min": 55,
+            "energy_kwh": 26.3,
+            "surge_mult": 2.318,
+            "profit_inr": 861,
+            "deadline_min": 1155,
+            "port": 3
+          },
+          {
+            "request_id": 4,
+            "arrival_min": 1110,
+            "duration_min": 40,
+            "energy_kwh": 20.0,
+            "surge_mult": 2.404,
+            "profit_inr": 685,
+            "deadline_min": 1150,
+            "port": 1
+          },
+          {
+            "request_id": 101,
+            "arrival_min": 1120,
+            "duration_min": 30,
+            "energy_kwh": 19.97,
+            "surge_mult": 2.098,
+            "profit_inr": 574,
+            "deadline_min": 1150,
+            "port": 2
+          },
+          {
+            "request_id": 93,
+            "arrival_min": 1140,
+            "duration_min": 40,
+            "energy_kwh": 14.43,
+            "surge_mult": 2.472,
+            "profit_inr": 512,
+            "deadline_min": 1180,
+            "port": 4
+          },
+          {
+            "request_id": 7,
+            "arrival_min": 1155,
+            "duration_min": 40,
+            "energy_kwh": 26.0,
+            "surge_mult": 1.617,
+            "profit_inr": 523,
+            "deadline_min": 1195,
+            "port": 3
+          },
+          {
+            "request_id": 34,
+            "arrival_min": 1170,
+            "duration_min": 55,
+            "energy_kwh": 26.99,
+            "surge_mult": 2.5,
+            "profit_inr": 972,
+            "deadline_min": 1225,
+            "port": 1
+          },
+          {
+            "request_id": 27,
+            "arrival_min": 1175,
+            "duration_min": 50,
+            "energy_kwh": 25.22,
+            "surge_mult": 2.423,
+            "profit_inr": 873,
+            "deadline_min": 1225,
+            "port": 2
+          },
+          {
+            "request_id": 90,
+            "arrival_min": 1185,
+            "duration_min": 35,
+            "energy_kwh": 16.53,
+            "surge_mult": 1.604,
+            "profit_inr": 328,
+            "deadline_min": 1220,
+            "port": 4
+          },
+          {
+            "request_id": 113,
+            "arrival_min": 1200,
+            "duration_min": 70,
+            "energy_kwh": 52.41,
+            "surge_mult": 1.568,
+            "profit_inr": 1008,
+            "deadline_min": 1270,
+            "port": 3
+          },
+          {
+            "request_id": 66,
+            "arrival_min": 1225,
+            "duration_min": 40,
+            "energy_kwh": 26.02,
+            "surge_mult": 1.949,
+            "profit_inr": 679,
+            "deadline_min": 1265,
+            "port": 1
+          },
+          {
+            "request_id": 78,
+            "arrival_min": 1240,
+            "duration_min": 35,
+            "energy_kwh": 22.5,
+            "surge_mult": 1.737,
+            "profit_inr": 501,
+            "deadline_min": 1275,
+            "port": 4
+          },
+          {
+            "request_id": 114,
+            "arrival_min": 1240,
+            "duration_min": 30,
+            "energy_kwh": 18.52,
+            "surge_mult": 1.186,
+            "profit_inr": 229,
+            "deadline_min": 1270,
+            "port": 2
+          },
+          {
+            "request_id": 74,
+            "arrival_min": 1280,
+            "duration_min": 30,
+            "energy_kwh": 9.69,
+            "surge_mult": 1.202,
+            "profit_inr": 122,
+            "deadline_min": 1310,
+            "port": 4
+          },
+          {
+            "request_id": 50,
+            "arrival_min": 1290,
+            "duration_min": 55,
+            "energy_kwh": 28.88,
+            "surge_mult": 1.386,
+            "profit_inr": 461,
+            "deadline_min": 1345,
+            "port": 2
+          },
+          {
+            "request_id": 14,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 18.6,
+            "surge_mult": 1.721,
+            "profit_inr": 409,
+            "deadline_min": 1345,
+            "port": 4
+          },
+          {
+            "request_id": 116,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 12.97,
+            "surge_mult": 1.219,
+            "profit_inr": 168,
+            "deadline_min": 1345,
+            "port": 3
+          },
+          {
+            "request_id": 32,
+            "arrival_min": 1330,
+            "duration_min": 45,
+            "energy_kwh": 20.64,
+            "surge_mult": 1.737,
+            "profit_inr": 460,
+            "deadline_min": 1375,
+            "port": 1
+          },
+          {
+            "request_id": 96,
+            "arrival_min": 1380,
+            "duration_min": 60,
+            "energy_kwh": 21.19,
+            "surge_mult": 1.845,
+            "profit_inr": 513,
+            "deadline_min": 1440,
+            "port": 1
+          }
+        ],
+        "trace": {
+          "nodes": 121,
+          "arcs": 240,
+          "augmentations": []
+        },
+        "optimal_percent": 100.0,
+        "gain_fcfs_percent": 18.650076928222624
+      },
+      {
+        "algorithm": "fcfs",
+        "name": "First come, first served",
+        "exact": false,
+        "complexity": "O(n log n + n k B)",
+        "profit_inr": 29898,
+        "accepted": 60,
+        "rejected": 60,
+        "ports": 4,
+        "utilization": 48.69791666666667,
+        "runtime_ms": 1.3408,
+        "schedule": [
+          {
+            "request_id": 31,
+            "arrival_min": 370,
+            "duration_min": 65,
+            "energy_kwh": 48.19,
+            "surge_mult": 1.372,
+            "profit_inr": 756,
+            "deadline_min": 435,
+            "port": 1
+          },
+          {
+            "request_id": 15,
+            "arrival_min": 385,
+            "duration_min": 50,
+            "energy_kwh": 24.29,
+            "surge_mult": 1.446,
+            "profit_inr": 414,
+            "deadline_min": 435,
+            "port": 2
+          },
+          {
+            "request_id": 63,
+            "arrival_min": 390,
+            "duration_min": 50,
+            "energy_kwh": 18.53,
+            "surge_mult": 1.375,
+            "profit_inr": 292,
+            "deadline_min": 440,
+            "port": 3
+          },
+          {
+            "request_id": 106,
+            "arrival_min": 405,
+            "duration_min": 35,
+            "energy_kwh": 22.35,
+            "surge_mult": 1.132,
+            "profit_inr": 254,
+            "deadline_min": 440,
+            "port": 4
+          },
+          {
+            "request_id": 1,
+            "arrival_min": 470,
+            "duration_min": 30,
+            "energy_kwh": 14.05,
+            "surge_mult": 1.709,
+            "profit_inr": 306,
+            "deadline_min": 500,
+            "port": 3
+          },
+          {
+            "request_id": 118,
+            "arrival_min": 470,
+            "duration_min": 40,
+            "energy_kwh": 26.24,
+            "surge_mult": 1.542,
+            "profit_inr": 492,
+            "deadline_min": 510,
+            "port": 4
+          },
+          {
+            "request_id": 86,
+            "arrival_min": 480,
+            "duration_min": 40,
+            "energy_kwh": 28.86,
+            "surge_mult": 1.742,
+            "profit_inr": 645,
+            "deadline_min": 520,
+            "port": 1
+          },
+          {
+            "request_id": 40,
+            "arrival_min": 485,
+            "duration_min": 40,
+            "energy_kwh": 26.14,
+            "surge_mult": 2.341,
+            "profit_inr": 866,
+            "deadline_min": 525,
+            "port": 2
+          },
+          {
+            "request_id": 24,
+            "arrival_min": 500,
+            "duration_min": 25,
+            "energy_kwh": 9.5,
+            "surge_mult": 2.07,
+            "profit_inr": 268,
+            "deadline_min": 525,
+            "port": 3
+          },
+          {
+            "request_id": 44,
+            "arrival_min": 510,
+            "duration_min": 35,
+            "energy_kwh": 15.9,
+            "surge_mult": 1.544,
+            "profit_inr": 299,
+            "deadline_min": 545,
+            "port": 4
+          },
+          {
+            "request_id": 59,
+            "arrival_min": 520,
+            "duration_min": 45,
+            "energy_kwh": 14.92,
+            "surge_mult": 1.691,
+            "profit_inr": 320,
+            "deadline_min": 565,
+            "port": 1
+          },
+          {
+            "request_id": 51,
+            "arrival_min": 525,
+            "duration_min": 45,
+            "energy_kwh": 33.04,
+            "surge_mult": 1.259,
+            "profit_inr": 451,
+            "deadline_min": 570,
+            "port": 3
+          },
+          {
+            "request_id": 95,
+            "arrival_min": 525,
+            "duration_min": 25,
+            "energy_kwh": 8,
+            "surge_mult": 2.5,
+            "profit_inr": 288,
+            "deadline_min": 550,
+            "port": 2
+          },
+          {
+            "request_id": 55,
+            "arrival_min": 545,
+            "duration_min": 50,
+            "energy_kwh": 24.32,
+            "surge_mult": 2.08,
+            "profit_inr": 692,
+            "deadline_min": 595,
+            "port": 4
+          },
+          {
+            "request_id": 64,
+            "arrival_min": 560,
+            "duration_min": 65,
+            "energy_kwh": 46.74,
+            "surge_mult": 1.79,
+            "profit_inr": 1085,
+            "deadline_min": 625,
+            "port": 2
+          },
+          {
+            "request_id": 115,
+            "arrival_min": 570,
+            "duration_min": 30,
+            "energy_kwh": 19.6,
+            "surge_mult": 2.158,
+            "profit_inr": 585,
+            "deadline_min": 600,
+            "port": 3
+          },
+          {
+            "request_id": 3,
+            "arrival_min": 575,
+            "duration_min": 35,
+            "energy_kwh": 14.62,
+            "surge_mult": 1.3,
+            "profit_inr": 211,
+            "deadline_min": 610,
+            "port": 1
+          },
+          {
+            "request_id": 87,
+            "arrival_min": 595,
+            "duration_min": 35,
+            "energy_kwh": 24.17,
+            "surge_mult": 1.525,
+            "profit_inr": 446,
+            "deadline_min": 630,
+            "port": 4
+          },
+          {
+            "request_id": 41,
+            "arrival_min": 610,
+            "duration_min": 35,
+            "energy_kwh": 23.86,
+            "surge_mult": 1.514,
+            "profit_inr": 435,
+            "deadline_min": 645,
+            "port": 1
+          },
+          {
+            "request_id": 60,
+            "arrival_min": 610,
+            "duration_min": 70,
+            "energy_kwh": 36.65,
+            "surge_mult": 1.775,
+            "profit_inr": 841,
+            "deadline_min": 680,
+            "port": 3
+          },
+          {
+            "request_id": 92,
+            "arrival_min": 625,
+            "duration_min": 30,
+            "energy_kwh": 18.71,
+            "surge_mult": 1.886,
+            "profit_inr": 467,
+            "deadline_min": 655,
+            "port": 2
+          },
+          {
+            "request_id": 120,
+            "arrival_min": 630,
+            "duration_min": 50,
+            "energy_kwh": 18.58,
+            "surge_mult": 1.83,
+            "profit_inr": 445,
+            "deadline_min": 680,
+            "port": 4
+          },
+          {
+            "request_id": 25,
+            "arrival_min": 680,
+            "duration_min": 25,
+            "energy_kwh": 15.95,
+            "surge_mult": 1.72,
+            "profit_inr": 350,
+            "deadline_min": 705,
+            "port": 3
+          },
+          {
+            "request_id": 36,
+            "arrival_min": 700,
+            "duration_min": 90,
+            "energy_kwh": 33.6,
+            "surge_mult": 1.514,
+            "profit_inr": 613,
+            "deadline_min": 790,
+            "port": 4
+          },
+          {
+            "request_id": 43,
+            "arrival_min": 750,
+            "duration_min": 20,
+            "energy_kwh": 8.5,
+            "surge_mult": 1.142,
+            "profit_inr": 98,
+            "deadline_min": 770,
+            "port": 3
+          },
+          {
+            "request_id": 26,
+            "arrival_min": 755,
+            "duration_min": 55,
+            "energy_kwh": 41.03,
+            "surge_mult": 1.427,
+            "profit_inr": 685,
+            "deadline_min": 810,
+            "port": 1
+          },
+          {
+            "request_id": 103,
+            "arrival_min": 755,
+            "duration_min": 45,
+            "energy_kwh": 20.58,
+            "surge_mult": 1.426,
+            "profit_inr": 343,
+            "deadline_min": 800,
+            "port": 2
+          },
+          {
+            "request_id": 72,
+            "arrival_min": 770,
+            "duration_min": 25,
+            "energy_kwh": 9.58,
+            "surge_mult": 1.478,
+            "profit_inr": 169,
+            "deadline_min": 795,
+            "port": 3
+          },
+          {
+            "request_id": 61,
+            "arrival_min": 790,
+            "duration_min": 25,
+            "energy_kwh": 15.89,
+            "surge_mult": 1.485,
+            "profit_inr": 282,
+            "deadline_min": 815,
+            "port": 4
+          },
+          {
+            "request_id": 109,
+            "arrival_min": 800,
+            "duration_min": 30,
+            "energy_kwh": 12.1,
+            "surge_mult": 1.191,
+            "profit_inr": 150,
+            "deadline_min": 830,
+            "port": 2
+          },
+          {
+            "request_id": 119,
+            "arrival_min": 800,
+            "duration_min": 40,
+            "energy_kwh": 27.72,
+            "surge_mult": 1.266,
+            "profit_inr": 382,
+            "deadline_min": 840,
+            "port": 3
+          },
+          {
+            "request_id": 100,
+            "arrival_min": 810,
+            "duration_min": 30,
+            "energy_kwh": 19.12,
+            "surge_mult": 1.615,
+            "profit_inr": 384,
+            "deadline_min": 840,
+            "port": 1
+          },
+          {
+            "request_id": 16,
+            "arrival_min": 890,
+            "duration_min": 80,
+            "energy_kwh": 30.38,
+            "surge_mult": 1.49,
+            "profit_inr": 541,
+            "deadline_min": 970,
+            "port": 1
+          },
+          {
+            "request_id": 94,
+            "arrival_min": 925,
+            "duration_min": 65,
+            "energy_kwh": 23.36,
+            "surge_mult": 1.494,
+            "profit_inr": 418,
+            "deadline_min": 990,
+            "port": 3
+          },
+          {
+            "request_id": 73,
+            "arrival_min": 935,
+            "duration_min": 120,
+            "energy_kwh": 47.6,
+            "surge_mult": 1.765,
+            "profit_inr": 1084,
+            "deadline_min": 1055,
+            "port": 2
+          },
+          {
+            "request_id": 35,
+            "arrival_min": 955,
+            "duration_min": 110,
+            "energy_kwh": 60,
+            "surge_mult": 1.72,
+            "profit_inr": 1318,
+            "deadline_min": 1065,
+            "port": 4
+          },
+          {
+            "request_id": 82,
+            "arrival_min": 970,
+            "duration_min": 55,
+            "energy_kwh": 18.76,
+            "surge_mult": 1.839,
+            "profit_inr": 452,
+            "deadline_min": 1025,
+            "port": 1
+          },
+          {
+            "request_id": 89,
+            "arrival_min": 1000,
+            "duration_min": 40,
+            "energy_kwh": 28.1,
+            "surge_mult": 1.242,
+            "profit_inr": 375,
+            "deadline_min": 1040,
+            "port": 3
+          },
+          {
+            "request_id": 56,
+            "arrival_min": 1025,
+            "duration_min": 25,
+            "energy_kwh": 13.19,
+            "surge_mult": 2.5,
+            "profit_inr": 475,
+            "deadline_min": 1050,
+            "port": 1
+          },
+          {
+            "request_id": 18,
+            "arrival_min": 1050,
+            "duration_min": 60,
+            "energy_kwh": 21.75,
+            "surge_mult": 1.832,
+            "profit_inr": 521,
+            "deadline_min": 1110,
+            "port": 1
+          },
+          {
+            "request_id": 46,
+            "arrival_min": 1055,
+            "duration_min": 50,
+            "energy_kwh": 36.16,
+            "surge_mult": 1.932,
+            "profit_inr": 932,
+            "deadline_min": 1105,
+            "port": 3
+          },
+          {
+            "request_id": 117,
+            "arrival_min": 1055,
+            "duration_min": 40,
+            "energy_kwh": 26.34,
+            "surge_mult": 1.755,
+            "profit_inr": 595,
+            "deadline_min": 1095,
+            "port": 2
+          },
+          {
+            "request_id": 45,
+            "arrival_min": 1065,
+            "duration_min": 50,
+            "energy_kwh": 25.11,
+            "surge_mult": 1.599,
+            "profit_inr": 497,
+            "deadline_min": 1115,
+            "port": 4
+          },
+          {
+            "request_id": 28,
+            "arrival_min": 1100,
+            "duration_min": 55,
+            "energy_kwh": 26.36,
+            "surge_mult": 1.79,
+            "profit_inr": 612,
+            "deadline_min": 1155,
+            "port": 2
+          },
+          {
+            "request_id": 4,
+            "arrival_min": 1110,
+            "duration_min": 40,
+            "energy_kwh": 20.0,
+            "surge_mult": 2.404,
+            "profit_inr": 685,
+            "deadline_min": 1150,
+            "port": 3
+          },
+          {
+            "request_id": 17,
+            "arrival_min": 1110,
+            "duration_min": 25,
+            "energy_kwh": 13.05,
+            "surge_mult": 2.244,
+            "profit_inr": 410,
+            "deadline_min": 1135,
+            "port": 1
+          },
+          {
+            "request_id": 62,
+            "arrival_min": 1115,
+            "duration_min": 95,
+            "energy_kwh": 37.22,
+            "surge_mult": 1.715,
+            "profit_inr": 814,
+            "deadline_min": 1210,
+            "port": 4
+          },
+          {
+            "request_id": 13,
+            "arrival_min": 1135,
+            "duration_min": 65,
+            "energy_kwh": 23.47,
+            "surge_mult": 1.511,
+            "profit_inr": 427,
+            "deadline_min": 1200,
+            "port": 1
+          },
+          {
+            "request_id": 23,
+            "arrival_min": 1150,
+            "duration_min": 55,
+            "energy_kwh": 19.77,
+            "surge_mult": 1.498,
+            "profit_inr": 355,
+            "deadline_min": 1205,
+            "port": 3
+          },
+          {
+            "request_id": 7,
+            "arrival_min": 1155,
+            "duration_min": 40,
+            "energy_kwh": 26.0,
+            "surge_mult": 1.617,
+            "profit_inr": 523,
+            "deadline_min": 1195,
+            "port": 2
+          },
+          {
+            "request_id": 113,
+            "arrival_min": 1200,
+            "duration_min": 70,
+            "energy_kwh": 52.41,
+            "surge_mult": 1.568,
+            "profit_inr": 1008,
+            "deadline_min": 1270,
+            "port": 1
+          },
+          {
+            "request_id": 66,
+            "arrival_min": 1225,
+            "duration_min": 40,
+            "energy_kwh": 26.02,
+            "surge_mult": 1.949,
+            "profit_inr": 679,
+            "deadline_min": 1265,
+            "port": 4
+          },
+          {
+            "request_id": 78,
+            "arrival_min": 1240,
+            "duration_min": 35,
+            "energy_kwh": 22.5,
+            "surge_mult": 1.737,
+            "profit_inr": 501,
+            "deadline_min": 1275,
+            "port": 2
+          },
+          {
+            "request_id": 114,
+            "arrival_min": 1240,
+            "duration_min": 30,
+            "energy_kwh": 18.52,
+            "surge_mult": 1.186,
+            "profit_inr": 229,
+            "deadline_min": 1270,
+            "port": 3
+          },
+          {
+            "request_id": 74,
+            "arrival_min": 1280,
+            "duration_min": 30,
+            "energy_kwh": 9.69,
+            "surge_mult": 1.202,
+            "profit_inr": 122,
+            "deadline_min": 1310,
+            "port": 2
+          },
+          {
+            "request_id": 50,
+            "arrival_min": 1290,
+            "duration_min": 55,
+            "energy_kwh": 28.88,
+            "surge_mult": 1.386,
+            "profit_inr": 461,
+            "deadline_min": 1345,
+            "port": 1
+          },
+          {
+            "request_id": 14,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 18.6,
+            "surge_mult": 1.721,
+            "profit_inr": 409,
+            "deadline_min": 1345,
+            "port": 2
+          },
+          {
+            "request_id": 116,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 12.97,
+            "surge_mult": 1.219,
+            "profit_inr": 168,
+            "deadline_min": 1345,
+            "port": 3
+          },
+          {
+            "request_id": 32,
+            "arrival_min": 1330,
+            "duration_min": 45,
+            "energy_kwh": 20.64,
+            "surge_mult": 1.737,
+            "profit_inr": 460,
+            "deadline_min": 1375,
+            "port": 4
+          },
+          {
+            "request_id": 96,
+            "arrival_min": 1380,
+            "duration_min": 60,
+            "energy_kwh": 21.19,
+            "surge_mult": 1.845,
+            "profit_inr": 513,
+            "deadline_min": 1440,
+            "port": 4
+          }
+        ],
+        "trace": {},
+        "optimal_percent": 84.28144556576648,
+        "gain_fcfs_percent": 0.0
+      },
+      {
+        "algorithm": "profit",
+        "name": "Highest profit",
+        "exact": false,
+        "complexity": "O(n log n + n k B)",
+        "profit_inr": 32852,
+        "accepted": 51,
+        "rejected": 69,
+        "ports": 4,
+        "utilization": 44.96527777777778,
+        "runtime_ms": 3.2417,
+        "schedule": [
+          {
+            "request_id": 31,
+            "arrival_min": 370,
+            "duration_min": 65,
+            "energy_kwh": 48.19,
+            "surge_mult": 1.372,
+            "profit_inr": 756,
+            "deadline_min": 435,
+            "port": 1
+          },
+          {
+            "request_id": 15,
+            "arrival_min": 385,
+            "duration_min": 50,
+            "energy_kwh": 24.29,
+            "surge_mult": 1.446,
+            "profit_inr": 414,
+            "deadline_min": 435,
+            "port": 2
+          },
+          {
+            "request_id": 63,
+            "arrival_min": 390,
+            "duration_min": 50,
+            "energy_kwh": 18.53,
+            "surge_mult": 1.375,
+            "profit_inr": 292,
+            "deadline_min": 440,
+            "port": 3
+          },
+          {
+            "request_id": 106,
+            "arrival_min": 405,
+            "duration_min": 35,
+            "energy_kwh": 22.35,
+            "surge_mult": 1.132,
+            "profit_inr": 254,
+            "deadline_min": 440,
+            "port": 4
+          },
+          {
+            "request_id": 1,
+            "arrival_min": 470,
+            "duration_min": 30,
+            "energy_kwh": 14.05,
+            "surge_mult": 1.709,
+            "profit_inr": 306,
+            "deadline_min": 500,
+            "port": 3
+          },
+          {
+            "request_id": 86,
+            "arrival_min": 480,
+            "duration_min": 40,
+            "energy_kwh": 28.86,
+            "surge_mult": 1.742,
+            "profit_inr": 645,
+            "deadline_min": 520,
+            "port": 4
+          },
+          {
+            "request_id": 40,
+            "arrival_min": 485,
+            "duration_min": 40,
+            "energy_kwh": 26.14,
+            "surge_mult": 2.341,
+            "profit_inr": 866,
+            "deadline_min": 525,
+            "port": 1
+          },
+          {
+            "request_id": 48,
+            "arrival_min": 490,
+            "duration_min": 40,
+            "energy_kwh": 20.29,
+            "surge_mult": 2.156,
+            "profit_inr": 605,
+            "deadline_min": 530,
+            "port": 2
+          },
+          {
+            "request_id": 105,
+            "arrival_min": 505,
+            "duration_min": 130,
+            "energy_kwh": 52.0,
+            "surge_mult": 1.866,
+            "profit_inr": 1279,
+            "deadline_min": 635,
+            "port": 3
+          },
+          {
+            "request_id": 22,
+            "arrival_min": 535,
+            "duration_min": 20,
+            "energy_kwh": 10.74,
+            "surge_mult": 2.002,
+            "profit_inr": 290,
+            "deadline_min": 555,
+            "port": 2
+          },
+          {
+            "request_id": 12,
+            "arrival_min": 540,
+            "duration_min": 50,
+            "energy_kwh": 34.98,
+            "surge_mult": 2.43,
+            "profit_inr": 1215,
+            "deadline_min": 590,
+            "port": 1
+          },
+          {
+            "request_id": 37,
+            "arrival_min": 540,
+            "duration_min": 55,
+            "energy_kwh": 28.09,
+            "surge_mult": 2.5,
+            "profit_inr": 1011,
+            "deadline_min": 595,
+            "port": 4
+          },
+          {
+            "request_id": 64,
+            "arrival_min": 560,
+            "duration_min": 65,
+            "energy_kwh": 46.74,
+            "surge_mult": 1.79,
+            "profit_inr": 1085,
+            "deadline_min": 625,
+            "port": 2
+          },
+          {
+            "request_id": 97,
+            "arrival_min": 590,
+            "duration_min": 45,
+            "energy_kwh": 32.49,
+            "surge_mult": 2.353,
+            "profit_inr": 1084,
+            "deadline_min": 635,
+            "port": 1
+          },
+          {
+            "request_id": 20,
+            "arrival_min": 595,
+            "duration_min": 40,
+            "energy_kwh": 29.02,
+            "surge_mult": 2.5,
+            "profit_inr": 1045,
+            "deadline_min": 635,
+            "port": 4
+          },
+          {
+            "request_id": 92,
+            "arrival_min": 625,
+            "duration_min": 30,
+            "energy_kwh": 18.71,
+            "surge_mult": 1.886,
+            "profit_inr": 467,
+            "deadline_min": 655,
+            "port": 2
+          },
+          {
+            "request_id": 47,
+            "arrival_min": 635,
+            "duration_min": 35,
+            "energy_kwh": 22.93,
+            "surge_mult": 1.275,
+            "profit_inr": 320,
+            "deadline_min": 670,
+            "port": 1
+          },
+          {
+            "request_id": 25,
+            "arrival_min": 680,
+            "duration_min": 25,
+            "energy_kwh": 15.95,
+            "surge_mult": 1.72,
+            "profit_inr": 350,
+            "deadline_min": 705,
+            "port": 1
+          },
+          {
+            "request_id": 36,
+            "arrival_min": 700,
+            "duration_min": 90,
+            "energy_kwh": 33.6,
+            "surge_mult": 1.514,
+            "profit_inr": 613,
+            "deadline_min": 790,
+            "port": 2
+          },
+          {
+            "request_id": 43,
+            "arrival_min": 750,
+            "duration_min": 20,
+            "energy_kwh": 8.5,
+            "surge_mult": 1.142,
+            "profit_inr": 98,
+            "deadline_min": 770,
+            "port": 1
+          },
+          {
+            "request_id": 26,
+            "arrival_min": 755,
+            "duration_min": 55,
+            "energy_kwh": 41.03,
+            "surge_mult": 1.427,
+            "profit_inr": 685,
+            "deadline_min": 810,
+            "port": 4
+          },
+          {
+            "request_id": 103,
+            "arrival_min": 755,
+            "duration_min": 45,
+            "energy_kwh": 20.58,
+            "surge_mult": 1.426,
+            "profit_inr": 343,
+            "deadline_min": 800,
+            "port": 3
+          },
+          {
+            "request_id": 61,
+            "arrival_min": 790,
+            "duration_min": 25,
+            "energy_kwh": 15.89,
+            "surge_mult": 1.485,
+            "profit_inr": 282,
+            "deadline_min": 815,
+            "port": 2
+          },
+          {
+            "request_id": 8,
+            "arrival_min": 800,
+            "duration_min": 55,
+            "energy_kwh": 19.32,
+            "surge_mult": 1.765,
+            "profit_inr": 440,
+            "deadline_min": 855,
+            "port": 1
+          },
+          {
+            "request_id": 119,
+            "arrival_min": 800,
+            "duration_min": 40,
+            "energy_kwh": 27.72,
+            "surge_mult": 1.266,
+            "profit_inr": 382,
+            "deadline_min": 840,
+            "port": 3
+          },
+          {
+            "request_id": 100,
+            "arrival_min": 810,
+            "duration_min": 30,
+            "energy_kwh": 19.12,
+            "surge_mult": 1.615,
+            "profit_inr": 384,
+            "deadline_min": 840,
+            "port": 4
+          },
+          {
+            "request_id": 16,
+            "arrival_min": 890,
+            "duration_min": 80,
+            "energy_kwh": 30.38,
+            "surge_mult": 1.49,
+            "profit_inr": 541,
+            "deadline_min": 970,
+            "port": 1
+          },
+          {
+            "request_id": 73,
+            "arrival_min": 935,
+            "duration_min": 120,
+            "energy_kwh": 47.6,
+            "surge_mult": 1.765,
+            "profit_inr": 1084,
+            "deadline_min": 1055,
+            "port": 3
+          },
+          {
+            "request_id": 35,
+            "arrival_min": 955,
+            "duration_min": 110,
+            "energy_kwh": 60,
+            "surge_mult": 1.72,
+            "profit_inr": 1318,
+            "deadline_min": 1065,
+            "port": 4
+          },
+          {
+            "request_id": 30,
+            "arrival_min": 965,
+            "duration_min": 60,
+            "energy_kwh": 43.14,
+            "surge_mult": 1.275,
+            "profit_inr": 602,
+            "deadline_min": 1025,
+            "port": 2
+          },
+          {
+            "request_id": 65,
+            "arrival_min": 1000,
+            "duration_min": 60,
+            "energy_kwh": 31.15,
+            "surge_mult": 1.912,
+            "profit_inr": 792,
+            "deadline_min": 1060,
+            "port": 1
+          },
+          {
+            "request_id": 69,
+            "arrival_min": 1030,
+            "duration_min": 75,
+            "energy_kwh": 39.73,
+            "surge_mult": 2.5,
+            "profit_inr": 1430,
+            "deadline_min": 1105,
+            "port": 2
+          },
+          {
+            "request_id": 11,
+            "arrival_min": 1070,
+            "duration_min": 65,
+            "energy_kwh": 33.2,
+            "surge_mult": 2.474,
+            "profit_inr": 1180,
+            "deadline_min": 1135,
+            "port": 4
+          },
+          {
+            "request_id": 10,
+            "arrival_min": 1075,
+            "duration_min": 90,
+            "energy_kwh": 47.38,
+            "surge_mult": 1.804,
+            "profit_inr": 1112,
+            "deadline_min": 1165,
+            "port": 1
+          },
+          {
+            "request_id": 108,
+            "arrival_min": 1090,
+            "duration_min": 65,
+            "energy_kwh": 33.06,
+            "surge_mult": 2.218,
+            "profit_inr": 1022,
+            "deadline_min": 1155,
+            "port": 3
+          },
+          {
+            "request_id": 4,
+            "arrival_min": 1110,
+            "duration_min": 40,
+            "energy_kwh": 20.0,
+            "surge_mult": 2.404,
+            "profit_inr": 685,
+            "deadline_min": 1150,
+            "port": 2
+          },
+          {
+            "request_id": 68,
+            "arrival_min": 1140,
+            "duration_min": 15,
+            "energy_kwh": 8,
+            "surge_mult": 1.412,
+            "profit_inr": 131,
+            "deadline_min": 1155,
+            "port": 4
+          },
+          {
+            "request_id": 7,
+            "arrival_min": 1155,
+            "duration_min": 40,
+            "energy_kwh": 26.0,
+            "surge_mult": 1.617,
+            "profit_inr": 523,
+            "deadline_min": 1195,
+            "port": 3
+          },
+          {
+            "request_id": 9,
+            "arrival_min": 1170,
+            "duration_min": 35,
+            "energy_kwh": 23.46,
+            "surge_mult": 1.746,
+            "profit_inr": 526,
+            "deadline_min": 1205,
+            "port": 1
+          },
+          {
+            "request_id": 34,
+            "arrival_min": 1170,
+            "duration_min": 55,
+            "energy_kwh": 26.99,
+            "surge_mult": 2.5,
+            "profit_inr": 972,
+            "deadline_min": 1225,
+            "port": 4
+          },
+          {
+            "request_id": 27,
+            "arrival_min": 1175,
+            "duration_min": 50,
+            "energy_kwh": 25.22,
+            "surge_mult": 2.423,
+            "profit_inr": 873,
+            "deadline_min": 1225,
+            "port": 2
+          },
+          {
+            "request_id": 113,
+            "arrival_min": 1200,
+            "duration_min": 70,
+            "energy_kwh": 52.41,
+            "surge_mult": 1.568,
+            "profit_inr": 1008,
+            "deadline_min": 1270,
+            "port": 3
+          },
+          {
+            "request_id": 66,
+            "arrival_min": 1225,
+            "duration_min": 40,
+            "energy_kwh": 26.02,
+            "surge_mult": 1.949,
+            "profit_inr": 679,
+            "deadline_min": 1265,
+            "port": 2
+          },
+          {
+            "request_id": 78,
+            "arrival_min": 1240,
+            "duration_min": 35,
+            "energy_kwh": 22.5,
+            "surge_mult": 1.737,
+            "profit_inr": 501,
+            "deadline_min": 1275,
+            "port": 1
+          },
+          {
+            "request_id": 114,
+            "arrival_min": 1240,
+            "duration_min": 30,
+            "energy_kwh": 18.52,
+            "surge_mult": 1.186,
+            "profit_inr": 229,
+            "deadline_min": 1270,
+            "port": 4
+          },
+          {
+            "request_id": 74,
+            "arrival_min": 1280,
+            "duration_min": 30,
+            "energy_kwh": 9.69,
+            "surge_mult": 1.202,
+            "profit_inr": 122,
+            "deadline_min": 1310,
+            "port": 1
+          },
+          {
+            "request_id": 50,
+            "arrival_min": 1290,
+            "duration_min": 55,
+            "energy_kwh": 28.88,
+            "surge_mult": 1.386,
+            "profit_inr": 461,
+            "deadline_min": 1345,
+            "port": 3
+          },
+          {
+            "request_id": 14,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 18.6,
+            "surge_mult": 1.721,
+            "profit_inr": 409,
+            "deadline_min": 1345,
+            "port": 1
+          },
+          {
+            "request_id": 116,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 12.97,
+            "surge_mult": 1.219,
+            "profit_inr": 168,
+            "deadline_min": 1345,
+            "port": 4
+          },
+          {
+            "request_id": 32,
+            "arrival_min": 1330,
+            "duration_min": 45,
+            "energy_kwh": 20.64,
+            "surge_mult": 1.737,
+            "profit_inr": 460,
+            "deadline_min": 1375,
+            "port": 2
+          },
+          {
+            "request_id": 96,
+            "arrival_min": 1380,
+            "duration_min": 60,
+            "energy_kwh": 21.19,
+            "surge_mult": 1.845,
+            "profit_inr": 513,
+            "deadline_min": 1440,
+            "port": 2
+          }
+        ],
+        "trace": {},
+        "optimal_percent": 92.60867113942606,
+        "gain_fcfs_percent": 9.880259549133719
+      },
+      {
+        "algorithm": "density",
+        "name": "Profit per minute",
+        "exact": false,
+        "complexity": "O(n log n + n k B)",
+        "profit_inr": 32781,
+        "accepted": 59,
+        "rejected": 61,
+        "ports": 4,
+        "utilization": 43.57638888888889,
+        "runtime_ms": 8.5829,
+        "schedule": [
+          {
+            "request_id": 31,
+            "arrival_min": 370,
+            "duration_min": 65,
+            "energy_kwh": 48.19,
+            "surge_mult": 1.372,
+            "profit_inr": 756,
+            "deadline_min": 435,
+            "port": 1
+          },
+          {
+            "request_id": 15,
+            "arrival_min": 385,
+            "duration_min": 50,
+            "energy_kwh": 24.29,
+            "surge_mult": 1.446,
+            "profit_inr": 414,
+            "deadline_min": 435,
+            "port": 2
+          },
+          {
+            "request_id": 63,
+            "arrival_min": 390,
+            "duration_min": 50,
+            "energy_kwh": 18.53,
+            "surge_mult": 1.375,
+            "profit_inr": 292,
+            "deadline_min": 440,
+            "port": 3
+          },
+          {
+            "request_id": 106,
+            "arrival_min": 405,
+            "duration_min": 35,
+            "energy_kwh": 22.35,
+            "surge_mult": 1.132,
+            "profit_inr": 254,
+            "deadline_min": 440,
+            "port": 4
+          },
+          {
+            "request_id": 86,
+            "arrival_min": 480,
+            "duration_min": 40,
+            "energy_kwh": 28.86,
+            "surge_mult": 1.742,
+            "profit_inr": 645,
+            "deadline_min": 520,
+            "port": 3
+          },
+          {
+            "request_id": 40,
+            "arrival_min": 485,
+            "duration_min": 40,
+            "energy_kwh": 26.14,
+            "surge_mult": 2.341,
+            "profit_inr": 866,
+            "deadline_min": 525,
+            "port": 4
+          },
+          {
+            "request_id": 48,
+            "arrival_min": 490,
+            "duration_min": 40,
+            "energy_kwh": 20.29,
+            "surge_mult": 2.156,
+            "profit_inr": 605,
+            "deadline_min": 530,
+            "port": 1
+          },
+          {
+            "request_id": 67,
+            "arrival_min": 495,
+            "duration_min": 35,
+            "energy_kwh": 24.88,
+            "surge_mult": 1.752,
+            "profit_inr": 561,
+            "deadline_min": 530,
+            "port": 2
+          },
+          {
+            "request_id": 38,
+            "arrival_min": 530,
+            "duration_min": 35,
+            "energy_kwh": 24.88,
+            "surge_mult": 1.976,
+            "profit_inr": 661,
+            "deadline_min": 565,
+            "port": 1
+          },
+          {
+            "request_id": 22,
+            "arrival_min": 535,
+            "duration_min": 20,
+            "energy_kwh": 10.74,
+            "surge_mult": 2.002,
+            "profit_inr": 290,
+            "deadline_min": 555,
+            "port": 2
+          },
+          {
+            "request_id": 12,
+            "arrival_min": 540,
+            "duration_min": 50,
+            "energy_kwh": 34.98,
+            "surge_mult": 2.43,
+            "profit_inr": 1215,
+            "deadline_min": 590,
+            "port": 4
+          },
+          {
+            "request_id": 37,
+            "arrival_min": 540,
+            "duration_min": 55,
+            "energy_kwh": 28.09,
+            "surge_mult": 2.5,
+            "profit_inr": 1011,
+            "deadline_min": 595,
+            "port": 3
+          },
+          {
+            "request_id": 115,
+            "arrival_min": 570,
+            "duration_min": 30,
+            "energy_kwh": 19.6,
+            "surge_mult": 2.158,
+            "profit_inr": 585,
+            "deadline_min": 600,
+            "port": 1
+          },
+          {
+            "request_id": 97,
+            "arrival_min": 590,
+            "duration_min": 45,
+            "energy_kwh": 32.49,
+            "surge_mult": 2.353,
+            "profit_inr": 1084,
+            "deadline_min": 635,
+            "port": 4
+          },
+          {
+            "request_id": 20,
+            "arrival_min": 595,
+            "duration_min": 40,
+            "energy_kwh": 29.02,
+            "surge_mult": 2.5,
+            "profit_inr": 1045,
+            "deadline_min": 635,
+            "port": 2
+          },
+          {
+            "request_id": 87,
+            "arrival_min": 595,
+            "duration_min": 35,
+            "energy_kwh": 24.17,
+            "surge_mult": 1.525,
+            "profit_inr": 446,
+            "deadline_min": 630,
+            "port": 3
+          },
+          {
+            "request_id": 92,
+            "arrival_min": 625,
+            "duration_min": 30,
+            "energy_kwh": 18.71,
+            "surge_mult": 1.886,
+            "profit_inr": 467,
+            "deadline_min": 655,
+            "port": 1
+          },
+          {
+            "request_id": 120,
+            "arrival_min": 630,
+            "duration_min": 50,
+            "energy_kwh": 18.58,
+            "surge_mult": 1.83,
+            "profit_inr": 445,
+            "deadline_min": 680,
+            "port": 3
+          },
+          {
+            "request_id": 47,
+            "arrival_min": 635,
+            "duration_min": 35,
+            "energy_kwh": 22.93,
+            "surge_mult": 1.275,
+            "profit_inr": 320,
+            "deadline_min": 670,
+            "port": 2
+          },
+          {
+            "request_id": 25,
+            "arrival_min": 680,
+            "duration_min": 25,
+            "energy_kwh": 15.95,
+            "surge_mult": 1.72,
+            "profit_inr": 350,
+            "deadline_min": 705,
+            "port": 3
+          },
+          {
+            "request_id": 36,
+            "arrival_min": 700,
+            "duration_min": 90,
+            "energy_kwh": 33.6,
+            "surge_mult": 1.514,
+            "profit_inr": 613,
+            "deadline_min": 790,
+            "port": 2
+          },
+          {
+            "request_id": 43,
+            "arrival_min": 750,
+            "duration_min": 20,
+            "energy_kwh": 8.5,
+            "surge_mult": 1.142,
+            "profit_inr": 98,
+            "deadline_min": 770,
+            "port": 3
+          },
+          {
+            "request_id": 26,
+            "arrival_min": 755,
+            "duration_min": 55,
+            "energy_kwh": 41.03,
+            "surge_mult": 1.427,
+            "profit_inr": 685,
+            "deadline_min": 810,
+            "port": 4
+          },
+          {
+            "request_id": 103,
+            "arrival_min": 755,
+            "duration_min": 45,
+            "energy_kwh": 20.58,
+            "surge_mult": 1.426,
+            "profit_inr": 343,
+            "deadline_min": 800,
+            "port": 1
+          },
+          {
+            "request_id": 72,
+            "arrival_min": 770,
+            "duration_min": 25,
+            "energy_kwh": 9.58,
+            "surge_mult": 1.478,
+            "profit_inr": 169,
+            "deadline_min": 795,
+            "port": 3
+          },
+          {
+            "request_id": 61,
+            "arrival_min": 790,
+            "duration_min": 25,
+            "energy_kwh": 15.89,
+            "surge_mult": 1.485,
+            "profit_inr": 282,
+            "deadline_min": 815,
+            "port": 2
+          },
+          {
+            "request_id": 8,
+            "arrival_min": 800,
+            "duration_min": 55,
+            "energy_kwh": 19.32,
+            "surge_mult": 1.765,
+            "profit_inr": 440,
+            "deadline_min": 855,
+            "port": 3
+          },
+          {
+            "request_id": 119,
+            "arrival_min": 800,
+            "duration_min": 40,
+            "energy_kwh": 27.72,
+            "surge_mult": 1.266,
+            "profit_inr": 382,
+            "deadline_min": 840,
+            "port": 1
+          },
+          {
+            "request_id": 100,
+            "arrival_min": 810,
+            "duration_min": 30,
+            "energy_kwh": 19.12,
+            "surge_mult": 1.615,
+            "profit_inr": 384,
+            "deadline_min": 840,
+            "port": 4
+          },
+          {
+            "request_id": 16,
+            "arrival_min": 890,
+            "duration_min": 80,
+            "energy_kwh": 30.38,
+            "surge_mult": 1.49,
+            "profit_inr": 541,
+            "deadline_min": 970,
+            "port": 3
+          },
+          {
+            "request_id": 94,
+            "arrival_min": 925,
+            "duration_min": 65,
+            "energy_kwh": 23.36,
+            "surge_mult": 1.494,
+            "profit_inr": 418,
+            "deadline_min": 990,
+            "port": 1
+          },
+          {
+            "request_id": 2,
+            "arrival_min": 960,
+            "duration_min": 40,
+            "energy_kwh": 14.26,
+            "surge_mult": 1.673,
+            "profit_inr": 301,
+            "deadline_min": 1000,
+            "port": 4
+          },
+          {
+            "request_id": 30,
+            "arrival_min": 965,
+            "duration_min": 60,
+            "energy_kwh": 43.14,
+            "surge_mult": 1.275,
+            "profit_inr": 602,
+            "deadline_min": 1025,
+            "port": 2
+          },
+          {
+            "request_id": 91,
+            "arrival_min": 980,
+            "duration_min": 30,
+            "energy_kwh": 18.75,
+            "surge_mult": 1.619,
+            "profit_inr": 378,
+            "deadline_min": 1010,
+            "port": 3
+          },
+          {
+            "request_id": 89,
+            "arrival_min": 1000,
+            "duration_min": 40,
+            "energy_kwh": 28.1,
+            "surge_mult": 1.242,
+            "profit_inr": 375,
+            "deadline_min": 1040,
+            "port": 4
+          },
+          {
+            "request_id": 79,
+            "arrival_min": 1010,
+            "duration_min": 35,
+            "energy_kwh": 24.36,
+            "surge_mult": 1.872,
+            "profit_inr": 602,
+            "deadline_min": 1045,
+            "port": 3
+          },
+          {
+            "request_id": 56,
+            "arrival_min": 1025,
+            "duration_min": 25,
+            "energy_kwh": 13.19,
+            "surge_mult": 2.5,
+            "profit_inr": 475,
+            "deadline_min": 1050,
+            "port": 2
+          },
+          {
+            "request_id": 69,
+            "arrival_min": 1030,
+            "duration_min": 75,
+            "energy_kwh": 39.73,
+            "surge_mult": 2.5,
+            "profit_inr": 1430,
+            "deadline_min": 1105,
+            "port": 1
+          },
+          {
+            "request_id": 46,
+            "arrival_min": 1055,
+            "duration_min": 50,
+            "energy_kwh": 36.16,
+            "surge_mult": 1.932,
+            "profit_inr": 932,
+            "deadline_min": 1105,
+            "port": 3
+          },
+          {
+            "request_id": 117,
+            "arrival_min": 1055,
+            "duration_min": 40,
+            "energy_kwh": 26.34,
+            "surge_mult": 1.755,
+            "profit_inr": 595,
+            "deadline_min": 1095,
+            "port": 2
+          },
+          {
+            "request_id": 11,
+            "arrival_min": 1070,
+            "duration_min": 65,
+            "energy_kwh": 33.2,
+            "surge_mult": 2.474,
+            "profit_inr": 1180,
+            "deadline_min": 1135,
+            "port": 4
+          },
+          {
+            "request_id": 4,
+            "arrival_min": 1110,
+            "duration_min": 40,
+            "energy_kwh": 20.0,
+            "surge_mult": 2.404,
+            "profit_inr": 685,
+            "deadline_min": 1150,
+            "port": 3
+          },
+          {
+            "request_id": 17,
+            "arrival_min": 1110,
+            "duration_min": 25,
+            "energy_kwh": 13.05,
+            "surge_mult": 2.244,
+            "profit_inr": 410,
+            "deadline_min": 1135,
+            "port": 1
+          },
+          {
+            "request_id": 101,
+            "arrival_min": 1120,
+            "duration_min": 30,
+            "energy_kwh": 19.97,
+            "surge_mult": 2.098,
+            "profit_inr": 574,
+            "deadline_min": 1150,
+            "port": 2
+          },
+          {
+            "request_id": 68,
+            "arrival_min": 1140,
+            "duration_min": 15,
+            "energy_kwh": 8,
+            "surge_mult": 1.412,
+            "profit_inr": 131,
+            "deadline_min": 1155,
+            "port": 1
+          },
+          {
+            "request_id": 7,
+            "arrival_min": 1155,
+            "duration_min": 40,
+            "energy_kwh": 26.0,
+            "surge_mult": 1.617,
+            "profit_inr": 523,
+            "deadline_min": 1195,
+            "port": 1
+          },
+          {
+            "request_id": 9,
+            "arrival_min": 1170,
+            "duration_min": 35,
+            "energy_kwh": 23.46,
+            "surge_mult": 1.746,
+            "profit_inr": 526,
+            "deadline_min": 1205,
+            "port": 2
+          },
+          {
+            "request_id": 34,
+            "arrival_min": 1170,
+            "duration_min": 55,
+            "energy_kwh": 26.99,
+            "surge_mult": 2.5,
+            "profit_inr": 972,
+            "deadline_min": 1225,
+            "port": 3
+          },
+          {
+            "request_id": 27,
+            "arrival_min": 1175,
+            "duration_min": 50,
+            "energy_kwh": 25.22,
+            "surge_mult": 2.423,
+            "profit_inr": 873,
+            "deadline_min": 1225,
+            "port": 4
+          },
+          {
+            "request_id": 113,
+            "arrival_min": 1200,
+            "duration_min": 70,
+            "energy_kwh": 52.41,
+            "surge_mult": 1.568,
+            "profit_inr": 1008,
+            "deadline_min": 1270,
+            "port": 1
+          },
+          {
+            "request_id": 66,
+            "arrival_min": 1225,
+            "duration_min": 40,
+            "energy_kwh": 26.02,
+            "surge_mult": 1.949,
+            "profit_inr": 679,
+            "deadline_min": 1265,
+            "port": 3
+          },
+          {
+            "request_id": 78,
+            "arrival_min": 1240,
+            "duration_min": 35,
+            "energy_kwh": 22.5,
+            "surge_mult": 1.737,
+            "profit_inr": 501,
+            "deadline_min": 1275,
+            "port": 2
+          },
+          {
+            "request_id": 114,
+            "arrival_min": 1240,
+            "duration_min": 30,
+            "energy_kwh": 18.52,
+            "surge_mult": 1.186,
+            "profit_inr": 229,
+            "deadline_min": 1270,
+            "port": 4
+          },
+          {
+            "request_id": 74,
+            "arrival_min": 1280,
+            "duration_min": 30,
+            "energy_kwh": 9.69,
+            "surge_mult": 1.202,
+            "profit_inr": 122,
+            "deadline_min": 1310,
+            "port": 2
+          },
+          {
+            "request_id": 50,
+            "arrival_min": 1290,
+            "duration_min": 55,
+            "energy_kwh": 28.88,
+            "surge_mult": 1.386,
+            "profit_inr": 461,
+            "deadline_min": 1345,
+            "port": 1
+          },
+          {
+            "request_id": 14,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 18.6,
+            "surge_mult": 1.721,
+            "profit_inr": 409,
+            "deadline_min": 1345,
+            "port": 2
+          },
+          {
+            "request_id": 116,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 12.97,
+            "surge_mult": 1.219,
+            "profit_inr": 168,
+            "deadline_min": 1345,
+            "port": 4
+          },
+          {
+            "request_id": 32,
+            "arrival_min": 1330,
+            "duration_min": 45,
+            "energy_kwh": 20.64,
+            "surge_mult": 1.737,
+            "profit_inr": 460,
+            "deadline_min": 1375,
+            "port": 3
+          },
+          {
+            "request_id": 96,
+            "arrival_min": 1380,
+            "duration_min": 60,
+            "energy_kwh": 21.19,
+            "surge_mult": 1.845,
+            "profit_inr": 513,
+            "deadline_min": 1440,
+            "port": 3
+          }
+        ],
+        "trace": {},
+        "optimal_percent": 92.4085245531939,
+        "gain_fcfs_percent": 9.642785470600046
+      },
+      {
+        "algorithm": "eft",
+        "name": "Earliest finish",
+        "exact": false,
+        "complexity": "O(n log n + n k B)",
+        "profit_inr": 27381,
+        "accepted": 63,
+        "rejected": 57,
+        "ports": 4,
+        "utilization": 42.88194444444444,
+        "runtime_ms": 1.2225,
+        "schedule": [
+          {
+            "request_id": 31,
+            "arrival_min": 370,
+            "duration_min": 65,
+            "energy_kwh": 48.19,
+            "surge_mult": 1.372,
+            "profit_inr": 756,
+            "deadline_min": 435,
+            "port": 1
+          },
+          {
+            "request_id": 15,
+            "arrival_min": 385,
+            "duration_min": 50,
+            "energy_kwh": 24.29,
+            "surge_mult": 1.446,
+            "profit_inr": 414,
+            "deadline_min": 435,
+            "port": 2
+          },
+          {
+            "request_id": 63,
+            "arrival_min": 390,
+            "duration_min": 50,
+            "energy_kwh": 18.53,
+            "surge_mult": 1.375,
+            "profit_inr": 292,
+            "deadline_min": 440,
+            "port": 3
+          },
+          {
+            "request_id": 106,
+            "arrival_min": 405,
+            "duration_min": 35,
+            "energy_kwh": 22.35,
+            "surge_mult": 1.132,
+            "profit_inr": 254,
+            "deadline_min": 440,
+            "port": 4
+          },
+          {
+            "request_id": 1,
+            "arrival_min": 470,
+            "duration_min": 30,
+            "energy_kwh": 14.05,
+            "surge_mult": 1.709,
+            "profit_inr": 306,
+            "deadline_min": 500,
+            "port": 3
+          },
+          {
+            "request_id": 118,
+            "arrival_min": 470,
+            "duration_min": 40,
+            "energy_kwh": 26.24,
+            "surge_mult": 1.542,
+            "profit_inr": 492,
+            "deadline_min": 510,
+            "port": 4
+          },
+          {
+            "request_id": 86,
+            "arrival_min": 480,
+            "duration_min": 40,
+            "energy_kwh": 28.86,
+            "surge_mult": 1.742,
+            "profit_inr": 645,
+            "deadline_min": 520,
+            "port": 1
+          },
+          {
+            "request_id": 40,
+            "arrival_min": 485,
+            "duration_min": 40,
+            "energy_kwh": 26.14,
+            "surge_mult": 2.341,
+            "profit_inr": 866,
+            "deadline_min": 525,
+            "port": 2
+          },
+          {
+            "request_id": 24,
+            "arrival_min": 500,
+            "duration_min": 25,
+            "energy_kwh": 9.5,
+            "surge_mult": 2.07,
+            "profit_inr": 268,
+            "deadline_min": 525,
+            "port": 3
+          },
+          {
+            "request_id": 44,
+            "arrival_min": 510,
+            "duration_min": 35,
+            "energy_kwh": 15.9,
+            "surge_mult": 1.544,
+            "profit_inr": 299,
+            "deadline_min": 545,
+            "port": 4
+          },
+          {
+            "request_id": 95,
+            "arrival_min": 525,
+            "duration_min": 25,
+            "energy_kwh": 8,
+            "surge_mult": 2.5,
+            "profit_inr": 288,
+            "deadline_min": 550,
+            "port": 2
+          },
+          {
+            "request_id": 38,
+            "arrival_min": 530,
+            "duration_min": 35,
+            "energy_kwh": 24.88,
+            "surge_mult": 1.976,
+            "profit_inr": 661,
+            "deadline_min": 565,
+            "port": 3
+          },
+          {
+            "request_id": 22,
+            "arrival_min": 535,
+            "duration_min": 20,
+            "energy_kwh": 10.74,
+            "surge_mult": 2.002,
+            "profit_inr": 290,
+            "deadline_min": 555,
+            "port": 1
+          },
+          {
+            "request_id": 55,
+            "arrival_min": 545,
+            "duration_min": 50,
+            "energy_kwh": 24.32,
+            "surge_mult": 2.08,
+            "profit_inr": 692,
+            "deadline_min": 595,
+            "port": 4
+          },
+          {
+            "request_id": 115,
+            "arrival_min": 570,
+            "duration_min": 30,
+            "energy_kwh": 19.6,
+            "surge_mult": 2.158,
+            "profit_inr": 585,
+            "deadline_min": 600,
+            "port": 3
+          },
+          {
+            "request_id": 3,
+            "arrival_min": 575,
+            "duration_min": 35,
+            "energy_kwh": 14.62,
+            "surge_mult": 1.3,
+            "profit_inr": 211,
+            "deadline_min": 610,
+            "port": 1
+          },
+          {
+            "request_id": 80,
+            "arrival_min": 580,
+            "duration_min": 25,
+            "energy_kwh": 15.05,
+            "surge_mult": 1.89,
+            "profit_inr": 377,
+            "deadline_min": 605,
+            "port": 2
+          },
+          {
+            "request_id": 87,
+            "arrival_min": 595,
+            "duration_min": 35,
+            "energy_kwh": 24.17,
+            "surge_mult": 1.525,
+            "profit_inr": 446,
+            "deadline_min": 630,
+            "port": 4
+          },
+          {
+            "request_id": 41,
+            "arrival_min": 610,
+            "duration_min": 35,
+            "energy_kwh": 23.86,
+            "surge_mult": 1.514,
+            "profit_inr": 435,
+            "deadline_min": 645,
+            "port": 1
+          },
+          {
+            "request_id": 107,
+            "arrival_min": 615,
+            "duration_min": 60,
+            "energy_kwh": 31.28,
+            "surge_mult": 1.478,
+            "profit_inr": 551,
+            "deadline_min": 675,
+            "port": 2
+          },
+          {
+            "request_id": 92,
+            "arrival_min": 625,
+            "duration_min": 30,
+            "energy_kwh": 18.71,
+            "surge_mult": 1.886,
+            "profit_inr": 467,
+            "deadline_min": 655,
+            "port": 3
+          },
+          {
+            "request_id": 47,
+            "arrival_min": 635,
+            "duration_min": 35,
+            "energy_kwh": 22.93,
+            "surge_mult": 1.275,
+            "profit_inr": 320,
+            "deadline_min": 670,
+            "port": 4
+          },
+          {
+            "request_id": 25,
+            "arrival_min": 680,
+            "duration_min": 25,
+            "energy_kwh": 15.95,
+            "surge_mult": 1.72,
+            "profit_inr": 350,
+            "deadline_min": 705,
+            "port": 2
+          },
+          {
+            "request_id": 36,
+            "arrival_min": 700,
+            "duration_min": 90,
+            "energy_kwh": 33.6,
+            "surge_mult": 1.514,
+            "profit_inr": 613,
+            "deadline_min": 790,
+            "port": 4
+          },
+          {
+            "request_id": 43,
+            "arrival_min": 750,
+            "duration_min": 20,
+            "energy_kwh": 8.5,
+            "surge_mult": 1.142,
+            "profit_inr": 98,
+            "deadline_min": 770,
+            "port": 2
+          },
+          {
+            "request_id": 26,
+            "arrival_min": 755,
+            "duration_min": 55,
+            "energy_kwh": 41.03,
+            "surge_mult": 1.427,
+            "profit_inr": 685,
+            "deadline_min": 810,
+            "port": 1
+          },
+          {
+            "request_id": 103,
+            "arrival_min": 755,
+            "duration_min": 45,
+            "energy_kwh": 20.58,
+            "surge_mult": 1.426,
+            "profit_inr": 343,
+            "deadline_min": 800,
+            "port": 3
+          },
+          {
+            "request_id": 72,
+            "arrival_min": 770,
+            "duration_min": 25,
+            "energy_kwh": 9.58,
+            "surge_mult": 1.478,
+            "profit_inr": 169,
+            "deadline_min": 795,
+            "port": 2
+          },
+          {
+            "request_id": 61,
+            "arrival_min": 790,
+            "duration_min": 25,
+            "energy_kwh": 15.89,
+            "surge_mult": 1.485,
+            "profit_inr": 282,
+            "deadline_min": 815,
+            "port": 4
+          },
+          {
+            "request_id": 109,
+            "arrival_min": 800,
+            "duration_min": 30,
+            "energy_kwh": 12.1,
+            "surge_mult": 1.191,
+            "profit_inr": 150,
+            "deadline_min": 830,
+            "port": 3
+          },
+          {
+            "request_id": 119,
+            "arrival_min": 800,
+            "duration_min": 40,
+            "energy_kwh": 27.72,
+            "surge_mult": 1.266,
+            "profit_inr": 382,
+            "deadline_min": 840,
+            "port": 2
+          },
+          {
+            "request_id": 100,
+            "arrival_min": 810,
+            "duration_min": 30,
+            "energy_kwh": 19.12,
+            "surge_mult": 1.615,
+            "profit_inr": 384,
+            "deadline_min": 840,
+            "port": 1
+          },
+          {
+            "request_id": 16,
+            "arrival_min": 890,
+            "duration_min": 80,
+            "energy_kwh": 30.38,
+            "surge_mult": 1.49,
+            "profit_inr": 541,
+            "deadline_min": 970,
+            "port": 1
+          },
+          {
+            "request_id": 94,
+            "arrival_min": 925,
+            "duration_min": 65,
+            "energy_kwh": 23.36,
+            "surge_mult": 1.494,
+            "profit_inr": 418,
+            "deadline_min": 990,
+            "port": 2
+          },
+          {
+            "request_id": 2,
+            "arrival_min": 960,
+            "duration_min": 40,
+            "energy_kwh": 14.26,
+            "surge_mult": 1.673,
+            "profit_inr": 301,
+            "deadline_min": 1000,
+            "port": 3
+          },
+          {
+            "request_id": 30,
+            "arrival_min": 965,
+            "duration_min": 60,
+            "energy_kwh": 43.14,
+            "surge_mult": 1.275,
+            "profit_inr": 602,
+            "deadline_min": 1025,
+            "port": 4
+          },
+          {
+            "request_id": 91,
+            "arrival_min": 980,
+            "duration_min": 30,
+            "energy_kwh": 18.75,
+            "surge_mult": 1.619,
+            "profit_inr": 378,
+            "deadline_min": 1010,
+            "port": 1
+          },
+          {
+            "request_id": 89,
+            "arrival_min": 1000,
+            "duration_min": 40,
+            "energy_kwh": 28.1,
+            "surge_mult": 1.242,
+            "profit_inr": 375,
+            "deadline_min": 1040,
+            "port": 3
+          },
+          {
+            "request_id": 76,
+            "arrival_min": 1010,
+            "duration_min": 35,
+            "energy_kwh": 21.79,
+            "surge_mult": 1.298,
+            "profit_inr": 313,
+            "deadline_min": 1045,
+            "port": 1
+          },
+          {
+            "request_id": 79,
+            "arrival_min": 1010,
+            "duration_min": 35,
+            "energy_kwh": 24.36,
+            "surge_mult": 1.872,
+            "profit_inr": 602,
+            "deadline_min": 1045,
+            "port": 2
+          },
+          {
+            "request_id": 56,
+            "arrival_min": 1025,
+            "duration_min": 25,
+            "energy_kwh": 13.19,
+            "surge_mult": 2.5,
+            "profit_inr": 475,
+            "deadline_min": 1050,
+            "port": 4
+          },
+          {
+            "request_id": 18,
+            "arrival_min": 1050,
+            "duration_min": 60,
+            "energy_kwh": 21.75,
+            "surge_mult": 1.832,
+            "profit_inr": 521,
+            "deadline_min": 1110,
+            "port": 4
+          },
+          {
+            "request_id": 46,
+            "arrival_min": 1055,
+            "duration_min": 50,
+            "energy_kwh": 36.16,
+            "surge_mult": 1.932,
+            "profit_inr": 932,
+            "deadline_min": 1105,
+            "port": 2
+          },
+          {
+            "request_id": 117,
+            "arrival_min": 1055,
+            "duration_min": 40,
+            "energy_kwh": 26.34,
+            "surge_mult": 1.755,
+            "profit_inr": 595,
+            "deadline_min": 1095,
+            "port": 1
+          },
+          {
+            "request_id": 102,
+            "arrival_min": 1080,
+            "duration_min": 30,
+            "energy_kwh": 13.74,
+            "surge_mult": 2.0,
+            "profit_inr": 371,
+            "deadline_min": 1110,
+            "port": 3
+          },
+          {
+            "request_id": 4,
+            "arrival_min": 1110,
+            "duration_min": 40,
+            "energy_kwh": 20.0,
+            "surge_mult": 2.404,
+            "profit_inr": 685,
+            "deadline_min": 1150,
+            "port": 4
+          },
+          {
+            "request_id": 17,
+            "arrival_min": 1110,
+            "duration_min": 25,
+            "energy_kwh": 13.05,
+            "surge_mult": 2.244,
+            "profit_inr": 410,
+            "deadline_min": 1135,
+            "port": 3
+          },
+          {
+            "request_id": 101,
+            "arrival_min": 1120,
+            "duration_min": 30,
+            "energy_kwh": 19.97,
+            "surge_mult": 2.098,
+            "profit_inr": 574,
+            "deadline_min": 1150,
+            "port": 2
+          },
+          {
+            "request_id": 68,
+            "arrival_min": 1140,
+            "duration_min": 15,
+            "energy_kwh": 8,
+            "surge_mult": 1.412,
+            "profit_inr": 131,
+            "deadline_min": 1155,
+            "port": 3
+          },
+          {
+            "request_id": 93,
+            "arrival_min": 1140,
+            "duration_min": 40,
+            "energy_kwh": 14.43,
+            "surge_mult": 2.472,
+            "profit_inr": 512,
+            "deadline_min": 1180,
+            "port": 1
+          },
+          {
+            "request_id": 23,
+            "arrival_min": 1150,
+            "duration_min": 55,
+            "energy_kwh": 19.77,
+            "surge_mult": 1.498,
+            "profit_inr": 355,
+            "deadline_min": 1205,
+            "port": 2
+          },
+          {
+            "request_id": 7,
+            "arrival_min": 1155,
+            "duration_min": 40,
+            "energy_kwh": 26.0,
+            "surge_mult": 1.617,
+            "profit_inr": 523,
+            "deadline_min": 1195,
+            "port": 3
+          },
+          {
+            "request_id": 9,
+            "arrival_min": 1170,
+            "duration_min": 35,
+            "energy_kwh": 23.46,
+            "surge_mult": 1.746,
+            "profit_inr": 526,
+            "deadline_min": 1205,
+            "port": 4
+          },
+          {
+            "request_id": 90,
+            "arrival_min": 1185,
+            "duration_min": 35,
+            "energy_kwh": 16.53,
+            "surge_mult": 1.604,
+            "profit_inr": 328,
+            "deadline_min": 1220,
+            "port": 1
+          },
+          {
+            "request_id": 66,
+            "arrival_min": 1225,
+            "duration_min": 40,
+            "energy_kwh": 26.02,
+            "surge_mult": 1.949,
+            "profit_inr": 679,
+            "deadline_min": 1265,
+            "port": 1
+          },
+          {
+            "request_id": 78,
+            "arrival_min": 1240,
+            "duration_min": 35,
+            "energy_kwh": 22.5,
+            "surge_mult": 1.737,
+            "profit_inr": 501,
+            "deadline_min": 1275,
+            "port": 4
+          },
+          {
+            "request_id": 114,
+            "arrival_min": 1240,
+            "duration_min": 30,
+            "energy_kwh": 18.52,
+            "surge_mult": 1.186,
+            "profit_inr": 229,
+            "deadline_min": 1270,
+            "port": 2
+          },
+          {
+            "request_id": 74,
+            "arrival_min": 1280,
+            "duration_min": 30,
+            "energy_kwh": 9.69,
+            "surge_mult": 1.202,
+            "profit_inr": 122,
+            "deadline_min": 1310,
+            "port": 4
+          },
+          {
+            "request_id": 50,
+            "arrival_min": 1290,
+            "duration_min": 55,
+            "energy_kwh": 28.88,
+            "surge_mult": 1.386,
+            "profit_inr": 461,
+            "deadline_min": 1345,
+            "port": 2
+          },
+          {
+            "request_id": 14,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 18.6,
+            "surge_mult": 1.721,
+            "profit_inr": 409,
+            "deadline_min": 1345,
+            "port": 4
+          },
+          {
+            "request_id": 116,
+            "arrival_min": 1315,
+            "duration_min": 30,
+            "energy_kwh": 12.97,
+            "surge_mult": 1.219,
+            "profit_inr": 168,
+            "deadline_min": 1345,
+            "port": 1
+          },
+          {
+            "request_id": 32,
+            "arrival_min": 1330,
+            "duration_min": 45,
+            "energy_kwh": 20.64,
+            "surge_mult": 1.737,
+            "profit_inr": 460,
+            "deadline_min": 1375,
+            "port": 3
+          },
+          {
+            "request_id": 96,
+            "arrival_min": 1380,
+            "duration_min": 60,
+            "energy_kwh": 21.19,
+            "surge_mult": 1.845,
+            "profit_inr": 513,
+            "deadline_min": 1440,
+            "port": 3
+          }
+        ],
+        "trace": {},
+        "optimal_percent": 77.18610813553587,
+        "gain_fcfs_percent": -8.418623319285567
+      }
+    ]
+  }
+}

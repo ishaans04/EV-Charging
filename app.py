@@ -207,6 +207,11 @@ def create_app(db_path=None):
         store.save_run(result)
         return result
 
+    @api.post("/api/example")
+    def example(payload: Run):
+        return store.replace(payload.revision, worked_example(), Settings(ports=1),
+                             {"kind": "example", "description": "Report appendix A; illustrative weights"})
+
     @api.get("/api/runs")
     def history():
         with store.connect() as db:

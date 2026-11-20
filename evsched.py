@@ -81,7 +81,7 @@ def generate_requests(n=150, seed=2026, max_surge=2.5, tariff=TARIFF, energy_cos
 def worked_example():
     slots = [(20, 40, 90), (90, 120, 60), (10, 70, 30), (80, 130, 80),
              (40, 80, 70), (10, 30, 60), (0, 60, 90), (50, 110, 40)]
-    return [Request(i + 1, s, f - s, 10, 1, p) for i, (s, f, p) in enumerate(slots)]
+    return [Request(i + 1, s, f - s, p / 9, 1, p) for i, (s, f, p) in enumerate(slots)]
 
 
 def validate_instance(requests, ports):
