@@ -1,4 +1,4 @@
-from bisect import bisect_left, bisect_right
+from bisect import bisect_right
 from dataclasses import asdict, dataclass
 from fractions import Fraction
 from heapq import heappop, heappush
@@ -295,7 +295,7 @@ ALGORITHMS = {
     "profit": {"name": "Highest profit", "complexity": "O(n log n + n k B)", "exact": False},
     "density": {"name": "Profit per minute", "complexity": "O(n log n + n k B)", "exact": False},
     "eft": {"name": "Earliest finish", "complexity": "O(n log n + n k B)", "exact": False},
-    "search": {"name": "Branch and bound", "complexity": "O(2^n n log k)", "exact": True},
+    "search": {"name": "Branch and bound", "complexity": "O(2^n (n + k log k))", "exact": True},
     "subsets": {"name": "Subset enumeration", "complexity": "O(2^n n log n)", "exact": True},
 }
 

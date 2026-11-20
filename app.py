@@ -1,4 +1,5 @@
 import argparse
+from contextlib import contextmanager
 import csv
 import io
 import json
@@ -13,6 +14,7 @@ from fastapi import FastAPI, HTTPException, Request as HTTPRequest
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from evsched import ALGORITHMS, Request, compare, create_request, generate_requests, solve, validate_instance, worked_example
 
@@ -80,10 +82,15 @@ class Store:
                        "requests": [r.to_dict() for r in generate_requests()]}
             db.execute("INSERT OR IGNORE INTO state VALUES (1, ?)", (json.dumps(initial),))
 
+    @contextmanager
     def connect(self):
         db = sqlite3.connect(self.path, timeout=15)
         db.execute("PRAGMA busy_timeout = 15000")
-        return db
+        try:
+            with db:
+                yield db
+        finally:
+            db.close()
 
     def read(self):
         with self.connect() as db:
@@ -117,6 +124,7 @@ class Store:
 
 def create_app(db_path=None):
     api = FastAPI(title="Volt", version="1.0.0")
+    api.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "testserver"])
     store = Store(db_path or Path(os.getenv("VOLT_DATA_DIR", ROOT / "data")) / "volt.db")
     api.state.store = store
 
@@ -126,6 +134,9 @@ def create_app(db_path=None):
 
     @api.middleware("http")
     async def headers(request, call_next):
+        origin = request.headers.get("origin")
+        if request.method in ("POST", "PUT", "DELETE") and origin and origin != str(request.base_url).rstrip("/"):
+            return JSONResponse(status_code=403, content={"detail": "Cross-origin writes are not allowed"})
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "same-origin"

@@ -1,0 +1,4 @@
+request_id,arrival_min,duration_min,energy_kwh,surge_mult
+1,480,45,24,1.5
+2,500,30,18,2
+3,525,45,26,1.8

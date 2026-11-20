@@ -1,0 +1,8 @@
+{
+  "settings": {"ports": 1, "tariff": 18, "energy_cost": 9},
+  "requests": [
+    {"request_id": 1, "arrival_min": 480, "duration_min": 45, "energy_kwh": 24, "surge_mult": 1.5},
+    {"request_id": 2, "arrival_min": 500, "duration_min": 30, "energy_kwh": 18, "surge_mult": 2},
+    {"request_id": 3, "arrival_min": 525, "duration_min": 45, "energy_kwh": 26, "surge_mult": 1.8}
+  ]
+}

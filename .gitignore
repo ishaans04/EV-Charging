@@ -6,3 +6,5 @@ data/
 artifacts/
 .env
 .DS_Store
+.qa/
+node_modules/
