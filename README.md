@@ -1,14 +1,73 @@
-# Volt
+# Volt — EV Charging Station Slot Profit Maximization
 
-EV charging station slot profit maximization, built in Python for Design and Analysis of Algorithms. Volt chooses which fixed bookings to accept and assigns them to identical charging ports without overlaps.
+A Design and Analysis of Algorithms project. Volt decides which charging requests a station should accept, and which port each car uses, so that the day earns the most profit with no two cars on the same port at the same time.
 
-A blue-and-gold landing page leads directly into the station console. On arrival, an electric car drives across the headline to unveil it, then parks at the Volt charger and charges; any click, key or scroll skips to the final scene, and the two floating cards lean towards the mouse. The console includes an interactive schedule, request editing and CSV import, greedy comparisons, algorithm traces, correctness checks, sensitivity analysis, timing benchmarks, and locally saved runs. The visual direction follows [Pageloop](https://www.pageloop.ai/); Volt uses its own branding and charging illustration.
+**Live site: https://ishaans04.github.io/Volt/**
 
-## Run
+## The real-world problem
 
-Python 3.11 or newer is required. The app was verified on Python 3.14.5.
+With the rise of electric vehicles, public charging stations face overlapping charging requests. Drivers want different charging durations, are willing to pay different surge rates, and have strict deadlines to leave. A station has a limited number of ports, so it cannot serve everyone. It must accept a subset of vehicles that maximizes profit without overlapping port usage.
 
-Windows PowerShell:
+Volt models each request as a fixed time slot with a profit:
+
+```
+profit = energy_kwh × (tariff × surge_multiplier − energy_cost)
+```
+
+and solves the resulting problem exactly:
+
+- **One port:** weighted interval scheduling with dynamic programming.
+- **k ports:** minimum-cost flow on a time-expanded graph, using Dijkstra's algorithm.
+- **Baselines:** four greedy rules (first come first served, highest profit, profit per minute, earliest finish) to show how much the exact methods gain.
+
+On the default day (150 requests, 4 ports) the optimum earns **₹37,625**, **20.3% more** than first come, first served.
+
+## Try it
+
+Open **https://ishaans04.github.io/Volt/**. Nothing to install: the site runs the project's Python algorithms inside your browser, and your station and saved runs stay in your own browser. The first visit takes a few seconds while Python loads; later visits open in about a second.
+
+1. **Landing page** — an electric car drives across the headline and parks at the charger. Toggle *First come, first served* and *Optimal* on the right-hand card: the report's example improves from ₹170 to ₹240.
+2. **Overview** — the Delhi NCR network map. Six charging hubs, each with its own ports, demand and surge, show their optimal profit and gain over first come, first served. Pick one and press **Load this hub**.
+3. **Port Schedule** — profit, gain, vehicles served and utilization, then the day's plan: every accepted booking is a car parked in a bay spanning its exact slot. Click any car for its details.
+4. **Requests** — search, sort, edit or add bookings, or import your own CSV.
+5. **Algo Lab** — watch the algorithms work:
+   - *Minimum-cost flow*: a loop diagram (time graph → Dijkstra → push one unit → residual update) and one road per Dijkstra route. Bookings taken arc above the road; bookings handed back through reverse arcs dip below it.
+   - *Dynamic programming* (**Load report example**): step through each decision, see which bookings fit before it, and compare *take* against *skip* while OPT(j) grows.
+   - *Correctness*, *Port sensitivity* and *Runtime* run the real solvers.
+6. **Run History** — every optimization is saved; compare any two side by side.
+
+A guided tour opens on the first visit and can be replayed from the **?** button.
+
+## Algorithms and data structures
+
+| Method | Implementation | Data structures | Time |
+| --- | --- | --- | --- |
+| Single-port optimum | Weighted interval scheduling DP | Sorted finish times, binary-search predecessors, prefix DP array, traceback | O(n log n) |
+| Multi-port optimum | Minimum-cost flow, successive shortest paths | Time-expanded residual graph, paired edge arrays, DAG potentials, Dijkstra min-heap | O(k n log n) |
+| Greedy baselines | Sorted first-fit admission | Sort keys, exact rational density, minute-occupancy bitsets | O(n log n + nkB) |
+| Port assignment | Interval colouring in start order | Availability array, best-fit free port | O(nk) |
+| Search oracle | Depth-first branch and bound | Sorted port availability, suffix-profit upper bound | exponential |
+| Subset oracle | Exhaustive subset enumeration | Bit masks, sorted overlap events | O(2ⁿ n log n) |
+
+The scheduling library (`evsched.py`) uses only Python's standard library; no external optimizer hides the algorithms. [ALGORITHMS.md](ALGORITHMS.md) covers the recurrence, correctness arguments, complexity, assumptions and a viva guide.
+
+## Results
+
+A full experiment over 40 synthetic days (seeds 40000–40039, 150 requests a day, 4 ports, tariff ₹18/kWh, energy cost ₹9/kWh, maximum surge 2.5):
+
+| Method | Mean daily profit |
+| --- | ---: |
+| Optimal (minimum-cost flow) | ₹43,193 |
+| Highest profit | ₹39,605 |
+| Profit per minute | ₹38,951 |
+| First come, first served | ₹34,253 |
+| Earliest finish | ₹31,783 |
+
+The exact solvers passed **1,850** independent checks: 1,500 against branch and bound, 150 against subset enumeration and 200 full-day DP-versus-flow comparisons. These are measured results from this implementation on synthetic demand; `figs/` holds the generated charts and `results.json` the raw numbers.
+
+## Run locally
+
+Python 3.11 or newer.
 
 ```powershell
 python -m venv .venv
@@ -16,74 +75,35 @@ python -m venv .venv
 .\.venv\Scripts\python app.py
 ```
 
-macOS or Linux:
+On macOS or Linux use `.venv/bin/python` instead. Open **http://127.0.0.1:8000** (use `--port 8001` if 8000 is busy). The local version runs a FastAPI server with SQLite storage in `data/volt.db`, and adds interactive API documentation at `/docs`.
 
-```bash
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python app.py
-```
+## How the live site works
 
-Open **http://127.0.0.1:8000**. Use `python app.py --port 8001` if port 8000 is occupied. Run commands through the virtual environment's Python, or activate it first.
+GitHub Pages only serves files, so the browser does the computing. A background Web Worker loads [Pyodide](https://pyodide.org) (Python compiled to WebAssembly) and runs the same `evsched.py`, `run_experiments.py` and `volt_service.py` the server uses. Each visitor's station and runs are kept in their browser's IndexedDB. Every push to `main` rebuilds and deploys the site through `.github/workflows/pages.yml`.
 
-The first console visit generates 150 synthetic requests with seed 2026 and solves the four-port day. Subsequent visits restore the most recent run matching the current demand. No Node build, account, API key, cloud service, or GPU is needed. All fonts and artwork are served locally.
-
-## Live site (GitHub Pages)
-
-**https://ishaans04.github.io/Volt/** runs the whole app with no server. GitHub Pages serves the files and the browser runs the same Python modules (`evsched.py`, `volt_service.py`, `run_experiments.py`) through [Pyodide](https://pyodide.org), Python compiled to WebAssembly, in a background thread. Each visitor gets a private station and run history saved in their own browser (IndexedDB). Nothing is installed: the first visit downloads Python into the browser cache (a few seconds), later visits open in about a second. The `/docs` API page and `evaluate.py` remain local-only.
-
-Every push to `main` rebuilds and deploys the site with `.github/workflows/pages.yml`. To preview the static build locally:
+Preview the static build:
 
 ```powershell
 .\.venv\Scripts\python tools/build_pages.py
 .\.venv\Scripts\python -m http.server -d _site 8080
 ```
 
-## A three-minute demonstration
-
-1. Toggle FCFS and Optimal on the landing page: the report's example improves from ₹170 to ₹240.
-2. Enter the console. Inspect scheduled profit, gain over FCFS, vehicles served, and 24-hour port utilization. Select any timeline session to inspect its exact slot and port.
-3. Open **Algorithm lab → Load report example**. The one-port DP explorer reproduces Appendix A: R1, R5 and R4 earn ₹240. Scrub or play the decisions to see the bookings that fit before each request, the take-versus-skip comparison and OPT(j) growing step by step. The local-choice and final-traceback columns explain why a temporary DP choice can be absent from the final answer.
-4. Change to two ports and optimize. The lab now shows minimum-cost flow as a loop diagram (time graph, Dijkstra, push one unit, residual update) and one road per Dijkstra route: bookings taken hop above the road, bookings handed back through reverse arcs dip below it, and a stacked bar shows each route's share of the optimum. Step through the routes or press Play.
-5. Run **Correctness**, **Port sensitivity**, and **Runtime** in the lab. These execute Python algorithms; the UI does not fabricate results.
-6. Edit a request or import a CSV. Existing output is invalidated until the station is optimized again. Run history retains the original inputs and results of the last 30 runs.
-
-The console uses a horizontal top navigation with Overview, Port Schedule, Requests, Algo Lab and Run History. A twelve-step guided tour opens on the first console visit and can be replayed from the ? button; it spotlights the map, hub loading, the schedule, requests, the lab and run history. Station settings are available from the controls button at the top right. Price changes recompute every request's profit.
-
-Overview holds the Delhi NCR network map: six synthetic charging hubs, each with its own ports, demand and surge ceiling. Every hub shows its optimal profit, gain over FCFS and utilization, computed by the same Python solvers; select a hub and load it to replace the current demand, optimize, and jump to Port Schedule. Port Schedule shows the profit, gain, vehicles served and utilization cards and draws each accepted session as a small car parked in a bay that spans its exact slot. Plan setup and algorithm comparisons sit behind expandable controls, with a port-focus selector on the schedule. Requests use ten-row pages, status filters and sorting, with edit and import tools. The DP explorer steps through one decision at a time; the full table and flow paths expand on demand. Run History supports filtering, sorting, and comparing two saved runs side by side. CSV exports follow the displayed schedule, and full run JSON is available in the lab.
-
-## Algorithms and data structures
-
-| Method | Implementation | Data structures |
-| --- | --- | --- |
-| Single-port optimum | Weighted interval scheduling DP | Sorted finish times, binary-search predecessors, prefix DP array, traceback |
-| Multi-port optimum | Minimum-cost flow with successive shortest paths | Time-expanded residual graph, paired edge arrays, DAG potentials, Dijkstra min-heap |
-| FCFS, highest profit, profit density, earliest finish | Sorted first-fit admission | Sort keys, exact rational density, minute occupancy bitsets |
-| Physical port assignment | Interval coloring in start order | Availability array and best-fit free-port selection |
-| Search oracle | Depth-first branch and bound | Sorted port availability, suffix-profit upper bound |
-| Subset oracle | Exhaustive subset enumeration | Bit masks and independently sorted overlap events |
-
-Read [ALGORITHMS.md](ALGORITHMS.md) for recurrence, correctness arguments, complexity, assumptions, and a viva guide. The scheduling library uses only Python's standard library; there is no external optimizer hiding the DSA implementation.
-
-## Simple project layout
+## Project layout
 
 ```text
-app.py                 FastAPI routes, validation, SQLite persistence, local server
-evsched.py             Request model, generator, all algorithms and metrics
-evaluate.py            JSON command-line interface for external evaluation
-run_experiments.py     Correctness, quality, capacity, surge, demand and timing
-make_figs.py           Matplotlib figures from recorded experiment results
-static/                Two HTML pages, CSS, JavaScript, illustration and local font
-tests/                 Algorithm, API and UI integration tests
-results.json           Actual full-run measurements and the one-day case study
-figs/                  Ten regenerated experiment figures
+evsched.py             Request model, demand generator, every algorithm and metric
+volt_service.py        Station operations shared by the server and the browser build
+app.py                 FastAPI server, validation and SQLite storage for local use
+run_experiments.py     Correctness, quality, capacity, surge, demand and timing experiments
+make_figs.py           Charts from recorded experiment results
+evaluate.py            JSON command-line interface
+static/                Landing page, console, styles, scripts, illustration and font
+tools/build_pages.py   Builds the GitHub Pages site
+tests/                 Algorithm, API, browser-service and UI tests
+figs/, results.json    Experiment charts and measurements
 ```
 
-`data/volt.db` is created automatically and ignored by Git. Set `VOLT_DATA_DIR` to use a different local data directory. Mutations use revision checks so another tab cannot silently overwrite newer input. Saved runs hold immutable snapshots. The server binds to loopback and accepts localhost hosts; this is a local academic application, without multi-user authentication.
-
-## Verify and reproduce
-
-Install the development dependencies in the same virtual environment:
+## Tests and experiments
 
 ```powershell
 .\.venv\Scripts\python -m pip install -r requirements-dev.txt
@@ -92,50 +112,11 @@ Install the development dependencies in the same virtual environment:
 .\.venv\Scripts\python make_figs.py
 ```
 
-Use `--quick` for a smaller experiment run and `--output artifacts/quick-results.json` to preserve the committed full results. Figure input and output paths are configurable with `make_figs.py --input ... --output ...`.
+146 automated tests run on Ubuntu and Windows with Python 3.11 and 3.14, including a check that the browser build gives the same answers as the server. A separate job drives the console against a running server (`tests/ui_smoke.cjs`). `run_experiments.py --quick` runs a smaller experiment.
 
-The automated Python suite passes **141 tests** across Ubuntu and Windows on Python 3.11 and 3.14. A separate GitHub Actions job checks the console interactions against an isolated running API, including port focus, sorting, the DP explorer and saved-run comparison.
+## Data formats
 
-The committed full experiment used 40 days, seeds 40000–40039, 150 requests/day, four ports, tariff ₹18/kWh, energy cost ₹9/kWh, and maximum surge 2.5. It passed **1,850** exact-solver checks: 1,500 against branch and bound, 150 against subset enumeration, and 200 full-day DP-versus-flow comparisons.
-
-| Method | Measured mean daily profit |
-| --- | ---: |
-| Optimal flow | ₹43,193 |
-| FCFS | ₹34,253 |
-| Highest profit | ₹39,605 |
-| Profit density | ₹38,951 |
-| Earliest finish | ₹31,783 |
-
-These are actual synthetic results from this implementation, not copied report measurements. The generator uses Python's seeded `random.Random`; it does not promise bit-for-bit agreement with the report's original generator. Timings depend on hardware and background load. Solver timing includes sorting, graph construction and traceback; it excludes assignment, validation, HTTP, and UI work.
-
-An optional DOM integration test exercises the actual running API without a browser. Start the server with an isolated data directory because this test changes its dataset:
-
-```powershell
-$env:VOLT_DATA_DIR = "$PWD\.qa\station"
-.\.venv\Scripts\python app.py
-```
-
-In another terminal:
-
-```powershell
-npm install --prefix .qa --no-audit --no-fund jsdom
-node tests/ui_smoke.cjs
-```
-
-The DOM test verifies application behavior, not rendered appearance. Live browser visual QA was blocked by the computer-use service during implementation. Responsive breakpoints, reduced-motion rules, keyboard-operable dialogs and session controls are implemented, but pixel-level rendering remains unverified. The console uses static SVG, gradients and brief interaction transitions. The landing intro animates only transform, opacity and clip-path, ends once the car is charged, and is replaced by the final scene under reduced motion; the floating cards use a slow transform drift. There is no WebGL, canvas animation or backdrop filter.
-
-To let the test start and stop its own isolated server:
-
-```powershell
-$env:VOLT_TEST_START_SERVER = "1"
-$env:VOLT_PYTHON = "$PWD\.venv\Scripts\python.exe"
-$env:VOLT_TEST_URL = "http://127.0.0.1:8002"
-node tests/ui_smoke.cjs
-```
-
-## CSV and JSON evaluation
-
-Download the current request CSV from Requests to get the import format. Required columns:
+Import requests as CSV (download the current requests from the Requests tab for a template):
 
 ```csv
 request_id,arrival_min,duration_min,energy_kwh,surge_mult
@@ -144,20 +125,16 @@ request_id,arrival_min,duration_min,energy_kwh,surge_mult
 3,525,45,26,1.8
 ```
 
-Times are integer minutes since midnight; start + duration must be at most 1440. IDs must be unique. An optional `deadline_min` must equal start + duration. Imported `profit_inr` is ignored and recomputed. The console accepts up to 2,000 requests, 32 ports and 1 MB CSV files. The algorithm library supports larger experiments independently.
+Times are whole minutes after midnight, and every session must finish by midnight (1440). IDs must be unique. Profit is always recomputed from the station's prices. The console accepts up to 2,000 requests, 32 ports and 1 MB files.
 
-`evaluate.py` reads a JSON file, or one JSON object from stdin, and emits JSON to stdout. It accepts `requests` in the CSV schema, `settings` containing `ports`, `tariff`, and `energy_cost`, and an optional `algorithm`. Without `algorithm` it compares the optimum and all four greedy methods. Invalid inputs produce a nonzero exit code and a JSON error on stderr.
+`evaluate.py` reads the same requests as JSON, with `settings` (`ports`, `tariff`, `energy_cost`) and an optional `algorithm`, and prints the result as JSON:
 
 ```powershell
 .\.venv\Scripts\python evaluate.py examples/requests.json
 ```
 
-This provides a dependency-free adapter for an external evaluation harness. **AEGIS-specific execution is not claimed**: the supplied report and repository do not identify an AEGIS distribution, configuration, or interface. The pure Python functions and JSON CLI expose the inputs and outputs needed for a course-specific wrapper.
+## Scope
 
-Interactive API documentation is at `/docs`. Main routes: `GET /api/state`, `GET /api/hubs`, `PUT /api/state`, `POST /api/generate`, `POST /api/import?revision=...`, `POST /api/optimize`, `GET /api/runs`, and `GET /api/runs/{id}/export?format=json`.
+The objective is total net profit, not the number of drivers served or fairness. Requests are fixed half-open intervals known in advance, ports are identical, and surge rates are given inputs. Flexible windows, online arrivals, connector types, shared power limits and payments are outside this project. Demand and prices are synthetic, so results describe the model, not a real station.
 
-## Model boundary
-
-The objective is total net profit, not number of drivers served or fairness. Requests are rigid half-open intervals, all are known in advance, ports are identical, and surge rates are supplied inputs. Flexible windows, online decisions, connector compatibility, shared power limits, live payments and hardware control are outside this project. This optimum applies only to the stated model. Synthetic demand and assumed prices do not establish performance at a real charging station.
-
-Inter is distributed under its [SIL Open Font License](static/FONT-LICENSE.txt). The charging illustration and application code are project assets. The attached report was used as the requirements source and was not modified or uploaded.
+The Inter font is used under the [SIL Open Font License](static/FONT-LICENSE.txt).
