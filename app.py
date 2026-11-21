@@ -5,13 +5,14 @@ import io
 import json
 import os
 from datetime import datetime, timezone
+from hashlib import sha256
 from pathlib import Path
 import sqlite3
 from typing import Literal
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request as HTTPRequest
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -148,8 +149,11 @@ def create_app(db_path=None):
                 "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
                 "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
                 "img-src 'self' data: https://fastapi.tiangolo.com; frame-ancestors 'none'")
-        if request.url.path.startswith("/api/"):
+        if request.url.path.startswith("/api/") or request.url.path in (
+                "/console", "/static/console.css", "/static/console.js"):
             response.headers["Cache-Control"] = "no-store"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
         return response
 
     @api.get("/api/health")
@@ -275,7 +279,13 @@ def create_app(db_path=None):
 
     @api.get("/console")
     def console():
-        return FileResponse(ROOT / "static" / "console.html")
+        directory = ROOT / "static"
+        markup = (directory / "console.html").read_text(encoding="utf-8")
+        assets = {name: (directory / name).read_bytes() for name in ("console.css", "console.js")}
+        version = sha256(markup.encode("utf-8") + b"".join(assets.values())).hexdigest()[:16]
+        for name in assets:
+            markup = markup.replace(f"/static/{name}", f"/static/{name}?v={version}")
+        return HTMLResponse(markup, headers={"X-Volt-UI": version})
 
     api.mount("/static", StaticFiles(directory=ROOT / "static", check_dir=False), name="static")
     return api

@@ -96,3 +96,37 @@ def test_pages_assets_and_headers(client):
         assert response.status_code == 200
         assert response.headers["X-Content-Type-Options"] == "nosniff"
     assert client.get("/api/state").headers["Cache-Control"] == "no-store"
+
+
+def test_console_uses_versioned_assets_and_disables_stale_caching(client):
+    response = client.get("/console")
+    version = response.headers["X-Volt-UI"]
+    assert len(version) == 16
+    assert 'class="sidebar"' not in response.text
+    assert 'class="topbar-inner"' in response.text
+    for name in ("console.css", "console.js"):
+        url = f"/static/{name}?v={version}"
+        assert url in response.text
+        asset = client.get(url)
+        assert asset.status_code == 200
+        assert asset.headers["Cache-Control"] == "no-store"
+    assert response.headers["Cache-Control"] == "no-store"
+    assert response.headers["Pragma"] == "no-cache"
+    assert response.headers["Expires"] == "0"
+    assert client.get("/console?refresh=1").headers["X-Volt-UI"] == version
+
+
+def test_console_asset_update_changes_browser_cache_key(client, tmp_path, monkeypatch):
+    directory = tmp_path / "static"
+    directory.mkdir()
+    (directory / "console.html").write_text(
+        '<link href="/static/console.css"><script src="/static/console.js"></script>', encoding="utf-8")
+    (directory / "console.css").write_text("body { color: blue; }", encoding="utf-8")
+    (directory / "console.js").write_text("const version = 1;", encoding="utf-8")
+    monkeypatch.setattr("app.ROOT", tmp_path)
+    first = client.get("/console")
+    (directory / "console.css").write_text("body { color: green; }", encoding="utf-8")
+    second = client.get("/console")
+    assert first.headers["X-Volt-UI"] != second.headers["X-Volt-UI"]
+    assert f'?v={first.headers["X-Volt-UI"]}' not in second.text
+    assert f'?v={second.headers["X-Volt-UI"]}' in second.text
