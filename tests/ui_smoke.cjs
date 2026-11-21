@@ -104,6 +104,22 @@ async function main() {
       idle(),
     "initial optimization",
   );
+  await waitFor(() => $(".tour-layer"), "first-visit guided tour");
+  assert.match($("#tour-progress").textContent, /STEP 1 OF 12/);
+  $('[data-tour="next"]').click();
+  assert.match($("#tour-title").textContent, /hub/);
+  for (let step = 0; step < 4; step++) $('[data-tour="next"]').click();
+  assert.equal($("#view-schedule").classList.contains("hidden"), false);
+  $('[data-tour="end"]').click();
+  assert.equal($(".tour-layer"), null);
+  assert.equal(window.localStorage.getItem("volt-tour-complete"), "1");
+  $('[data-view="overview"]').click();
+  $("#tour-button").click();
+  assert.ok($(".tour-layer"));
+  window.document.dispatchEvent(
+    new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+  );
+  assert.equal($(".tour-layer"), null);
   assert.ok($("#timeline .slot .car-body"));
   await waitFor(
     () => window.document.querySelectorAll("#hub-map [data-hub]").length === 6,
@@ -313,7 +329,7 @@ async function main() {
   assert.equal(errors.length, 0, errors.join("\n"));
   dom.window.close();
   console.log(
-    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, hub map; landing unchanged.",
+    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, hub map, guided tour; landing unchanged.",
   );
 }
 

@@ -1126,6 +1126,227 @@ $("#refresh-history").addEventListener("click", () =>
   action($("#refresh-history"), loadHistory),
 );
 
+// Guided tour: a spotlight and a step card, shown once per browser and
+// replayable from the ? button. Positions are measured only when a step
+// opens or the window scrolls/resizes; nothing runs in the background.
+const tourSteps = [
+  {
+    view: "overview",
+    title: "Welcome to Volt",
+    text: "Volt decides which charging bookings a station should accept and which port each car uses, so the day earns the most profit. This short guide shows you where everything is.",
+  },
+  {
+    view: "overview",
+    target: "#hub-map",
+    title: "Pick a charging hub",
+    text: "Each dot is a hub in Delhi NCR with its own ports and demand. Click one to see its optimal profit, gain over first come, first served and utilization.",
+  },
+  {
+    view: "overview",
+    target: "#hub-detail",
+    title: "Load it into the console",
+    text: "Press “Load this hub”. Volt replaces the current demand with that hub’s day, optimizes it and opens Port Schedule.",
+  },
+  {
+    view: "overview",
+    target: ".heading-actions",
+    title: "Generate or optimize",
+    text: "Make a fresh synthetic day, or run the optimizer again after you change ports, prices or requests.",
+  },
+  {
+    view: "overview",
+    target: "#planning-controls",
+    title: "Plan setup",
+    text: "Open this to change the number of ports or choose a method: dynamic programming, minimum-cost flow, the greedy rules or brute force.",
+  },
+  {
+    view: "schedule",
+    target: ".metric-grid",
+    title: "Read the result",
+    text: "Port Schedule starts with the day’s profit, the gain over first come, first served, vehicles served and port utilization.",
+  },
+  {
+    view: "schedule",
+    target: "#timeline",
+    title: "Every car is a booking",
+    text: "Each row is a charging port. A bay spans the booked slot and the car parks at its arrival time. Click any car for its energy, surge and profit, or use Focus to show one port.",
+  },
+  {
+    view: "schedule",
+    target: ".algorithm-comparison",
+    title: "Compare the algorithms",
+    text: "Expand this to see how the four greedy rules score against the exact optimum on the same day.",
+  },
+  {
+    view: "requests",
+    target: '[data-view="requests"]',
+    title: "Requests",
+    text: "Search, sort, edit or add bookings, or import your own CSV. Any change clears the old schedule until you optimize again.",
+  },
+  {
+    view: "lab",
+    target: '[data-view="lab"]',
+    title: "Algo Lab",
+    text: "Step through the DP table or the flow augmentations, then run correctness checks, port sensitivity and runtime benchmarks on the real solvers.",
+  },
+  {
+    view: "history",
+    target: '[data-view="history"]',
+    title: "Run History",
+    text: "Your last 30 runs are saved locally with their inputs. Inspect one, or tick two and compare them side by side.",
+  },
+  {
+    view: "overview",
+    target: "#tour-button",
+    title: "You’re ready",
+    text: "Start with a hub on the map. You can replay this guide any time from the ? button.",
+  },
+];
+let tourIndex = -1;
+let tourFrame = 0;
+const tourStorageKey = "volt-tour-complete";
+
+function tourSeen() {
+  try {
+    return window.localStorage.getItem(tourStorageKey) === "1";
+  } catch {
+    return true;
+  }
+}
+
+function startTour() {
+  if (tourIndex >= 0) return;
+  for (const dialog of $$("dialog[open]")) dialog.close();
+  const layer = document.createElement("div");
+  layer.className = "tour-layer";
+  layer.innerHTML =
+    '<div class="tour-spotlight" aria-hidden="true"></div><div class="tour-card" role="dialog" aria-modal="true" aria-labelledby="tour-title" aria-describedby="tour-text"><div class="tour-top"><span class="eyebrow" id="tour-progress"></span><button type="button" class="tour-skip" data-tour="end">Skip guide</button></div><h2 id="tour-title"></h2><p id="tour-text"></p><div class="tour-dots" aria-hidden="true"></div><div class="tour-actions"><button type="button" class="button secondary small" data-tour="back">Back</button><button type="button" class="button primary small" data-tour="next">Next</button></div></div>';
+  document.body.append(layer);
+  layer.querySelector(".tour-dots").innerHTML = tourSteps
+    .map(() => "<i></i>")
+    .join("");
+  tourIndex = 0;
+  showTourStep();
+}
+
+function endTour() {
+  if (tourIndex < 0) return;
+  tourIndex = -1;
+  $(".tour-layer")?.remove();
+  try {
+    window.localStorage.setItem(tourStorageKey, "1");
+  } catch {}
+  $("#tour-button").focus();
+}
+
+function showTourStep() {
+  const step = tourSteps[tourIndex];
+  if (currentView !== step.view) setView(step.view);
+  const last = tourIndex === tourSteps.length - 1;
+  $("#tour-progress").textContent =
+    `STEP ${tourIndex + 1} OF ${tourSteps.length}`;
+  $("#tour-title").textContent = step.title;
+  $("#tour-text").textContent = step.text;
+  $$(".tour-dots i").forEach((dot, i) =>
+    dot.classList.toggle("active", i === tourIndex),
+  );
+  $('[data-tour="back"]').disabled = tourIndex === 0;
+  $('[data-tour="next"]').textContent = last ? "Start exploring" : "Next";
+  const target = step.target && $(step.target);
+  target?.scrollIntoView?.({ block: "center", behavior: "auto" });
+  placeTour();
+  $('[data-tour="next"]').focus();
+}
+
+function placeTour() {
+  const layer = $(".tour-layer");
+  if (!layer) return;
+  const step = tourSteps[tourIndex];
+  const card = layer.querySelector(".tour-card");
+  const spot = layer.querySelector(".tour-spotlight");
+  const target = step.target && $(step.target);
+  const box = target?.getBoundingClientRect();
+  const width = window.innerWidth,
+    height = window.innerHeight;
+  const cardWidth = Math.min(360, width - 32);
+  const cardHeight = card.offsetHeight || 230;
+  card.style.width = `${cardWidth}px`;
+  if (!box || !box.width) {
+    Object.assign(spot.style, {
+      top: `${height / 2}px`,
+      left: `${width / 2}px`,
+      width: "0px",
+      height: "0px",
+    });
+    card.style.left = `${(width - cardWidth) / 2}px`;
+    card.style.top = `${Math.max(16, (height - cardHeight) / 2)}px`;
+    return;
+  }
+  const pad = 8;
+  const top = Math.max(8, box.top - pad),
+    bottom = Math.min(height - 8, box.bottom + pad);
+  Object.assign(spot.style, {
+    top: `${top}px`,
+    left: `${box.left - pad}px`,
+    width: `${box.width + pad * 2}px`,
+    height: `${Math.max(0, bottom - top)}px`,
+  });
+  let cardTop = bottom + 14;
+  if (cardTop + cardHeight > height - 12) cardTop = top - 14 - cardHeight;
+  if (cardTop < 12) cardTop = Math.max(12, height - cardHeight - 16);
+  card.style.top = `${cardTop}px`;
+  card.style.left = `${Math.min(
+    Math.max(16, box.left + box.width / 2 - cardWidth / 2),
+    width - cardWidth - 16,
+  )}px`;
+}
+
+function moveTour(delta) {
+  const next = tourIndex + delta;
+  if (next < 0) return;
+  if (next >= tourSteps.length) return endTour();
+  tourIndex = next;
+  showTourStep();
+}
+
+$("#tour-button").addEventListener("click", startTour);
+document.addEventListener("click", (event) => {
+  const control = event.target.closest("[data-tour]");
+  if (!control) return;
+  const kind = control.dataset.tour;
+  if (kind === "end") endTour();
+  else moveTour(kind === "next" ? 1 : -1);
+});
+document.addEventListener("keydown", (event) => {
+  if (tourIndex < 0) return;
+  if (event.key === "Escape") {
+    event.preventDefault();
+    endTour();
+  } else if (event.key === "ArrowRight") moveTour(1);
+  else if (event.key === "ArrowLeft") moveTour(-1);
+  else if (event.key === "Tab") {
+    const controls = $$(".tour-card button:not(:disabled)");
+    const index = controls.indexOf(document.activeElement);
+    event.preventDefault();
+    controls[
+      (index + (event.shiftKey ? -1 : 1) + controls.length) % controls.length
+    ]?.focus();
+  }
+});
+["resize", "scroll"].forEach((type) =>
+  window.addEventListener(
+    type,
+    () => {
+      if (tourIndex < 0 || tourFrame) return;
+      tourFrame = requestAnimationFrame(() => {
+        tourFrame = 0;
+        placeTour();
+      });
+    },
+    { passive: true },
+  ),
+);
+
 async function initialize() {
   try {
     station = await api("/api/state");
@@ -1143,6 +1364,7 @@ async function initialize() {
         : "overview",
     );
     if (!activeRun) await action($("#optimize"), optimize);
+    if (!tourSeen()) startTour();
   } catch (error) {
     $("#connection-state").textContent = "Connection lost";
     notify(`Could not load Volt. ${error.message}`, true);
