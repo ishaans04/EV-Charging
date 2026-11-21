@@ -44,18 +44,24 @@ let selectedHub = null;
 let confirmingHub = false;
 
 async function api(path, options = {}) {
-  const response = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    let message = data.detail || `Request failed (${response.status})`;
+  // The GitHub Pages build answers these calls in the browser (browser-api.js).
+  let status, data;
+  if (window.voltLocalApi) ({ status, data } = await window.voltLocalApi(path, options));
+  else {
+    const response = await fetch(path, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+    status = response.status;
+    data = await response.json().catch(() => ({}));
+  }
+  if (status < 200 || status >= 300) {
+    let message = data.detail || `Request failed (${status})`;
     if (Array.isArray(message))
       message = message
         .map((item) => `${item.loc.slice(1).join(".")}: ${item.msg}`)
         .join("; ");
-    if (response.status === 409)
+    if (status === 409)
       message += " Refresh the page to load the latest state.";
     throw new Error(message);
   }
@@ -176,7 +182,7 @@ function setView(view, focus = false) {
   $("#page-subtitle").textContent = subtitle;
   $("#breadcrumb-current").textContent = breadcrumb;
   document.title = `Volt · ${breadcrumb}`;
-  window.history.replaceState(null, "", `/console#${view}`);
+  window.history.replaceState(null, "", `#${view}`);
   if (view === "requests") renderRequestTable();
   if (view === "history")
     loadHistory().catch((error) => notify(error.message, true));

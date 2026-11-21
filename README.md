@@ -28,6 +28,17 @@ Open **http://127.0.0.1:8000**. Use `python app.py --port 8001` if port 8000 is 
 
 The first console visit generates 150 synthetic requests with seed 2026 and solves the four-port day. Subsequent visits restore the most recent run matching the current demand. No Node build, account, API key, cloud service, or GPU is needed. All fonts and artwork are served locally.
 
+## Live site (GitHub Pages)
+
+**https://ishaans04.github.io/Volt/** runs the whole app with no server. GitHub Pages serves the files and the browser runs the same Python modules (`evsched.py`, `volt_service.py`, `run_experiments.py`) through [Pyodide](https://pyodide.org), Python compiled to WebAssembly, in a background thread. Each visitor gets a private station and run history saved in their own browser (IndexedDB). Nothing is installed: the first visit downloads Python into the browser cache (a few seconds), later visits open in about a second. The `/docs` API page and `evaluate.py` remain local-only.
+
+Every push to `main` rebuilds and deploys the site with `.github/workflows/pages.yml`. To preview the static build locally:
+
+```powershell
+.\.venv\Scripts\python tools/build_pages.py
+.\.venv\Scripts\python -m http.server -d _site 8080
+```
+
 ## A three-minute demonstration
 
 1. Toggle FCFS and Optimal on the landing page: the report's example improves from ₹170 to ₹240.

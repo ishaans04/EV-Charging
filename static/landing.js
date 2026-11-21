@@ -47,7 +47,9 @@ document.addEventListener("keydown", (event) => {
     !event.metaKey &&
     !event.altKey
   )
-    window.location.assign("/console");
+    window.location.assign(
+      document.querySelector(".nav-console")?.href || "/console",
+    );
 });
 
 // ---------------------------------------------------------------------------

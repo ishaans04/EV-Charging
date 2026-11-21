@@ -9,3 +9,4 @@ artifacts/
 .DS_Store
 .qa/
 node_modules/
+_site/

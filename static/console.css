@@ -3033,3 +3033,48 @@ details[open] > summary .disclosure-mark {
     transition: none;
   }
 }
+/* GitHub Pages build: shown while Python starts in the browser. */
+.boot-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #f4f7fcd9;
+}
+.boot-card {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  max-width: 360px;
+  padding: 28px 30px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #e3eaf3;
+  border-radius: 16px;
+  box-shadow: 0 18px 50px #0f234a1f;
+}
+.boot-card strong {
+  font-size: 17px;
+  font-weight: 550;
+  color: var(--console-ink);
+}
+.boot-card small {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--console-muted);
+}
+.boot-spinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid #e3eaf6;
+  border-top-color: #315f96;
+  animation: boot-spin 0.8s linear infinite;
+}
+@keyframes boot-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
