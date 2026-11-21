@@ -573,13 +573,23 @@ details[open] > summary .disclosure-mark {
   font-weight: 450;
   pointer-events: none;
 }
+.timeline-svg .bay-label {
+  fill: #7d8ea8;
+  font-size: 10px;
+  pointer-events: none;
+}
 .timeline-svg .slot {
   cursor: pointer;
 }
-.timeline-svg .slot:hover rect,
-.timeline-svg .slot:focus rect {
+.timeline-svg .slot:hover .bay,
+.timeline-svg .slot:focus .bay {
   stroke: #315f96;
-  stroke-width: 2;
+  stroke-width: 1.5;
+}
+.timeline-svg .slot:hover .car-body,
+.timeline-svg .slot:focus .car-body {
+  stroke: #315f96;
+  stroke-width: 1.5;
 }
 .timeline-svg .slot:focus {
   outline: none;

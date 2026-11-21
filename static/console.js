@@ -367,20 +367,49 @@ function drawTimeline(result) {
   });
   schedule.forEach((request) => {
     const y = top + ports.indexOf(request.port) * rowHeight + 4;
+    const slotX = x(request.arrival_min);
     const slotWidth = Math.max(
       2,
       x(request.deadline_min) - x(request.arrival_min) - 2,
     );
-    const color =
+    const [color, tint] =
       request.surge_mult >= 2
-        ? "#c4a45d"
+        ? ["#c4a45d", "#f6efdc"]
         : request.surge_mult >= 1.65
-          ? "#8d87bc"
-          : "#7f9fda";
+          ? ["#8d87bc", "#ecebf6"]
+          : ["#7f9fda", "#e8eefa"];
     const text = `R${request.request_id} · ${time(request.arrival_min)}–${time(request.deadline_min)} · ${money(request.profit_inr)} · Port ${request.port}`;
-    svg += `<g class="slot" role="button" tabindex="0" data-session="${request.request_id}" aria-label="${escapeHTML(text)}"><title>${escapeHTML(text)}</title><rect x="${x(request.arrival_min)}" y="${y}" width="${slotWidth}" height="35" rx="5" fill="${color}"/>${slotWidth > 32 ? `<text class="session-label" x="${x(request.arrival_min) + slotWidth / 2}" y="${y + 22}" text-anchor="middle">R${request.request_id}</text>` : ""}</g>`;
+    const carWidth = Math.min(slotWidth, 60);
+    const spare = slotWidth - carWidth;
+    const extra =
+      spare >= 30
+        ? `<text class="bay-label" x="${slotX + slotWidth - 6}" y="${y + 22}" text-anchor="end">${spare >= 46 ? "⚡ " : ""}${request.duration_min}m</text>`
+        : "";
+    svg += `<g class="slot" role="button" tabindex="0" data-session="${request.request_id}" aria-label="${escapeHTML(text)}"><title>${escapeHTML(text)}</title><rect class="bay" x="${slotX}" y="${y}" width="${slotWidth}" height="35" rx="7" fill="${tint}"/>${car(slotX, y, carWidth, color)}${extra}${carWidth >= 38 ? `<text class="session-label" x="${slotX + carWidth / 2}" y="${y + 25}" text-anchor="middle">R${request.request_id}</text>` : ""}</g>`;
   });
   $("#timeline").innerHTML = svg + "</svg>";
+}
+
+// A small side-view car facing right (towards later times). Pure SVG paths,
+// so a full day of sessions costs no more to draw than plain boxes.
+function car(left, top, width, color) {
+  const w = Math.max(width, 8);
+  const bottom = top + 29,
+    body = top + (w < 22 ? 17 : 14),
+    roof = top + (w < 22 ? 9 : 4);
+  const corner = Math.min(5, w / 5);
+  const at = (share) => (left + w * share).toFixed(1);
+  const wheel = Math.max(2.5, Math.min(5, w / 7));
+  const wheelInset = Math.max(wheel + 1.5, w * 0.22);
+  let shape =
+    `<path class="car-body" fill="${color}" d="M${left + corner} ${bottom}H${left + w - corner}Q${left + w} ${bottom} ${left + w} ${bottom - corner}V${body + 4}Q${left + w} ${body} ${left + w - 4} ${body - 0.5}L${at(0.74)} ${body - 1}L${at(0.6)} ${roof}H${at(0.3)}L${at(0.16)} ${body - 1}L${left + 3} ${body}Q${left} ${body + 1} ${left} ${body + 4}V${bottom - corner}Q${left} ${bottom} ${left + corner} ${bottom}Z"/>`;
+  if (w >= 22) {
+    shape += `<path fill="#fff" opacity=".6" d="M${at(0.235)} ${body - 1.5}L${at(0.32)} ${roof + 2.5}H${at(0.44)}V${body - 1.5}ZM${at(0.48)} ${body - 1.5}V${roof + 2.5}H${at(0.585)}L${at(0.67)} ${body - 1.5}Z"/><rect x="${left + w - 4.5}" y="${body + 2}" width="3" height="2.5" rx="1" fill="#fff8de"/><rect x="${left + 1}" y="${body + 2}" width="2.5" height="2.5" rx="1" fill="#f3c6c6"/>`;
+  }
+  [left + wheelInset, left + w - wheelInset].forEach((cx) => {
+    shape += `<circle cx="${cx.toFixed(1)}" cy="${bottom}" r="${wheel}" fill="#2b4266"/><circle cx="${cx.toFixed(1)}" cy="${bottom}" r="${(wheel * 0.38).toFixed(1)}" fill="#dfe6f1"/>`;
+  });
+  return shape;
 }
 
 function renderRequestTable() {
