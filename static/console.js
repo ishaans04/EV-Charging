@@ -35,6 +35,9 @@ let page = 0;
 let busy = false;
 let toastTimer;
 let labRevision = null;
+let timelinePort = "all";
+let savedRuns = [];
+const comparedRuns = new Set();
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -113,29 +116,38 @@ function currentResult() {
 
 function setView(view, focus = false) {
   currentView = view;
+  $(".heading-actions").classList.toggle(
+    "hidden",
+    ["requests", "history"].includes(view),
+  );
+  $("#planning-controls").classList.toggle(
+    "hidden",
+    ["requests", "history"].includes(view),
+  );
+  $("#open-generate").classList.toggle("hidden", view === "lab");
   const metadata = {
     overview: [
       "YOUR STATION, AT A GLANCE",
-      "A better day, by design.",
-      "Find the right sessions. Put every port to work.",
+      "Your charging day.",
+      "Plan the day, inspect each port, and compare the results.",
       "Overview",
     ],
     requests: [
       "THE DEMAND BEHIND YOUR DAY",
-      "Every arrival is an opportunity.",
-      "Manage fixed-slot requests and the value they bring.",
+      "Charging requests.",
+      "Review and adjust your station’s bookings.",
       "Requests",
     ],
     lab: [
       "DESIGN & ANALYSIS OF ALGORITHMS",
-      "A little theory. A lot of possibility.",
-      "Explore the decisions behind the schedule.",
+      "Explore the algorithms.",
+      "Follow one decision at a time.",
       "Algorithm lab",
     ],
     history: [
       "YOUR PREVIOUS DECISIONS",
-      "Good outcomes, remembered.",
-      "Revisit saved schedules and the demand behind them.",
+      "Your saved runs.",
+      "Inspect a saved schedule or compare two runs.",
       "Run history",
     ],
   };
@@ -158,7 +170,11 @@ function setView(view, focus = false) {
   if (view === "requests") renderRequestTable();
   if (view === "history")
     loadHistory().catch((error) => notify(error.message, true));
-  if (focus) $("#workspace").focus({ preventScroll: true });
+  if (focus) {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    $("#workspace").focus({ preventScroll: true });
+  }
 }
 
 function configureMethods() {
@@ -193,6 +209,8 @@ function renderStation() {
         : "Custom data";
   $("#connection-state").textContent = "Saved locally";
   configureMethods();
+  $("#plan-summary").textContent =
+    `${station.settings.ports} port${station.settings.ports === 1 ? "" : "s"} · ${$("#algorithm").selectedOptions[0].textContent.split(" · ")[0]}`;
   renderResults();
   renderRequestTable();
 }
@@ -289,20 +307,28 @@ function renderResults() {
       return `<div class="comparison-row"><span class="comparison-name">${row.exact ? "Optimal" : escapeHTML(labels[row.algorithm])}</span><div class="comparison-bar-track"><div class="comparison-bar" style="width:${share}%"></div></div><span class="comparison-value">${money(row.profit_inr)}<span class="comparison-share">${share.toFixed(1)}% of optimal</span></span></div>`;
     })
     .join("");
-  $("#insight-title").textContent =
-    delta > 0
-      ? "Same ports. More possibility."
-      : "Make the best of every booking.";
-  $("#insight-text").textContent =
-    `${activeRun.comparison[0].name} finds the exact profit maximum. ${result.name} selected ${result.accepted} sessions from ${activeRun.requests.length} requests in ${result.runtime_ms.toFixed(2)} ms.`;
   drawTimeline(result);
   renderTrace();
 }
 
 function drawTimeline(result) {
-  if (!result.schedule.length) {
+  if (timelinePort !== "all" && Number(timelinePort) > result.ports)
+    timelinePort = "all";
+  $("#timeline-port").innerHTML =
+    '<option value="all">All ports</option>' +
+    Array.from(
+      { length: result.ports },
+      (_, i) =>
+        `<option value="${i + 1}">Port ${String(i + 1).padStart(2, "0")}</option>`,
+    ).join("");
+  $("#timeline-port").value = timelinePort;
+  const schedule = result.schedule.filter(
+    (request) =>
+      timelinePort === "all" || request.port === Number(timelinePort),
+  );
+  if (!schedule.length) {
     $("#timeline").innerHTML =
-      '<div class="empty-state"><span class="empty-icon">⌁</span><h3>No profitable sessions to schedule.</h3><p>Add requests or review station prices. The empty schedule earns ₹0.</p></div>';
+      `<div class="empty-state"><span class="empty-icon">⌁</span><h3>${result.schedule.length ? "A little breathing room on this port." : "No profitable sessions to schedule."}</h3><p>${result.schedule.length ? "Choose another port or return to the full station view." : "Add requests or review station prices. The empty schedule earns ₹0."}</p></div>`;
     return;
   }
   const start = Math.min(
@@ -310,33 +336,37 @@ function drawTimeline(result) {
     Math.floor(Math.min(...activeRun.requests.map((r) => r.arrival_min)) / 60) *
       60,
   );
-  const end = 1440;
-  const width = 1100,
-    left = 78,
+  const end = 1440,
+    width = 1100,
+    left = 84,
     right = 22,
-    top = 35,
-    rowHeight = 56;
-  const height = top + result.ports * rowHeight + 15;
+    top = 43,
+    rowHeight = 64;
+  const ports =
+    timelinePort === "all"
+      ? Array.from({ length: result.ports }, (_, i) => i + 1)
+      : [Number(timelinePort)];
+  const height = top + ports.length * rowHeight + 16;
   const x = (value) =>
     left + ((value - start) / (end - start)) * (width - left - right);
-  let svg = `<svg class="timeline-svg" viewBox="0 0 ${width} ${height}" role="group" aria-label="${escapeHTML(result.name)} charging schedule; ${result.accepted} sessions across ${result.ports} ports"><title>Charging schedule. Select a session for its booking details.</title>`;
+  let svg = `<svg class="timeline-svg" viewBox="0 0 ${width} ${height}" role="group" aria-label="${escapeHTML(result.name)} charging schedule"><title>Charging schedule. Select a session for its booking details.</title>`;
   [
     [480, 660],
     [1020, 1260],
   ].forEach(([a, b]) => {
     const from = Math.max(start, a);
     if (from < b)
-      svg += `<rect x="${x(from)}" y="${top - 4}" width="${x(b) - x(from)}" height="${result.ports * rowHeight}" fill="#f8f7ef" opacity=".7"/>`;
+      svg += `<rect x="${x(from)}" y="${top - 7}" width="${x(b) - x(from)}" height="${ports.length * rowHeight}" fill="#f8f7ef" opacity=".7"/>`;
   });
   for (let tick = start; tick <= end; tick += 120) {
-    svg += `<text x="${x(tick)}" y="16" text-anchor="${tick === end ? "end" : "middle"}">${time(tick)}</text><line x1="${x(tick)}" x2="${x(tick)}" y1="${top - 4}" y2="${height - 15}" stroke="#e8edf6" stroke-dasharray="2 4"/>`;
+    svg += `<text x="${x(tick)}" y="19" text-anchor="${tick === end ? "end" : "middle"}">${time(tick)}</text><line x1="${x(tick)}" x2="${x(tick)}" y1="${top - 7}" y2="${height - 16}" stroke="#e8edf6" stroke-dasharray="2 5"/>`;
   }
-  for (let p = 1; p <= result.ports; p++) {
-    const y = top + (p - 1) * rowHeight;
-    svg += `<text class="port-label" x="8" y="${y + 23}">Port ${String(p).padStart(2, "0")}</text><line x1="${left}" x2="${width - right}" y1="${y + 42}" y2="${y + 42}" stroke="#eef2f8"/>`;
-  }
-  result.schedule.forEach((request) => {
-    const y = top + (request.port - 1) * rowHeight + 5;
+  ports.forEach((port, index) => {
+    const y = top + index * rowHeight;
+    svg += `<text class="port-label" x="5" y="${y + 25}">Port ${String(port).padStart(2, "0")}</text><line x1="${left}" x2="${width - right}" y1="${y + 49}" y2="${y + 49}" stroke="#eef2f8"/>`;
+  });
+  schedule.forEach((request) => {
+    const y = top + ports.indexOf(request.port) * rowHeight + 4;
     const slotWidth = Math.max(
       2,
       x(request.deadline_min) - x(request.arrival_min) - 2,
@@ -348,7 +378,7 @@ function drawTimeline(result) {
           ? "#8d87bc"
           : "#7f9fda";
     const text = `R${request.request_id} · ${time(request.arrival_min)}–${time(request.deadline_min)} · ${money(request.profit_inr)} · Port ${request.port}`;
-    svg += `<g class="slot" role="button" tabindex="0" data-session="${request.request_id}" aria-label="${escapeHTML(text)}"><title>${escapeHTML(text)}</title><rect x="${x(request.arrival_min)}" y="${y}" width="${slotWidth}" height="31" rx="4" fill="${color}"/>${slotWidth > 29 ? `<text class="session-label" x="${x(request.arrival_min) + slotWidth / 2}" y="${y + 19}" text-anchor="middle">R${request.request_id}</text>` : ""}</g>`;
+    svg += `<g class="slot" role="button" tabindex="0" data-session="${request.request_id}" aria-label="${escapeHTML(text)}"><title>${escapeHTML(text)}</title><rect x="${x(request.arrival_min)}" y="${y}" width="${slotWidth}" height="35" rx="5" fill="${color}"/>${slotWidth > 32 ? `<text class="session-label" x="${x(request.arrival_min) + slotWidth / 2}" y="${y + 22}" text-anchor="middle">R${request.request_id}</text>` : ""}</g>`;
   });
   $("#timeline").innerHTML = svg + "</svg>";
 }
@@ -376,23 +406,30 @@ function renderRequestTable() {
         String(request.request_id).includes(search) &&
         (filter === "all" || request.status === filter),
     )
-    .sort(
-      (a, b) => a.arrival_min - b.arrival_min || a.request_id - b.request_id,
-    );
-  const pages = Math.max(1, Math.ceil(rows.length / 20));
+    .sort((a, b) => {
+      const sort = $("#request-sort").value;
+      return (
+        (sort === "profit"
+          ? b.profit_inr - a.profit_inr
+          : sort === "duration"
+            ? a.duration_min - b.duration_min
+            : a.arrival_min - b.arrival_min) || a.request_id - b.request_id
+      );
+    });
+  const pages = Math.max(1, Math.ceil(rows.length / 10));
   page = Math.min(page, pages - 1);
-  const slice = rows.slice(page * 20, page * 20 + 20);
+  const slice = rows.slice(page * 10, page * 10 + 10);
   $("#request-rows").innerHTML = slice.length
     ? slice
         .map(
           (request) =>
-            `<tr><td>R${request.request_id}</td><td>${time(request.arrival_min)} – ${time(request.deadline_min)}</td><td>${request.duration_min} min</td><td>${request.energy_kwh.toFixed(1)} kWh</td><td>${request.surge_mult.toFixed(2)}×</td><td>${money(request.profit_inr)}</td><td><span class="pill status-${request.status}">${request.status[0].toUpperCase() + request.status.slice(1)}</span></td><td><button type="button" class="edit-button" data-edit="${request.request_id}" aria-label="Edit request R${request.request_id}">Edit</button></td></tr>`,
+            `<tr><td>R${request.request_id}</td><td><strong>${time(request.arrival_min)} – ${time(request.deadline_min)}</strong><small>${request.duration_min} minute session</small></td><td><strong>${request.energy_kwh.toFixed(1)} kWh</strong><small>${request.surge_mult.toFixed(2)}× surge</small></td><td>${money(request.profit_inr)}</td><td><span class="pill status-${request.status}">${request.status[0].toUpperCase() + request.status.slice(1)}</span></td><td><button type="button" class="edit-button" data-edit="${request.request_id}" aria-label="Edit request R${request.request_id}">Edit</button></td></tr>`,
         )
         .join("")
-    : '<tr><td colspan="8"><div class="empty-state"><h3>No requests here yet.</h3><p>Add a booking, generate demand, or adjust your filters.</p></div></td></tr>';
+    : '<tr><td colspan="6"><div class="empty-state"><h3>No requests here yet.</h3><p>Add a booking, generate demand, or adjust your filters.</p></div></td></tr>';
   $("#filter-count").textContent = `${rows.length} matching requests`;
   $("#page-description").textContent = rows.length
-    ? `${page * 20 + 1}–${Math.min((page + 1) * 20, rows.length)} of ${rows.length} requests`
+    ? `${page * 10 + 1}–${Math.min((page + 1) * 10, rows.length)} of ${rows.length} requests`
     : "0 requests";
   $("#prev-page").disabled = page === 0;
   $("#next-page").disabled = page >= pages - 1;
@@ -410,23 +447,24 @@ function renderTrace() {
   }
   $("#trace-title").textContent = `Inside ${result.name.toLowerCase()}`;
   $("#trace-subtitle").textContent =
-    `Trace of the executed solver · ${result.accepted} accepted · ${money(result.profit_inr)} total profit`;
+    `${result.accepted} sessions selected · ${money(result.profit_inr)} total profit`;
   $("#trace-complexity").textContent = result.complexity;
   if (result.algorithm === "dp") {
     const chosen = new Set(result.schedule.map((r) => r.request_id));
     const rows = result.trace.rows.slice(0, 300);
     $("#trace-content").innerHTML =
-      `<div class="trace-formula">OPT(j) = max(OPT(j−1), profit(j) + OPT(pred(j)))</div><table class="data-table"><thead><tr><th>j</th><th>Request</th><th>pred(j)</th><th>Include / ₹</th><th>Exclude / ₹</th><th>OPT(j) / ₹</th><th>Local choice</th><th>Traceback</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row.j}</td><td>R${row.request_id}</td><td>${row.predecessor}</td><td>${row.include}</td><td>${row.exclude}</td><td>${row.optimal}</td><td><span class="trace-decision ${row.take ? "" : "skip"}">${row.take ? "Take" : "Skip"}</span></td><td>${chosen.has(row.request_id) ? "Selected" : "—"}</td></tr>`).join("")}</tbody></table><p class="footnote">The local choice improves a prefix; traceback identifies the final selected set. ${result.trace.rows.length > 300 ? "Showing the first 300 states. Export JSON for the complete trace." : "Ties skip the current request, matching the report."}</p>`;
+      `<div class="trace-formula">OPT(j) = max(OPT(j−1), profit(j) + OPT(pred(j)))</div>${rows.length ? `<div class="trace-explorer"><label class="trace-range-label" for="trace-step"><span>Explore a decision</span><output id="trace-step-value"></output></label><input id="trace-step" type="range" min="1" max="${rows.length}" value="${rows.length}" aria-label="Dynamic programming decision"><div id="trace-focus" class="trace-focus"></div></div>` : ""}<details class="trace-table-details"><summary>Full DP table <span>＋</span></summary><div class="trace-table-scroll"><table class="data-table"><thead><tr><th>j</th><th>Request</th><th>pred(j)</th><th>Include / ₹</th><th>Exclude / ₹</th><th>OPT(j) / ₹</th><th>Local choice</th><th>Traceback</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row.j}</td><td>R${row.request_id}</td><td>${row.predecessor}</td><td>${row.include}</td><td>${row.exclude}</td><td>${row.optimal}</td><td><span class="trace-decision ${row.take ? "" : "skip"}">${row.take ? "Take" : "Skip"}</span></td><td>${chosen.has(row.request_id) ? "Selected" : "—"}</td></tr>`).join("")}</tbody></table></div></details><p class="footnote">A local choice improves a prefix; traceback identifies the final set. ${result.trace.rows.length > 300 ? "Showing the first 300 states. Export JSON for the complete trace." : "Ties skip the current request, matching the report."}</p>`;
+    if (rows.length) updateTraceStep(rows.length);
   } else if (result.algorithm === "flow") {
     $("#trace-content").innerHTML =
-      `<div class="trace-formula">Request arc: capacity = 1, cost = −profit · Send k units of flow</div><div class="flow-summary"><span><strong>${result.trace.nodes}</strong>time nodes</span><span><strong>${result.trace.arcs}</strong>forward arcs</span><span><strong>${result.trace.augmentations.length}</strong>augmentations</span></div>${result.trace.augmentations.map((row) => `<div class="flow-step"><span class="flow-step-number">${row.iteration}</span><div><h3>Dijkstra search · ${row.units} unit${row.units === 1 ? "" : "s"} routed</h3><p>Total flow ${row.flow}/${result.ports} · ${row.reverse_arcs} reverse arcs used<br>Path: ${row.path_minutes.slice(0, 35).map(time).join(" → ")}${row.path_minutes.length > 35 ? " …" : ""}</p></div><span class="flow-value">+${money(row.profit_change)}</span></div>`).join("")}<p class="footnote">Initial potentials come from a DAG shortest-path pass. Reverse arcs allow earlier choices to be exchanged; Dijkstra uses reduced non-negative costs.</p>`;
+      `<div class="trace-formula">Request arc: capacity = 1, cost = −profit · Send k units of flow</div><div class="flow-summary"><span><strong>${result.trace.nodes}</strong>time nodes</span><span><strong>${result.trace.arcs}</strong>forward arcs</span><span><strong>${result.trace.augmentations.length}</strong>augmentations</span></div>${result.trace.augmentations.map((row) => `<details class="flow-step" ${row.iteration === 1 ? "open" : ""}><summary><span class="flow-step-number">${row.iteration}</span><strong>Dijkstra search · ${row.units} unit${row.units === 1 ? "" : "s"} routed</strong><span class="flow-value">+${money(row.profit_change)}</span></summary><p>Total flow ${row.flow}/${result.ports} · ${row.reverse_arcs} reverse arcs<br>Path: ${row.path_minutes.slice(0, 35).map(time).join(" → ")}${row.path_minutes.length > 35 ? " …" : ""}</p></details>`).join("")}<p class="footnote">Open an augmentation to explore its path. Reverse arcs allow previous choices to be exchanged; Dijkstra uses non-negative reduced costs.</p>`;
   } else {
     const detail =
       result.algorithm === "search"
-        ? `The branch-and-bound search visited ${integer(result.trace.visited)} states, pruning branches whose remaining positive profit could not improve the best answer.`
+        ? `Branch and bound visited ${integer(result.trace.visited)} states, pruning branches that could not improve the best answer.`
         : result.algorithm === "subsets"
-          ? `The oracle independently enumerated ${integer(result.trace.subsets)} subsets and checked their maximum overlap.`
-          : "This heuristic orders requests by its local rule, then uses minute bitsets to find a port free for the entire booking. It can miss combinations with higher total profit.";
+          ? `The oracle independently enumerated ${integer(result.trace.subsets)} subsets and checked maximum overlap.`
+          : "This heuristic orders requests by its local rule and finds a port free for the whole slot. It can miss more valuable combinations.";
     $("#trace-content").innerHTML =
       `<div class="empty-state"><span class="empty-icon">${result.exact ? "✓" : "≋"}</span><h3>${escapeHTML(result.name)}</h3><p>${detail}</p></div>`;
   }
@@ -434,6 +472,15 @@ function renderTrace() {
     "beforeend",
     `<a class="button secondary small trace-export" href="/api/runs/${activeRun.id}/export?format=json" download>Export run JSON</a>`,
   );
+}
+
+function updateTraceStep(value) {
+  const row = activeRun?.selected.trace.rows?.[Number(value) - 1];
+  if (!row) return;
+  $("#trace-step-value").textContent =
+    `${row.j} / ${Math.min(activeRun.selected.trace.rows.length, 300)}`;
+  $("#trace-focus").innerHTML =
+    `<div><h3>R${row.request_id} · ${row.take ? "Take" : "Skip"}</h3><p>Compatible prefix: ${row.predecessor}<br>Best profit so far: ${money(row.optimal)}</p></div><dl><dt>Include this request</dt><dd>${money(row.include)}</dd></dl><dl><dt>Keep the previous best</dt><dd>${money(row.exclude)}</dd></dl>`;
 }
 
 function openDialog(id) {
@@ -503,10 +550,73 @@ async function optimize() {
 }
 
 async function loadHistory() {
-  const runs = await api("/api/runs");
+  savedRuns = await api("/api/runs");
+  for (const id of comparedRuns)
+    if (!savedRuns.some((run) => run.id === id)) comparedRuns.delete(id);
+  renderHistory();
+}
+
+function renderHistory() {
+  const filter = $("#history-filter").value;
+  const exact = (run) =>
+    ![
+      "First come, first served",
+      "Highest profit",
+      "Profit per minute",
+      "Earliest finish",
+    ].includes(run.name);
+  const runs = savedRuns
+    .filter(
+      (run) =>
+        filter === "all" || (filter === "exact" ? exact(run) : !exact(run)),
+    )
+    .sort((a, b) =>
+      $("#history-sort").value === "profit"
+        ? b.profit_inr - a.profit_inr
+        : new Date(b.created) - new Date(a.created),
+    );
   $("#history-content").innerHTML = runs.length
-    ? `<div class="table-scroll history-table"><table class="data-table"><thead><tr><th>Created</th><th>Method</th><th>Revision</th><th>Ports</th><th>Served</th><th>Profit</th><th></th></tr></thead><tbody>${runs.map((run) => `<tr><td>${escapeHTML(new Date(run.created).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }))}</td><td>${escapeHTML(run.name)}</td><td>${run.revision}</td><td>${run.ports}</td><td>${run.accepted}</td><td>${money(run.profit_inr)}</td><td><button class="history-open" type="button" data-run="${run.id}">Inspect</button></td></tr>`).join("")}</tbody></table></div>`
-    : '<div class="empty-state"><span class="empty-icon">◷</span><h3>A fresh start.</h3><p>Run your first optimization to save a schedule here.</p></div>';
+    ? `<div class="history-list">${runs.map((run) => `<article class="run-card"><input type="checkbox" data-compare="${run.id}" aria-label="Select ${escapeHTML(run.name)} run from ${escapeHTML(new Date(run.created).toLocaleString("en-IN"))} for comparison" ${comparedRuns.has(run.id) ? "checked" : ""}><div><h3>${escapeHTML(run.name)}</h3><p><time datetime="${run.created}">${escapeHTML(new Date(run.created).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }))}</time> · Revision ${run.revision} · ${run.ports} ports</p></div><div class="run-card-profit"><strong>${money(run.profit_inr)}</strong><small>${run.accepted} sessions served</small></div><button class="history-open" type="button" data-run="${run.id}">Inspect run</button></article>`).join("")}</div>`
+    : '<div class="empty-state"><span class="empty-icon">◷</span><h3>No saved runs here yet.</h3><p>Optimize a day or change the method filter to see your saved decisions.</p></div>';
+  $("#compare-count").textContent = `${comparedRuns.size}/2`;
+  $("#compare-runs").disabled = comparedRuns.size !== 2;
+}
+
+async function compareSavedRuns() {
+  const runs = await Promise.all(
+    [...comparedRuns].map((id) => api(`/api/runs/${id}`)),
+  );
+  if (runs.length !== 2) return;
+  const demandKey = (run) =>
+    JSON.stringify(
+      [...run.requests]
+        .sort((a, b) => a.request_id - b.request_id)
+        .map((request) => [
+          request.request_id,
+          request.arrival_min,
+          request.duration_min,
+          request.energy_kwh,
+          request.surge_mult,
+        ]),
+    );
+  const sameDemand = demandKey(runs[0]) === demandKey(runs[1]);
+  const rows = [
+    ["Profit", ...runs.map((run) => money(run.selected.profit_inr))],
+    [
+      "Vehicles served",
+      ...runs.map((run) => `${run.selected.accepted} / ${run.requests.length}`),
+    ],
+    ["Ports", ...runs.map((run) => run.settings.ports)],
+    [
+      "Utilization",
+      ...runs.map((run) => `${run.selected.utilization.toFixed(1)}%`),
+    ],
+    ["Tariff / kWh", ...runs.map((run) => money(run.settings.tariff))],
+    ["Revision", ...runs.map((run) => run.revision)],
+  ];
+  $("#history-comparison").innerHTML =
+    `<p class="comparison-note">${sameDemand ? "Both runs use the same request set. Compare the effect of their settings and scheduling method." : "These runs use different request sets. Treat their outcomes as separate planning scenarios."}</p><table class="data-table run-comparison-table"><thead><tr><th>Metric</th>${runs.map((run) => `<th>${escapeHTML(run.selected.name)}</th>`).join("")}</tr></thead><tbody>${rows.map(([label, ...values]) => `<tr><td>${label}</td>${values.map((value) => `<td><strong>${value}</strong></td>`).join("")}</tr>`).join("")}<tr><td>Schedule</td>${runs.map((run) => `<td><button class="button secondary small" type="button" data-run="${run.id}">Inspect run</button></td>`).join("")}</tr></tbody></table>`;
+  openDialog("#history-compare-dialog");
 }
 
 function showSession(id) {
@@ -587,7 +697,6 @@ function openSettings() {
   form.elements.energy_cost.value = station.settings.energy_cost;
   openDialog("#settings-dialog");
 }
-$("#open-settings").addEventListener("click", openSettings);
 $("#settings-shortcut").addEventListener("click", openSettings);
 document.addEventListener("click", (event) => {
   const close = event.target.closest("[data-close]");
@@ -599,6 +708,7 @@ document.addEventListener("click", (event) => {
   const history = event.target.closest("[data-run]");
   if (history)
     action(history, async () => {
+      history.closest("dialog")?.close();
       activeRun = await api(`/api/runs/${history.dataset.run}`);
       shownMethod = activeRun.selected.algorithm;
       renderResults();
@@ -872,4 +982,38 @@ async function initialize() {
     notify(`Could not load Volt. ${error.message}`, true);
   }
 }
+$("#algorithm").addEventListener("change", () => {
+  $("#plan-summary").textContent =
+    `${station.settings.ports} port${station.settings.ports === 1 ? "" : "s"} · ${$("#algorithm").selectedOptions[0].textContent.split(" · ")[0]}`;
+});
+$("#timeline-port").addEventListener("change", (event) => {
+  timelinePort = event.target.value;
+  const result = selectedResult();
+  if (result) drawTimeline(result);
+});
+$("#request-sort").addEventListener("change", () => {
+  page = 0;
+  renderRequestTable();
+});
+$("#history-filter").addEventListener("change", renderHistory);
+$("#history-sort").addEventListener("change", renderHistory);
+$("#compare-runs").addEventListener("click", () =>
+  action($("#compare-runs"), compareSavedRuns),
+);
+document.addEventListener("input", (event) => {
+  if (event.target.id === "trace-step") updateTraceStep(event.target.value);
+});
+document.addEventListener("change", (event) => {
+  const checkbox = event.target.closest("[data-compare]");
+  if (!checkbox) return;
+  if (checkbox.checked && comparedRuns.size >= 2) {
+    checkbox.checked = false;
+    notify("Choose two runs at a time.");
+    return;
+  }
+  if (checkbox.checked) comparedRuns.add(checkbox.dataset.compare);
+  else comparedRuns.delete(checkbox.dataset.compare);
+  $("#compare-count").textContent = `${comparedRuns.size}/2`;
+  $("#compare-runs").disabled = comparedRuns.size !== 2;
+});
 initialize();
