@@ -131,10 +131,16 @@ function setView(view, focus = false) {
   $("#open-generate").classList.toggle("hidden", view === "lab");
   const metadata = {
     overview: [
-      "YOUR STATION, AT A GLANCE",
-      "Your charging day.",
-      "Plan the day, inspect each port, and compare the results.",
+      "YOUR NETWORK, AT A GLANCE",
+      "Your charging network.",
+      "Pick a hub on the map, load it, and watch the optimizer plan its day.",
       "Overview",
+    ],
+    schedule: [
+      "YOUR STATION, PORT BY PORT",
+      "Your charging day.",
+      "Inspect each port, open any car for its booking, and compare the results.",
+      "Port schedule",
     ],
     requests: [
       "THE DEMAND BEHIND YOUR DAY",
@@ -819,7 +825,10 @@ $("#ports").addEventListener("change", (event) =>
   }),
 );
 $("#optimize").addEventListener("click", () =>
-  action($("#optimize"), optimize),
+  action($("#optimize"), async () => {
+    await optimize();
+    if (currentView === "overview") setView("schedule", true);
+  }),
 );
 $("#open-generate").addEventListener("click", () =>
   openDialog("#generate-dialog"),
@@ -850,7 +859,11 @@ document.addEventListener("click", (event) => {
     if (station.source.kind !== "synthetic" && !confirmingHub) {
       confirmingHub = true;
       renderHubs();
-    } else action(load, () => loadHub(load.dataset.loadHub));
+    } else
+      action(load, async () => {
+        await loadHub(load.dataset.loadHub);
+        setView("schedule", true);
+      });
   }
   const history = event.target.closest("[data-run]");
   if (history)
@@ -860,7 +873,7 @@ document.addEventListener("click", (event) => {
       shownMethod = activeRun.selected.algorithm;
       renderResults();
       renderRequestTable();
-      setView("overview", true);
+      setView("schedule", true);
     });
 });
 document.addEventListener("keydown", (event) => {
@@ -1125,7 +1138,7 @@ async function initialize() {
     renderStation();
     const view = window.location.hash.slice(1);
     setView(
-      ["overview", "requests", "lab", "history"].includes(view)
+      ["overview", "schedule", "requests", "lab", "history"].includes(view)
         ? view
         : "overview",
     );

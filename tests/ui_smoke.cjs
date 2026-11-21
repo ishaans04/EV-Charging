@@ -115,8 +115,15 @@ async function main() {
   assert.equal($(".sidebar-note"), null);
   assert.equal(
     $(".console-topbar .console-nav").querySelectorAll("[data-view]").length,
-    4,
+    5,
   );
+  assert.equal(
+    $(".console-nav [data-view]:nth-child(2)").dataset.view,
+    "schedule",
+  );
+  assert.ok($("#view-overview #hub-panel"));
+  assert.ok($("#view-schedule #timeline"));
+  assert.equal($("#view-schedule #hub-panel"), null);
   assert.equal($(".planning-settings").open, false);
   assert.equal($(".algorithm-comparison").open, false);
   assert.ok($("#request-rows").querySelectorAll("tr").length <= 10);
@@ -283,7 +290,7 @@ async function main() {
   $("#history-compare-dialog [data-close]").click();
   $("#history-content [data-run]").click();
   await waitFor(
-    () => idle() && !$("#view-overview").classList.contains("hidden"),
+    () => idle() && !$("#view-schedule").classList.contains("hidden"),
     "history inspector",
   );
   const dwarka = $('[data-hub="dwarka"]');
@@ -301,6 +308,8 @@ async function main() {
     "load hub from map",
   );
   assert.match($("#hub-detail").textContent, /Loaded in the console/);
+  assert.equal($("#view-schedule").classList.contains("hidden"), false);
+  assert.equal(window.location.hash, "#schedule");
   assert.equal(errors.length, 0, errors.join("\n"));
   dom.window.close();
   console.log(
