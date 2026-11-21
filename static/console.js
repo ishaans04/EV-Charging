@@ -593,7 +593,19 @@ function renderTrace() {
     const chosen = new Set(result.schedule.map((r) => r.request_id));
     const rows = result.trace.rows.slice(0, 300);
     $("#trace-content").innerHTML =
-      `<div class="trace-formula">OPT(j) = max(OPT(j−1), profit(j) + OPT(pred(j)))</div>${rows.length ? `<div class="trace-explorer"><label class="trace-range-label" for="trace-step"><span>Explore a decision</span><output id="trace-step-value"></output></label><input id="trace-step" type="range" min="1" max="${rows.length}" value="${rows.length}" aria-label="Dynamic programming decision"><div id="trace-focus" class="trace-focus"></div></div>` : ""}<details class="trace-table-details"><summary>Full DP table <span>＋</span></summary><div class="trace-table-scroll"><table class="data-table"><thead><tr><th>j</th><th>Request</th><th>pred(j)</th><th>Include / ₹</th><th>Exclude / ₹</th><th>OPT(j) / ₹</th><th>Local choice</th><th>Traceback</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row.j}</td><td>R${row.request_id}</td><td>${row.predecessor}</td><td>${row.include}</td><td>${row.exclude}</td><td>${row.optimal}</td><td><span class="trace-decision ${row.take ? "" : "skip"}">${row.take ? "Take" : "Skip"}</span></td><td>${chosen.has(row.request_id) ? "Selected" : "—"}</td></tr>`).join("")}</tbody></table></div></details><p class="footnote">A local choice improves a prefix; traceback identifies the final set. ${result.trace.rows.length > 300 ? "Showing the first 300 states. Export JSON for the complete trace." : "Ties skip the current request, matching the report."}</p>`;
+      loopDiagram(
+        [
+          ["sort", "Sort by finish", "earliest deadline first", `${integer(result.trace.rows.length)} requests`],
+          ["search", "Binary search", "last booking that fits", "pred(j) in O(log n)"],
+          ["choose", "Take or skip", "keep the better total", "OPT(j) = max(take, skip)"],
+          ["trace", "Traceback", "walk back the choices", `${chosen.size} selected`],
+        ],
+        "repeat for every request j",
+      ) +
+      (rows.length
+        ? `<div class="dp-controls"><label class="trace-range-label" for="trace-step"><span>Decision</span><output id="trace-step-value"></output></label><input id="trace-step" type="range" min="1" max="${rows.length}" value="${rows.length}" aria-label="Dynamic programming decision"><button type="button" class="button primary small" data-dp="play">▶ Play decisions</button></div><div class="dp-stage"><div class="dp-window" id="dp-window"></div><div id="trace-focus" class="trace-focus dp-choice"></div></div><div class="dp-curve" id="dp-curve"></div>`
+        : "") +
+      `<details class="trace-table-details"><summary>Full DP table <span>＋</span></summary><div class="trace-table-scroll"><table class="data-table"><thead><tr><th>j</th><th>Request</th><th>pred(j)</th><th>Include / ₹</th><th>Exclude / ₹</th><th>OPT(j) / ₹</th><th>Local choice</th><th>Traceback</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row.j}</td><td>R${row.request_id}</td><td>${row.predecessor}</td><td>${row.include}</td><td>${row.exclude}</td><td>${row.optimal}</td><td><span class="trace-decision ${row.take ? "" : "skip"}">${row.take ? "Take" : "Skip"}</span></td><td>${chosen.has(row.request_id) ? "Selected" : "—"}</td></tr>`).join("")}</tbody></table></div></details><p class="footnote">A local choice improves a prefix; traceback identifies the final set. ${result.trace.rows.length > 300 ? "Showing the first 300 states. Export JSON for the complete trace." : "Ties skip the current request, matching the report."}</p>`;
     if (rows.length) updateTraceStep(rows.length);
   } else if (
     result.algorithm === "flow" &&
@@ -643,14 +655,10 @@ function renderFlowTrace(result) {
     residual: "potentials keep costs ≥ 0",
   };
   $("#trace-content").innerHTML =
-    `<div class="flow-loop" aria-label="How minimum-cost flow works">${flowStages
-      .map(
-        ([key, title, hint], i) =>
-          `${i ? '<svg class="flow-arrow" viewBox="0 0 40 12" aria-hidden="true"><path d="M2 6h32m-6-5 6 5-6 5"/></svg>' : ""}<div class="flow-stage" data-stage="${key}"><span class="flow-stage-icon" aria-hidden="true">${["◇", "⌖", "+1", "↺"][i]}</span><strong>${title}</strong><small>${hint}</small><em>${stats[key]}</em></div>`,
-      )
-      .join(
-        "",
-      )}<div class="flow-repeat" aria-hidden="true"><svg viewBox="0 0 400 26" preserveAspectRatio="none"><path d="M392 2v10a6 6 0 0 1-6 6H14a6 6 0 0 1-6-6V6m-5 5 5-6 5 6"/></svg><span>repeat once per port</span></div></div>` +
+    loopDiagram(
+      flowStages.map(([key, title, hint]) => [key, title, hint, stats[key]]),
+      "repeat once per port",
+    ) +
     `<div class="route-controls"><div class="route-step"><button type="button" class="icon-button" data-route="prev" aria-label="Previous route">‹</button><span id="route-label" aria-live="polite"></span><button type="button" class="icon-button" data-route="next" aria-label="Next route">›</button></div><button type="button" class="button primary small" data-route="play">▶ Play routes</button></div>` +
     `<div class="route-summary" id="route-summary"></div>` +
     `<div class="route-map" id="route-map"></div>` +
@@ -837,14 +845,143 @@ document.addEventListener("click", (event) => {
   if (control) stepRoute(control.dataset.route);
 });
 
-function updateTraceStep(value) {
-  const row = activeRun?.selected.trace.rows?.[Number(value) - 1];
-  if (!row) return;
-  $("#trace-step-value").textContent =
-    `${row.j} / ${Math.min(activeRun.selected.trace.rows.length, 300)}`;
-  $("#trace-focus").innerHTML =
-    `<div><h3>R${row.request_id} · ${row.take ? "Take" : "Skip"}</h3><p>Compatible prefix: ${row.predecessor}<br>Best profit so far: ${money(row.optimal)}</p></div><dl><dt>Include this request</dt><dd>${money(row.include)}</dd></dl><dl><dt>Keep the previous best</dt><dd>${money(row.exclude)}</dd></dl>`;
+function loopDiagram(stages, repeat) {
+  const icons = {
+    sort: "⇅",
+    search: "⌕",
+    choose: "⚖",
+    trace: "↩",
+    graph: "◇",
+    dijkstra: "⌖",
+    push: "+1",
+    residual: "↺",
+  };
+  return `<div class="flow-loop">${stages
+    .map(
+      ([key, title, hint, stat], i) =>
+        `${i ? '<svg class="flow-arrow" viewBox="0 0 40 12" aria-hidden="true"><path d="M2 6h32m-6-5 6 5-6 5"/></svg>' : ""}<div class="flow-stage" data-stage="${key}"><span class="flow-stage-icon" aria-hidden="true">${icons[key]}</span><strong>${title}</strong><small>${hint}</small><em>${stat}</em></div>`,
+    )
+    .join(
+      "",
+    )}<div class="flow-repeat" aria-hidden="true"><svg viewBox="0 0 400 26" preserveAspectRatio="none"><path d="M392 2v10a6 6 0 0 1-6 6H14a6 6 0 0 1-6-6V6m-5 5 5-6 5 6"/></svg><span>${repeat}</span></div></div>`;
 }
+
+// Dynamic programming explorer: the bookings around decision j, the take
+// versus skip comparison, and OPT(j) growing across all decisions.
+let dpTimer = 0;
+
+function updateTraceStep(value) {
+  const result = activeRun?.selected;
+  const rows = result?.trace.rows?.slice(0, 300);
+  const row = rows?.[Number(value) - 1];
+  if (!row) return;
+  const byId = new Map(activeRun.requests.map((r) => [r.request_id, r]));
+  const chosen = new Set(result.schedule.map((r) => r.request_id));
+  const j = row.j;
+  $("#trace-step-value").textContent = `${j} / ${rows.length}`;
+  const previous = row.predecessor ? rows[row.predecessor - 1].optimal : 0;
+  const profit = row.include - previous;
+  const best = Math.max(row.include, row.exclude, 1);
+  $("#trace-focus").innerHTML =
+    `<h3>R${row.request_id} · ${row.take ? "Take" : "Skip"}</h3><p>Compatible prefix: ${row.predecessor} · best so far ${money(row.optimal)}</p>` +
+    `<div class="dp-option ${row.take ? "win" : ""}"><div class="dp-option-head"><span>Take R${row.request_id}</span><strong>${money(row.include)}</strong></div><div class="dp-bar"><i class="dp-own" style="width:${(Math.max(0, profit) / best) * 100}%"></i><i class="dp-prev" style="width:${(Math.max(0, previous) / best) * 100}%"></i></div><small>${money(profit)} for R${row.request_id} + OPT(${row.predecessor}) ${money(previous)}</small></div>` +
+    `<div class="dp-option ${row.take ? "" : "win"}"><div class="dp-option-head"><span>Skip R${row.request_id}</span><strong>${money(row.exclude)}</strong></div><div class="dp-bar"><i class="dp-prev" style="width:${(Math.max(0, row.exclude) / best) * 100}%"></i></div><small>keep OPT(${j - 1}), the best of the first ${j - 1}</small></div>`;
+
+  const windowRows = rows.slice(Math.max(0, j - 10), j);
+  const slots = windowRows.map((r) => byId.get(r.request_id));
+  const lo = Math.min(...slots.map((r) => r.arrival_min));
+  const hi = Math.max(...slots.map((r) => r.arrival_min + r.duration_min));
+  const width = 640,
+    left = 52,
+    right = 16,
+    barHeight = 20,
+    gap = 6,
+    top = 26;
+  const x = (m) =>
+    left + ((m - lo) / Math.max(1, hi - lo)) * (width - left - right);
+  const current = byId.get(row.request_id);
+  const height = top + windowRows.length * (barHeight + gap) + 6;
+  const edge = x(current.arrival_min);
+  let svg = `<svg class="dp-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bookings sorted by finish time around decision ${j}"><title>Blue bookings finish before R${row.request_id} starts; grey ones overlap it.</title><line class="dp-boundary" x1="${edge}" x2="${edge}" y1="${top - 8}" y2="${height - 2}"/><text class="dp-boundary-label" x="${edge > width - 150 ? edge - 4 : edge + 4}" y="${top - 12}" text-anchor="${edge > width - 150 ? "end" : "start"}">R${row.request_id} starts ${time(current.arrival_min)}</text>`;
+  windowRows.forEach((r, i) => {
+    const slot = slots[i];
+    const kind =
+      r.j === j ? "current" : r.j <= row.predecessor ? "fits" : "overlap";
+    const y = top + i * (barHeight + gap);
+    const x1 = x(slot.arrival_min),
+      x2 = x(slot.arrival_min + slot.duration_min);
+    const state =
+      kind === "fits"
+        ? "finishes before it starts"
+        : kind === "overlap"
+          ? "overlaps it"
+          : "current decision";
+    svg += `<g class="dp-row ${kind}"><title>R${r.request_id} · ${time(slot.arrival_min)}–${time(slot.arrival_min + slot.duration_min)} · ${money(slot.profit_inr)} · ${state}</title><text class="dp-j" x="4" y="${y + 14}">j=${r.j}</text><rect x="${x1.toFixed(1)}" y="${y}" width="${Math.max(3, x2 - x1).toFixed(1)}" height="${barHeight}" rx="6"/>${x2 - x1 > 34 ? `<text class="dp-label" x="${((x1 + x2) / 2).toFixed(1)}" y="${y + 14}" text-anchor="middle">R${r.request_id}</text>` : ""}${chosen.has(r.request_id) ? `<circle class="dp-selected" cx="${Math.min(width - 6, x2 + 8).toFixed(1)}" cy="${y + barHeight / 2}" r="3.5"/>` : ""}</g>`;
+  });
+  $("#dp-window").innerHTML =
+    svg +
+    `</svg><div class="dp-key"><span><i class="fits"></i>Fits before</span><span><i class="overlap"></i>Overlaps</span><span><i class="current"></i>Decision j</span><span><i class="selected"></i>In final answer</span></div>`;
+
+  const cw = 1100,
+    ch = 110,
+    cl = 6,
+    cr = 6,
+    ct = 12,
+    cb = 8;
+  const peak = Math.max(1, rows[rows.length - 1].optimal);
+  const cx = (k) => cl + (k / rows.length) * (cw - cl - cr);
+  const cy = (v) => ct + (1 - Math.max(0, v) / peak) * (ch - ct - cb);
+  const steps = (list) =>
+    list.reduce(
+      (path, r, k) =>
+        `${path}H${cx(k + 1).toFixed(1)}V${cy(r.optimal).toFixed(1)}`,
+      `M${cx(0)} ${cy(0)}`,
+    );
+  $("#dp-curve").innerHTML =
+    `<div class="dp-curve-head"><span>OPT(j) as each decision is made</span><strong>${money(row.optimal)}</strong></div><svg class="dp-curve-svg" viewBox="0 0 ${cw} ${ch}" preserveAspectRatio="none" role="img" aria-label="Best profit after each decision"><path class="dp-curve-all" d="${steps(rows)}"/><path class="dp-curve-done" d="${steps(rows.slice(0, j))}"/><line class="dp-curve-now" x1="${cx(j)}" x2="${cx(j)}" y1="2" y2="${ch}"/></svg><div class="dp-curve-axis"><span>j = 1</span><span>j = ${rows.length}</span></div>`;
+  $$("#trace-content .flow-stage").forEach((stage) =>
+    stage.classList.toggle(
+      "active",
+      stage.dataset.stage === (j === rows.length ? "trace" : "choose"),
+    ),
+  );
+}
+
+function playDecisions(button) {
+  const input = $("#trace-step");
+  if (!input) return;
+  if (dpTimer) {
+    clearTimeout(dpTimer);
+    dpTimer = 0;
+    button.textContent = "▶ Play decisions";
+    return;
+  }
+  const max = Number(input.max);
+  const delay = Math.max(60, Math.min(900, 9000 / max));
+  let j = Number(input.value) >= max ? 1 : Number(input.value) + 1;
+  button.textContent = "❚❚ Pause";
+  const tick = () => {
+    if (!document.body.contains(input)) {
+      dpTimer = 0;
+      return;
+    }
+    input.value = String(j);
+    updateTraceStep(j);
+    if (j >= max) {
+      dpTimer = 0;
+      button.textContent = "▶ Play decisions";
+      return;
+    }
+    j++;
+    dpTimer = setTimeout(tick, delay);
+  };
+  tick();
+}
+
+document.addEventListener("click", (event) => {
+  const control = event.target.closest('[data-dp="play"]');
+  if (control) playDecisions(control);
+});
 
 function openDialog(id) {
   const dialog = $(id);

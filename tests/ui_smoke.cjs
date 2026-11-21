@@ -256,6 +256,14 @@ async function main() {
   $("#trace-step").dispatchEvent(new window.Event("input", { bubbles: true }));
   assert.equal($("#trace-step-value").textContent, "1 / 8");
   assert.match($("#trace-focus").textContent, /R6/);
+  assert.equal(window.document.querySelectorAll(".dp-row.current").length, 1);
+  assert.equal(window.document.querySelectorAll(".dp-option.win").length, 1);
+  $("#trace-step").value = "5";
+  $("#trace-step").dispatchEvent(new window.Event("input", { bubbles: true }));
+  assert.match($("#trace-focus h3").textContent, /R5 · Take/);
+  assert.equal(window.document.querySelectorAll(".dp-row.fits").length, 2);
+  assert.equal(window.document.querySelectorAll(".dp-row.overlap").length, 2);
+  assert.ok($("#dp-curve .dp-curve-done"));
   assert.equal($(".trace-table-details").open, false);
   $("#timeline .slot").dispatchEvent(
     new window.Event("click", { bubbles: true }),
@@ -347,7 +355,7 @@ async function main() {
   assert.equal(errors.length, 0, errors.join("\n"));
   dom.window.close();
   console.log(
-    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, flow routes, hub map, guided tour; landing intro settles.",
+    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, DP and flow visuals, hub map, guided tour; landing intro settles.",
   );
 }
 
