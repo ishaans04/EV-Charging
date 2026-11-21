@@ -13,7 +13,7 @@ from typing import Literal
 from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException, Request as HTTPRequest
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Response
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -183,7 +183,8 @@ def create_app(db_path=None):
                 "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
                 "img-src 'self' data: https://fastapi.tiangolo.com; frame-ancestors 'none'")
         if request.url.path.startswith("/api/") or request.url.path in (
-                "/console", "/static/console.css", "/static/console.js"):
+                "/", "/console", "/static/console.css", "/static/console.js",
+                "/static/style.css", "/static/landing.js"):
             response.headers["Cache-Control"] = "no-store"
             response.headers["Pragma"] = "no-cache"
             response.headers["Expires"] = "0"
@@ -311,19 +312,22 @@ def create_app(db_path=None):
         from run_experiments import benchmark_algorithms
         return benchmark_algorithms([50, 100, 250, 500, 1000], repeats=3)
 
-    @api.get("/")
-    def landing():
-        return FileResponse(ROOT / "static" / "index.html")
-
-    @api.get("/console")
-    def console():
+    def versioned_page(page, names):
         directory = ROOT / "static"
-        markup = (directory / "console.html").read_text(encoding="utf-8")
-        assets = {name: (directory / name).read_bytes() for name in ("console.css", "console.js")}
+        markup = (directory / page).read_text(encoding="utf-8")
+        assets = {name: (directory / name).read_bytes() for name in names}
         version = sha256(markup.encode("utf-8") + b"".join(assets.values())).hexdigest()[:16]
         for name in assets:
             markup = markup.replace(f"/static/{name}", f"/static/{name}?v={version}")
         return HTMLResponse(markup, headers={"X-Volt-UI": version})
+
+    @api.get("/")
+    def landing():
+        return versioned_page("index.html", ("style.css", "landing.js"))
+
+    @api.get("/console")
+    def console():
+        return versioned_page("console.html", ("style.css", "console.css", "console.js"))
 
     api.mount("/static", StaticFiles(directory=ROOT / "static", check_dir=False), name="static")
     return api

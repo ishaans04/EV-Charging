@@ -78,6 +78,16 @@ async function main() {
     () => landing.window.document.readyState === "complete",
     "landing load",
   );
+  await waitFor(
+    () => landing.window.document.body.classList.contains("intro-done"),
+    "landing intro settles",
+  );
+  assert.ok(
+    landing.window.document
+      .querySelector(".intro-car")
+      .classList.contains("charged"),
+  );
+  assert.equal(landing.window.document.querySelectorAll(".hero-line").length, 2);
   landing.window.document.querySelector('[data-demo="fcfs"]').click();
   assert.equal(
     landing.window.document.querySelector("#demo-profit").textContent,
@@ -329,7 +339,7 @@ async function main() {
   assert.equal(errors.length, 0, errors.join("\n"));
   dom.window.close();
   console.log(
-    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, hub map, guided tour; landing unchanged.",
+    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, hub map, guided tour; landing intro settles.",
   );
 }
 

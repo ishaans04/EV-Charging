@@ -2,7 +2,7 @@
 
 EV charging station slot profit maximization, built in Python for Design and Analysis of Algorithms. Volt chooses which fixed bookings to accept and assigns them to identical charging ports without overlaps.
 
-A blue-and-gold landing page leads directly into the station console. The console includes an interactive schedule, request editing and CSV import, greedy comparisons, algorithm traces, correctness checks, sensitivity analysis, timing benchmarks, and locally saved runs. The visual direction follows [Pageloop](https://www.pageloop.ai/); Volt uses its own branding and charging illustration.
+A blue-and-gold landing page leads directly into the station console. On arrival, an electric car drives across the headline to unveil it, then parks at the Volt charger and charges; any click, key or scroll skips to the final scene, and the two floating cards lean towards the mouse. The console includes an interactive schedule, request editing and CSV import, greedy comparisons, algorithm traces, correctness checks, sensitivity analysis, timing benchmarks, and locally saved runs. The visual direction follows [Pageloop](https://www.pageloop.ai/); Volt uses its own branding and charging illustration.
 
 ## Run
 
@@ -111,7 +111,7 @@ npm install --prefix .qa --no-audit --no-fund jsdom
 node tests/ui_smoke.cjs
 ```
 
-The DOM test verifies application behavior, not rendered appearance. Live browser visual QA was blocked by the computer-use service during implementation. Responsive breakpoints, reduced-motion rules, keyboard-operable dialogs and session controls are implemented, but pixel-level rendering remains unverified. The console uses static SVG, gradients and brief interaction transitions; it has no WebGL, canvas animation, continuous animation loops or backdrop filters.
+The DOM test verifies application behavior, not rendered appearance. Live browser visual QA was blocked by the computer-use service during implementation. Responsive breakpoints, reduced-motion rules, keyboard-operable dialogs and session controls are implemented, but pixel-level rendering remains unverified. The console uses static SVG, gradients and brief interaction transitions. The landing intro animates only transform, opacity and clip-path, ends once the car is charged, and is replaced by the final scene under reduced motion; the floating cards use a slow transform drift. There is no WebGL, canvas animation or backdrop filter.
 
 To let the test start and stop its own isolated server:
 

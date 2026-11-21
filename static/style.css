@@ -702,3 +702,247 @@ strong {
     scroll-behavior: auto !important;
   }
 }
+
+/* Landing intro: an EV unveils the headline, then parks and charges.
+   Only transform, opacity and clip-path change, and every animation ends
+   once the car is charged. */
+.hero-line {
+  display: inline-block;
+}
+.intro-ready .hero-line {
+  clip-path: inset(-25% 100% -35% -6%);
+  animation: line-fallback 0.6s 3.2s ease forwards;
+}
+.intro-ready #hero-line-2 {
+  clip-path: inset(-25% -6% -35% 100%);
+}
+.intro-ready .hero-copy > p,
+.intro-ready .hero-cta,
+.intro-ready .hero-note {
+  opacity: 0;
+  animation: appear 0.6s 3.4s ease both;
+}
+.intro-done .hero-line,
+.intro-done #hero-line-2 {
+  clip-path: none;
+  animation: none;
+}
+.intro-done .hero-copy > p,
+.intro-done .hero-cta,
+.intro-done .hero-note {
+  opacity: 1;
+  animation: appear-now 0.6s ease backwards;
+}
+.intro-done .hero-cta {
+  animation-delay: 0.08s;
+}
+.intro-done .hero-note {
+  animation-delay: 0.16s;
+}
+@keyframes line-fallback {
+  to {
+    clip-path: inset(-25% -6% -35% -6%);
+  }
+}
+@keyframes appear-now {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.intro-car {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  width: 160px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.intro-car svg {
+  width: 160px;
+  height: 56px;
+  display: block;
+  overflow: visible;
+  transition: transform 0.2s ease;
+}
+.intro-car:hover svg,
+.intro-car:focus-visible svg {
+  transform: translateY(-2px);
+}
+.intro-car:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+.intro-car .wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.intro-car.driving .wheel {
+  animation: wheel-spin 0.45s linear infinite;
+}
+.intro-car .beam {
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.intro-car.driving .beam,
+.intro-car:hover .beam {
+  opacity: 0.85;
+}
+.intro-car .charge-port {
+  fill: #9fb3d6;
+  transition: fill 0.3s;
+}
+.intro-car.charging .charge-port,
+.intro-car.charged .charge-port {
+  fill: #5fd39a;
+}
+@keyframes wheel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.charge-hud {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px 5px 8px;
+  border-radius: 20px;
+  background: #fffef9f2;
+  color: #203351;
+  border: 1px solid #fff;
+  box-shadow: 0 8px 20px #17317c26;
+  font-size: 11px;
+  font-weight: 550;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.intro-car.charging .charge-hud,
+.intro-car.charged .charge-hud {
+  opacity: 1;
+}
+.charge-hud b {
+  color: #c79a2c;
+  font-weight: 700;
+}
+.charge-meter {
+  width: 46px;
+  height: 6px;
+  border-radius: 6px;
+  background: #e3eaf6;
+  overflow: hidden;
+}
+.charge-meter i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #5fd39a, #e8c25a);
+  transform-origin: left;
+  transform: scaleX(var(--charge, 0));
+}
+.intro-cable {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  overflow: visible;
+  pointer-events: none;
+}
+.intro-cable path {
+  fill: none;
+  stroke: #1d3371;
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+.charger-art .charger-screen,
+.charger-art .charger-bolt {
+  transition: fill 0.4s;
+}
+.charger-art.charging .charger-screen {
+  fill: #3a68c6;
+}
+.charger-art.charging .charger-bolt {
+  fill: #fff4bd;
+  animation: bolt-pulse 0.7s ease-in-out 3 alternate;
+}
+@keyframes bolt-pulse {
+  to {
+    opacity: 0.55;
+  }
+}
+
+/* Floating cards: a slow drift plus a gentle tilt towards the cursor. */
+.floating-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease,
+    scale 0.35s ease;
+  animation: card-drift 7s ease-in-out infinite alternate;
+}
+.outcome-card {
+  animation-duration: 8s;
+  animation-delay: -3s;
+}
+.demand-card {
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry))
+    rotate(-5deg);
+}
+.outcome-card {
+  transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry))
+    rotate(4deg);
+}
+.floating-card:hover {
+  scale: 1.025;
+  box-shadow:
+    0 24px 50px #213f7b24,
+    0 3px 8px #163c7e10;
+}
+.floating-card.tilting {
+  transition:
+    box-shadow 0.35s ease,
+    scale 0.35s ease;
+}
+@keyframes card-drift {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 -9px;
+  }
+}
+@media (max-width: 700px) {
+  .outcome-card {
+    transform: translateX(-50%) perspective(900px) rotateX(var(--rx))
+      rotateY(var(--ry)) rotate(2deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-ready .hero-line,
+  .intro-ready #hero-line-2 {
+    clip-path: none;
+  }
+  .intro-ready .hero-copy > p,
+  .intro-ready .hero-cta,
+  .intro-ready .hero-note {
+    opacity: 1;
+  }
+}

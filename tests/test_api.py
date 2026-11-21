@@ -116,6 +116,19 @@ def test_console_uses_versioned_assets_and_disables_stale_caching(client):
     assert client.get("/console?refresh=1").headers["X-Volt-UI"] == version
 
 
+def test_landing_uses_versioned_assets_and_disables_stale_caching(client):
+    response = client.get("/")
+    version = response.headers["X-Volt-UI"]
+    assert response.headers["Cache-Control"] == "no-store"
+    assert 'id="hero-line-1"' in response.text and 'class="landing intro-ready"' in response.text
+    for name in ("style.css", "landing.js"):
+        url = f"/static/{name}?v={version}"
+        assert url in response.text
+        asset = client.get(url)
+        assert asset.status_code == 200
+        assert asset.headers["Cache-Control"] == "no-store"
+
+
 def test_console_asset_update_changes_browser_cache_key(client, tmp_path, monkeypatch):
     directory = tmp_path / "static"
     directory.mkdir()
@@ -123,6 +136,7 @@ def test_console_asset_update_changes_browser_cache_key(client, tmp_path, monkey
         '<link href="/static/console.css"><script src="/static/console.js"></script>', encoding="utf-8")
     (directory / "console.css").write_text("body { color: blue; }", encoding="utf-8")
     (directory / "console.js").write_text("const version = 1;", encoding="utf-8")
+    (directory / "style.css").write_text("body { margin: 0; }", encoding="utf-8")
     monkeypatch.setattr("app.ROOT", tmp_path)
     first = client.get("/console")
     (directory / "console.css").write_text("body { color: green; }", encoding="utf-8")
