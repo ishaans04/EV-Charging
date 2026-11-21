@@ -595,6 +595,11 @@ function renderTrace() {
     $("#trace-content").innerHTML =
       `<div class="trace-formula">OPT(j) = max(OPT(j−1), profit(j) + OPT(pred(j)))</div>${rows.length ? `<div class="trace-explorer"><label class="trace-range-label" for="trace-step"><span>Explore a decision</span><output id="trace-step-value"></output></label><input id="trace-step" type="range" min="1" max="${rows.length}" value="${rows.length}" aria-label="Dynamic programming decision"><div id="trace-focus" class="trace-focus"></div></div>` : ""}<details class="trace-table-details"><summary>Full DP table <span>＋</span></summary><div class="trace-table-scroll"><table class="data-table"><thead><tr><th>j</th><th>Request</th><th>pred(j)</th><th>Include / ₹</th><th>Exclude / ₹</th><th>OPT(j) / ₹</th><th>Local choice</th><th>Traceback</th></tr></thead><tbody>${rows.map((row) => `<tr><td>${row.j}</td><td>R${row.request_id}</td><td>${row.predecessor}</td><td>${row.include}</td><td>${row.exclude}</td><td>${row.optimal}</td><td><span class="trace-decision ${row.take ? "" : "skip"}">${row.take ? "Take" : "Skip"}</span></td><td>${chosen.has(row.request_id) ? "Selected" : "—"}</td></tr>`).join("")}</tbody></table></div></details><p class="footnote">A local choice improves a prefix; traceback identifies the final set. ${result.trace.rows.length > 300 ? "Showing the first 300 states. Export JSON for the complete trace." : "Ties skip the current request, matching the report."}</p>`;
     if (rows.length) updateTraceStep(rows.length);
+  } else if (
+    result.algorithm === "flow" &&
+    result.trace.augmentations.every((row) => row.segments)
+  ) {
+    renderFlowTrace(result);
   } else if (result.algorithm === "flow") {
     $("#trace-content").innerHTML =
       `<div class="trace-formula">Request arc: capacity = 1, cost = −profit · Send k units of flow</div><div class="flow-summary"><span><strong>${result.trace.nodes}</strong>time nodes</span><span><strong>${result.trace.arcs}</strong>forward arcs</span><span><strong>${result.trace.augmentations.length}</strong>augmentations</span></div>${result.trace.augmentations.map((row) => `<details class="flow-step" ${row.iteration === 1 ? "open" : ""}><summary><span class="flow-step-number">${row.iteration}</span><strong>Dijkstra search · ${row.units} unit${row.units === 1 ? "" : "s"} routed</strong><span class="flow-value">+${money(row.profit_change)}</span></summary><p>Total flow ${row.flow}/${result.ports} · ${row.reverse_arcs} reverse arcs<br>Path: ${row.path_minutes.slice(0, 35).map(time).join(" → ")}${row.path_minutes.length > 35 ? " …" : ""}</p></details>`).join("")}<p class="footnote">Open an augmentation to explore its path. Reverse arcs allow previous choices to be exchanged; Dijkstra uses non-negative reduced costs.</p>`;
@@ -613,6 +618,224 @@ function renderTrace() {
     `<a class="button secondary small trace-export" href="/api/runs/${activeRun.id}/export?format=json" download>Export run JSON</a>`,
   );
 }
+
+// Minimum-cost flow as routes. Each Dijkstra search pushes one unit of flow
+// (one more charger) from the first time node to the last. Waiting moves
+// along the road, a taken booking hops above it, and a booking handed back
+// through a reverse arc dips below it.
+let routeIndex = 0;
+let routeTimers = [];
+const routeColors = ["#557bc9", "#8d87bc", "#c9a85a", "#5fa88a", "#c97b6b", "#6fa3c9"];
+const flowStages = [
+  ["graph", "Time graph", "nodes & arcs"],
+  ["dijkstra", "Dijkstra", "most profitable route"],
+  ["push", "Push one unit", "one more charger"],
+  ["residual", "Residual update", "reverse arcs allow swaps"],
+];
+
+function renderFlowTrace(result) {
+  routeIndex = 0;
+  const routes = result.trace.augmentations;
+  const stats = {
+    graph: `${integer(result.trace.nodes)} nodes · ${integer(result.trace.arcs)} arcs`,
+    dijkstra: "min-heap · reduced costs",
+    push: `${routes.length} route${routes.length === 1 ? "" : "s"} for ${result.ports} port${result.ports === 1 ? "" : "s"}`,
+    residual: "potentials keep costs ≥ 0",
+  };
+  $("#trace-content").innerHTML =
+    `<div class="flow-loop" aria-label="How minimum-cost flow works">${flowStages
+      .map(
+        ([key, title, hint], i) =>
+          `${i ? '<svg class="flow-arrow" viewBox="0 0 40 12" aria-hidden="true"><path d="M2 6h32m-6-5 6 5-6 5"/></svg>' : ""}<div class="flow-stage" data-stage="${key}"><span class="flow-stage-icon" aria-hidden="true">${["◇", "⌖", "+1", "↺"][i]}</span><strong>${title}</strong><small>${hint}</small><em>${stats[key]}</em></div>`,
+      )
+      .join(
+        "",
+      )}<div class="flow-repeat" aria-hidden="true"><svg viewBox="0 0 400 26" preserveAspectRatio="none"><path d="M392 2v10a6 6 0 0 1-6 6H14a6 6 0 0 1-6-6V6m-5 5 5-6 5 6"/></svg><span>repeat once per port</span></div></div>` +
+    `<div class="route-controls"><div class="route-step"><button type="button" class="icon-button" data-route="prev" aria-label="Previous route">‹</button><span id="route-label" aria-live="polite"></span><button type="button" class="icon-button" data-route="next" aria-label="Next route">›</button></div><button type="button" class="button primary small" data-route="play">▶ Play routes</button></div>` +
+    `<div class="route-summary" id="route-summary"></div>` +
+    `<div class="route-map" id="route-map"></div>` +
+    `<div class="route-legend"><span><i class="legend-road"></i>Waiting on the time line</span><span><i class="legend-take"></i>Booking taken</span><span><i class="legend-undo"></i>Booking handed back</span><span><i class="legend-dot"></i>One unit of flow</span></div>` +
+    `<div class="route-stack" id="route-stack"></div>` +
+    `<p class="footnote">Dijkstra runs on reduced costs (cost − potential difference), so every arc is non-negative and the shortest path is the most profitable route. Reverse arcs let a later route hand a booking back so an earlier route can be rearranged.</p>`;
+  drawRoutes(result, true);
+}
+
+function drawRoutes(result, animate) {
+  routeTimers.forEach(clearTimeout);
+  routeTimers = [];
+  const routes = result.trace.augmentations;
+  const route = routes[routeIndex];
+  const total = routes.reduce((sum, row) => sum + row.profit_change, 0);
+  $("#route-label").textContent = `Route ${routeIndex + 1} of ${routes.length}`;
+  $('[data-route="prev"]').disabled = routeIndex === 0;
+  $('[data-route="next"]').disabled = routeIndex === routes.length - 1;
+  const takes = route.segments.filter((s) => s.kind === "take");
+  const undos = route.segments.filter((s) => s.kind === "undo");
+  const note =
+    route.profit_change <= 0
+      ? "No booking is left that adds profit, so this unit of flow simply waits along the time line."
+      : routeIndex === 0
+        ? "Dijkstra finds the single most profitable chain of non-overlapping bookings through the day: what one charger would earn alone."
+        : undos.length
+          ? `Dijkstra found a better plan by handing ${undos.length === 1 ? "a booking" : `${undos.length} bookings`} back from an earlier route (red, below the road), so the earlier route can be rearranged around this one.`
+          : "Given the earlier routes, Dijkstra finds the best extra chain of bookings for one more charger. No earlier choice had to change.";
+  $("#route-summary").innerHTML =
+    `<div class="route-gain" style="--route:${routeColors[routeIndex % routeColors.length]}"><span>Route ${routeIndex + 1} adds</span><strong>+${money(route.profit_change)}</strong></div><dl class="route-facts"><div><dt>Bookings taken</dt><dd>${takes.length}</dd></div><div><dt>Handed back</dt><dd>${undos.length}</dd></div><div><dt>Flow sent</dt><dd>${route.flow} / ${result.ports}</dd></div></dl><p>${note}</p>`;
+
+  const all = [...activeRun.requests];
+  const start = Math.min(
+    360,
+    Math.floor(Math.min(...all.map((r) => r.arrival_min)) / 60) * 60,
+  );
+  const width = 1100,
+    left = 96,
+    right = 22,
+    top = 30,
+    laneHeight = routes.length > 6 ? 74 : 98;
+  const x = (minute) =>
+    left + ((Math.max(start, minute) - start) / (1440 - start)) * (width - left - right);
+  const height = top + routes.length * laneHeight + 6;
+  const undone = new Map();
+  routes.slice(0, routeIndex + 1).forEach((row) =>
+    row.segments
+      .filter((s) => s.kind === "undo")
+      .forEach((s) => undone.set(s.request_id, row.iteration)),
+  );
+  let svg = `<svg class="route-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Augmenting routes found by Dijkstra"><title>Routes found by Dijkstra. Gold arcs above the road are bookings taken; red arcs below are bookings handed back.</title>`;
+  for (let tick = start; tick <= 1440; tick += 180)
+    svg += `<text class="route-tick" x="${x(tick)}" y="14" text-anchor="${tick === 1440 ? "end" : "middle"}">${time(tick)}</text>`;
+  let motion = "";
+  let motionLength = 0;
+  routes.forEach((row, lane) => {
+    const road = top + lane * laneHeight + laneHeight * 0.6;
+    const color = routeColors[lane % routeColors.length];
+    const state =
+      lane < routeIndex ? "past" : lane === routeIndex ? "current" : "future";
+    svg += `<g class="route-lane ${state}"><text class="route-name" x="4" y="${road - 6}">Route ${lane + 1}</text><text class="route-value" x="4" y="${road + 11}">${lane <= routeIndex ? `+${money(row.profit_change)}` : "waiting"}</text><line class="route-road" x1="${left}" x2="${width - right}" y1="${road}" y2="${road}"/>`;
+    if (lane > routeIndex) {
+      svg += "</g>";
+      return;
+    }
+    let d = `M${x(row.segments[0].from).toFixed(1)} ${road}`;
+    let travelled = 0;
+    const pieces = row.segments.map((segment) => {
+      const x1 = x(segment.from),
+        x2 = x(segment.to),
+        span = Math.abs(x2 - x1);
+      let path, length;
+      if (segment.kind === "take" || segment.kind === "undo") {
+        const lift =
+          segment.kind === "take"
+            ? -Math.min(laneHeight * 0.46, 10 + span * 0.35)
+            : Math.min(laneHeight * 0.3, 8 + span * 0.25);
+        path = `Q${((x1 + x2) / 2).toFixed(1)} ${(road + lift * 2).toFixed(1)} ${x2.toFixed(1)} ${road}`;
+        length = span + Math.abs(lift) * 1.6;
+      } else if (segment.kind === "undo-idle") {
+        path = `Q${((x1 + x2) / 2).toFixed(1)} ${road + 10} ${x2.toFixed(1)} ${road}`;
+        length = span + 6;
+      } else {
+        path = `L${x2.toFixed(1)} ${road}`;
+        length = span;
+      }
+      const piece = { segment, x1, x2, path, length, from: travelled };
+      travelled += length;
+      d += path;
+      return piece;
+    });
+    const drawTime = 2600;
+    pieces.forEach(({ segment, x1, x2, path, length, from }) => {
+      const timing =
+        animate && state === "current"
+          ? ` style="transition-delay:${Math.round((from / travelled) * drawTime)}ms;transition-duration:${Math.max(40, Math.round((length / travelled) * drawTime))}ms"`
+          : "";
+      const kind =
+        segment.kind === "take" && undone.has(segment.request_id) && undone.get(segment.request_id) > lane + 1
+          ? "swapped"
+          : segment.kind;
+      const label =
+        segment.kind === "take"
+          ? `R${segment.request_id} taken · ${time(segment.from)}–${time(segment.to)} · +${money(segment.profit_inr)}${kind === "swapped" ? ` · handed back by route ${undone.get(segment.request_id)}` : ""}`
+          : segment.kind === "undo"
+            ? `R${segment.request_id} handed back · −${money(segment.profit_inr)} for this route`
+            : `Waiting ${time(Math.min(segment.from, segment.to))}–${time(Math.max(segment.from, segment.to))}`;
+      svg += `<path class="route-seg seg-${kind}" pathLength="1" d="M${x1.toFixed(1)} ${road}${path}" style="--route:${color}"${timing}><title>${escapeHTML(label)}</title></path>`;
+      if (
+        (segment.kind === "take" || segment.kind === "undo") &&
+        Math.abs(x2 - x1) > 30
+      )
+        svg += `<text class="route-arc-label ${segment.kind}" x="${((x1 + x2) / 2).toFixed(1)}" y="${segment.kind === "take" ? (road - Math.min(laneHeight * 0.46, 10 + Math.abs(x2 - x1) * 0.35) - 4).toFixed(1) : (road + Math.min(laneHeight * 0.3, 8 + Math.abs(x2 - x1) * 0.25) + 12).toFixed(1)}" text-anchor="middle">${segment.kind === "undo" ? "↺ " : ""}R${segment.request_id}</text>`;
+    });
+    if (state === "current") {
+      motion = d;
+      motionLength = travelled;
+    }
+    svg += "</g>";
+  });
+  if (motion)
+    svg += `<g class="flow-dot" visibility="hidden" aria-hidden="true"><circle r="9" class="flow-dot-halo"/><circle r="4.5" class="flow-dot-core"/><animateMotion dur="2.6s" begin="indefinite" fill="freeze" path="${motion}"/></g>`;
+  const map = $("#route-map");
+  map.innerHTML = svg + "</svg>";
+  const share = (row) => (total > 0 ? Math.max(0, row.profit_change) / total : 0);
+  $("#route-stack").innerHTML =
+    `<div class="route-stack-bar">${routes.map((row, i) => `<span class="${i <= routeIndex ? "on" : ""}" style="flex-grow:${share(row)};--route:${routeColors[i % routeColors.length]}" title="Route ${i + 1}: +${money(row.profit_change)}"></span>`).join("")}</div><div class="route-stack-labels"><span>${money(routes.slice(0, routeIndex + 1).reduce((sum, row) => sum + row.profit_change, 0))} of ${money(total)} after ${routeIndex + 1} route${routeIndex ? "s" : ""}</span><span>Total = optimal profit</span></div>`;
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  setStage(null);
+  if (!animate || reduce || !motionLength) {
+    map.querySelectorAll(".current .route-seg").forEach((p) => p.classList.add("drawn"));
+    return;
+  }
+  setStage("dijkstra");
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => {
+      map.querySelectorAll(".current .route-seg").forEach((p) => p.classList.add("drawn"));
+      const motionElement = map.querySelector(".flow-dot animateMotion");
+      if (motionElement?.beginElement) {
+        motionElement.beginElement();
+        motionElement.parentElement.removeAttribute("visibility");
+      }
+    }),
+  );
+  routeTimers.push(
+    setTimeout(() => setStage("push"), 2700),
+    setTimeout(() => setStage("residual"), 3300),
+    setTimeout(() => setStage(null), 4200),
+  );
+}
+
+function setStage(key) {
+  $$(".flow-stage").forEach((stage) =>
+    stage.classList.toggle("active", stage.dataset.stage === key),
+  );
+}
+
+function stepRoute(kind) {
+  const result = activeRun?.selected;
+  if (!result?.trace?.augmentations?.length) return;
+  const last = result.trace.augmentations.length - 1;
+  if (kind === "play") {
+    routeTimers.forEach(clearTimeout);
+    routeIndex = 0;
+    const playNext = () => {
+      drawRoutes(result, true);
+      if (routeIndex < last)
+        routeTimers.push(
+          setTimeout(() => {
+            routeIndex++;
+            playNext();
+          }, 3500),
+        );
+    };
+    playNext();
+    return;
+  }
+  routeIndex = Math.min(last, Math.max(0, routeIndex + (kind === "next" ? 1 : -1)));
+  drawRoutes(result, true);
+}
+
+document.addEventListener("click", (event) => {
+  const control = event.target.closest("[data-route]");
+  if (control) stepRoute(control.dataset.route);
+});
 
 function updateTraceStep(value) {
   const row = activeRun?.selected.trace.rows?.[Number(value) - 1];

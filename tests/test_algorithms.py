@@ -83,3 +83,23 @@ def test_invalid_inputs_and_oracle_bounds():
     with pytest.raises(ValueError):
         solve(generate_requests(19), 2, "subsets")
     assert max_overlap([Request(1, 0, 10, 10, 1, 1), Request(2, 10, 10, 10, 1, 1)]) == 1
+
+
+def test_flow_trace_segments_form_a_continuous_profitable_route():
+    requests = generate_requests(110, 3303, 2.2)
+    result = solve(requests, 3, trace=True)
+    chosen = {r["request_id"] for r in result["schedule"]}
+    taken, undone = set(), set()
+    for augmentation in result["trace"]["augmentations"]:
+        segments = augmentation["segments"]
+        for before, after in zip(segments, segments[1:]):
+            assert before["to"] == after["from"]
+        assert segments[0]["from"] == min(r.arrival_min for r in requests)
+        assert segments[-1]["to"] == max(r.deadline_min for r in requests)
+        gain = sum(s["profit_inr"] if s["kind"] == "take" else -s["profit_inr"]
+                   for s in segments if s["kind"] in ("take", "undo"))
+        assert gain == augmentation["profit_change"]
+        taken |= {s["request_id"] for s in segments if s["kind"] == "take"}
+        undone |= {s["request_id"] for s in segments if s["kind"] == "undo"}
+    assert undone, "this seeded day exercises a reverse arc"
+    assert taken - undone == chosen

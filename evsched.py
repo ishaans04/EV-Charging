@@ -198,10 +198,32 @@ def flow_k_ports(requests, ports, trace=False):
             augmentations.append({"iteration": len(augmentations) + 1, "units": push,
                                   "flow": flow, "profit_change": -sum(cost[e] for e in path) * push,
                                   "path_minutes": [times[0]] + [times[to[e]] for e in reversed(path)],
-                                  "reverse_arcs": sum(e % 2 for e in path)})
+                                  "reverse_arcs": sum(e % 2 for e in path),
+                                  "segments": path_segments(reversed(path), to, times, requests)})
     chosen = [i for i, e in enumerate(request_edges) if capacity[e] == 0]
     return chosen, {"nodes": len(times), "arcs": len(to) // 2,
                     "augmentations": augmentations}
+
+
+def path_segments(path, to, times, requests):
+    """Describe an augmenting path for the console: waiting along the time
+    line, taking a booking, or undoing one taken by an earlier path."""
+    time_edges = len(times) - 1
+    segments = []
+    for edge in path:
+        start, end = times[to[edge ^ 1]], times[to[edge]]
+        pair, undo = edge // 2, edge % 2 == 1
+        if pair < time_edges:
+            kind = "undo-idle" if undo else "idle"
+            if segments and segments[-1]["kind"] == kind and segments[-1]["to"] == start:
+                segments[-1]["to"] = end
+                continue
+            segments.append({"kind": kind, "from": start, "to": end})
+        else:
+            request = requests[pair - time_edges]
+            segments.append({"kind": "undo" if undo else "take", "from": start, "to": end,
+                             "request_id": request.request_id, "profit_inr": request.profit_inr})
+    return segments
 
 
 def assign_ports(requests, chosen, ports):

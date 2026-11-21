@@ -276,6 +276,14 @@ async function main() {
     "two port flow solve",
   );
   assert.match($("#trace-title").textContent, /flow/);
+  assert.equal(window.document.querySelectorAll(".flow-stage").length, 4);
+  assert.equal(window.document.querySelectorAll(".route-lane").length, 2);
+  assert.match($("#route-label").textContent, /Route 1 of 2/);
+  assert.ok($(".route-lane.current .seg-take"));
+  $('[data-route="next"]').click();
+  assert.match($("#route-label").textContent, /Route 2 of 2/);
+  assert.ok($(".route-lane.past"));
+  assert.equal($('[data-route="next"]').disabled, true);
   assert.ok($("#timeline .slot"));
   $('[data-lab="verify"]').click();
   $("#verify-button").click();
@@ -339,7 +347,7 @@ async function main() {
   assert.equal(errors.length, 0, errors.join("\n"));
   dom.window.close();
   console.log(
-    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, hub map, guided tour; landing intro settles.",
+    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, flow routes, hub map, guided tour; landing intro settles.",
   );
 }
 

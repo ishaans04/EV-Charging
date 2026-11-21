@@ -33,7 +33,7 @@ The first console visit generates 150 synthetic requests with seed 2026 and solv
 1. Toggle FCFS and Optimal on the landing page: the report's example improves from ₹170 to ₹240.
 2. Enter the console. Inspect scheduled profit, gain over FCFS, vehicles served, and 24-hour port utilization. Select any timeline session to inspect its exact slot and port.
 3. Open **Algorithm lab → Load report example**. The one-port DP table reproduces Appendix A: R1, R5 and R4 earn ₹240. The local-choice and final-traceback columns explain why a temporary DP choice can be absent from the final answer.
-4. Change to two ports and optimize. The lab now shows minimum-cost flow: time nodes, forward arcs, augmentations, residual reverse arcs and profit changes.
+4. Change to two ports and optimize. The lab now shows minimum-cost flow as a loop diagram (time graph, Dijkstra, push one unit, residual update) and one road per Dijkstra route: bookings taken hop above the road, bookings handed back through reverse arcs dip below it, and a stacked bar shows each route's share of the optimum. Step through the routes or press Play.
 5. Run **Correctness**, **Port sensitivity**, and **Runtime** in the lab. These execute Python algorithms; the UI does not fabricate results.
 6. Edit a request or import a CSV. Existing output is invalidated until the station is optimized again. Run history retains the original inputs and results of the last 30 runs.
 

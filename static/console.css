@@ -2442,3 +2442,348 @@ details[open] > summary .disclosure-mark {
     transition: none;
   }
 }
+/* Minimum-cost flow trace: the loop diagram and Dijkstra routes. */
+.flow-loop {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin: 4px 0 46px;
+}
+.flow-stage {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  padding: 14px 14px 12px;
+  border: 1px solid #e3eaf3;
+  border-radius: 14px;
+  background: #fbfcfe;
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    box-shadow 0.25s;
+}
+.flow-stage.active {
+  border-color: #e2c47d;
+  background: #fffaf0;
+  box-shadow: 0 6px 18px #c9a85a26;
+}
+.flow-stage-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #e8eefa;
+  color: #315f96;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.flow-stage.active .flow-stage-icon {
+  background: #f2cd63;
+  color: #4b3a12;
+}
+.flow-stage strong {
+  font-size: 14px;
+  font-weight: 550;
+  color: var(--console-ink);
+}
+.flow-stage small {
+  font-size: 12px;
+  color: var(--console-muted);
+}
+.flow-stage em {
+  font-style: normal;
+  font-size: 11px;
+  color: #315f96;
+  margin-top: 4px;
+}
+.flow-arrow {
+  flex: none;
+  width: 26px;
+  align-self: center;
+  fill: none;
+  stroke: #9fb3d6;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.flow-repeat {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 100%;
+  height: 34px;
+  display: flex;
+  justify-content: center;
+}
+.flow-repeat svg {
+  position: absolute;
+  inset: 0 0 8px;
+  width: 100%;
+  height: 26px;
+  fill: none;
+  stroke: #c9d5e8;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+}
+.flow-repeat span {
+  position: relative;
+  align-self: end;
+  padding: 0 10px;
+  background: #fff;
+  font-size: 11px;
+  color: var(--console-muted);
+  transform: translateY(4px);
+}
+.route-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.route-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--console-ink);
+}
+.route-step .icon-button {
+  font-size: 20px;
+  line-height: 1;
+}
+.route-summary {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  background: #f6f8fc;
+  margin-bottom: 14px;
+}
+.route-gain {
+  display: grid;
+  padding-left: 14px;
+  border-left: 4px solid var(--route);
+}
+.route-gain span {
+  font-size: 12px;
+  color: var(--console-muted);
+}
+.route-gain strong {
+  font-size: 26px;
+  font-weight: 450;
+  color: var(--console-ink);
+  letter-spacing: -0.02em;
+}
+.route-facts {
+  display: flex;
+  gap: 22px;
+  margin: 0;
+}
+.route-facts dt {
+  font-size: 11px;
+  color: var(--console-muted);
+}
+.route-facts dd {
+  margin: 0;
+  font-size: 18px;
+  color: var(--console-ink);
+}
+.route-summary p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #5b6d86;
+}
+.route-map {
+  overflow-x: auto;
+}
+.route-svg {
+  width: 100%;
+  min-width: 850px;
+  height: auto;
+  display: block;
+}
+.route-svg text {
+  font-family: Inter, Arial, sans-serif;
+}
+.route-tick {
+  fill: #9aabc2;
+  font-size: 11px;
+}
+.route-name {
+  fill: var(--console-ink);
+  font-size: 12px;
+  font-weight: 550;
+}
+.route-value {
+  fill: var(--console-muted);
+  font-size: 11px;
+}
+.route-lane.future .route-name {
+  fill: #a9b7ca;
+}
+.route-road {
+  stroke: #edf1f7;
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+.route-lane.current .route-road {
+  stroke: #e6edf8;
+}
+.route-seg {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+.route-lane.past .route-seg {
+  opacity: 0.45;
+}
+.seg-idle,
+.seg-undo-idle {
+  stroke: var(--route);
+  stroke-width: 2.5;
+}
+.seg-take {
+  stroke: #c9a85a;
+}
+.seg-undo,
+.seg-swapped {
+  stroke: #cf6b62;
+  stroke-dasharray: 0.02 0.015;
+}
+.seg-undo-idle {
+  stroke-dasharray: 0.01 0.012;
+}
+.route-lane.current .route-seg.seg-undo-idle.drawn {
+  stroke-dasharray: 0.01 0.012;
+}
+.route-lane.current .route-seg {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition-property: stroke-dashoffset;
+  transition-timing-function: linear;
+}
+.route-lane.current .route-seg.drawn {
+  stroke-dashoffset: 0;
+}
+.route-lane.current .route-seg.seg-undo.drawn {
+  stroke-dasharray: 0.02 0.015;
+}
+.route-arc-label {
+  font-size: 9.5px;
+  fill: #9a7a2c;
+  pointer-events: none;
+}
+.route-arc-label.undo {
+  fill: #b5534b;
+}
+.route-lane.past .route-arc-label {
+  opacity: 0.5;
+}
+.route-seg:hover {
+  stroke-width: 5;
+}
+.flow-dot-halo {
+  fill: #f2cd63;
+  opacity: 0.35;
+}
+.flow-dot-core {
+  fill: #f2cd63;
+  stroke: #fff;
+  stroke-width: 2;
+}
+.route-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 12px 0 18px;
+  font-size: 12px;
+  color: var(--console-muted);
+}
+.route-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.route-legend i {
+  display: inline-block;
+  width: 22px;
+  height: 0;
+  border-top: 3px solid #557bc9;
+  border-radius: 3px;
+}
+.route-legend .legend-take {
+  height: 9px;
+  border: 3px solid #c9a85a;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
+.route-legend .legend-undo {
+  height: 9px;
+  border: 3px dashed #cf6b62;
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+}
+.route-legend .legend-dot {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #f2cd63;
+  box-shadow: 0 0 0 3px #f2cd6359;
+}
+.route-stack-bar {
+  display: flex;
+  gap: 3px;
+  height: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eef2f8;
+}
+.route-stack-bar span {
+  background: var(--route);
+  opacity: 0.18;
+  transition: opacity 0.35s;
+}
+.route-stack-bar span.on {
+  opacity: 1;
+}
+.route-stack-labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--console-muted);
+}
+@media (max-width: 900px) {
+  .flow-loop {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .flow-arrow,
+  .flow-repeat {
+    display: none;
+  }
+  .route-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route-lane.current .route-seg,
+  .flow-stage {
+    transition: none;
+  }
+}
