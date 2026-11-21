@@ -37,7 +37,9 @@ The first console visit generates 150 synthetic requests with seed 2026 and solv
 5. Run **Correctness**, **Port sensitivity**, and **Runtime** in the lab. These execute Python algorithms; the UI does not fabricate results.
 6. Edit a request or import a CSV. Existing output is invalidated until the station is optimized again. Run history retains the original inputs and results of the last 30 runs.
 
-Station settings are available from the sidebar and the top-right V button. Price changes recompute every request's profit. The schedule selector compares the optimal and greedy schedules on identical inputs; CSV exports follow the displayed schedule. Full run JSON is available through the API.
+The console uses a horizontal top navigation with Overview, Requests, Algo Lab and Run History. Station settings are available from the controls button at the top right. Price changes recompute every request's profit.
+
+Overview keeps plan setup and algorithm comparisons behind expandable controls, with a port-focus selector on the schedule. Requests use ten-row pages, status filters and sorting, with edit and import tools. The DP explorer steps through one decision at a time; the full table and flow paths expand on demand. Run History supports filtering, sorting, and comparing two saved runs side by side. CSV exports follow the displayed schedule, and full run JSON is available in the lab.
 
 ## Algorithms and data structures
 
@@ -81,7 +83,7 @@ Install the development dependencies in the same virtual environment:
 
 Use `--quick` for a smaller experiment run and `--output artifacts/quick-results.json` to preserve the committed full results. Figure input and output paths are configurable with `make_figs.py --input ... --output ...`.
 
-The automated Python suite passes **138 tests**, and the DOM integration test exercises the main console workflows against the running API.
+The automated Python suite passes **138 tests** across Ubuntu and Windows on Python 3.11 and 3.14. A separate GitHub Actions job checks the console interactions against an isolated running API, including port focus, sorting, the DP explorer and saved-run comparison.
 
 The committed full experiment used 40 days, seeds 40000–40039, 150 requests/day, four ports, tariff ₹18/kWh, energy cost ₹9/kWh, and maximum surge 2.5. It passed **1,850** exact-solver checks: 1,500 against branch and bound, 150 against subset enumeration, and 200 full-day DP-versus-flow comparisons.
 
@@ -109,7 +111,16 @@ npm install --prefix .qa --no-audit --no-fund jsdom
 node tests/ui_smoke.cjs
 ```
 
-The DOM test verifies application behavior, not rendered appearance. Live browser visual QA was unavailable during implementation. Responsive breakpoints, reduced-motion rules, keyboard-operable dialogs and session controls are implemented, but pixel-level rendering remains unverified.
+The DOM test verifies application behavior, not rendered appearance. Live browser visual QA was blocked by the computer-use service during implementation. Responsive breakpoints, reduced-motion rules, keyboard-operable dialogs and session controls are implemented, but pixel-level rendering remains unverified. The console uses static SVG, gradients and brief interaction transitions; it has no WebGL, canvas animation, continuous animation loops or backdrop filters.
+
+To let the test start and stop its own isolated server:
+
+```powershell
+$env:VOLT_TEST_START_SERVER = "1"
+$env:VOLT_PYTHON = "$PWD\.venv\Scripts\python.exe"
+$env:VOLT_TEST_URL = "http://127.0.0.1:8002"
+node tests/ui_smoke.cjs
+```
 
 ## CSV and JSON evaluation
 
