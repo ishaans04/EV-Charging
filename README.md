@@ -39,7 +39,7 @@ The first console visit generates 150 synthetic requests with seed 2026 and solv
 
 The console uses a horizontal top navigation with Overview, Requests, Algo Lab and Run History. Station settings are available from the controls button at the top right. Price changes recompute every request's profit.
 
-Overview keeps plan setup and algorithm comparisons behind expandable controls, with a port-focus selector on the schedule. Requests use ten-row pages, status filters and sorting, with edit and import tools. The DP explorer steps through one decision at a time; the full table and flow paths expand on demand. Run History supports filtering, sorting, and comparing two saved runs side by side. CSV exports follow the displayed schedule, and full run JSON is available in the lab.
+Overview opens with a Delhi NCR network map: six synthetic charging hubs, each with its own ports, demand and surge ceiling. Every hub shows its optimal profit, gain over FCFS and utilization, computed by the same Python solvers; select a hub and load it to replace the current demand and optimize. The port schedule draws each accepted session as a small car parked in a bay that spans its exact slot. Plan setup and algorithm comparisons sit behind expandable controls, with a port-focus selector on the schedule. Requests use ten-row pages, status filters and sorting, with edit and import tools. The DP explorer steps through one decision at a time; the full table and flow paths expand on demand. Run History supports filtering, sorting, and comparing two saved runs side by side. CSV exports follow the displayed schedule, and full run JSON is available in the lab.
 
 ## Algorithms and data structures
 
@@ -83,7 +83,7 @@ Install the development dependencies in the same virtual environment:
 
 Use `--quick` for a smaller experiment run and `--output artifacts/quick-results.json` to preserve the committed full results. Figure input and output paths are configurable with `make_figs.py --input ... --output ...`.
 
-The automated Python suite passes **140 tests** across Ubuntu and Windows on Python 3.11 and 3.14. A separate GitHub Actions job checks the console interactions against an isolated running API, including port focus, sorting, the DP explorer and saved-run comparison.
+The automated Python suite passes **141 tests** across Ubuntu and Windows on Python 3.11 and 3.14. A separate GitHub Actions job checks the console interactions against an isolated running API, including port focus, sorting, the DP explorer and saved-run comparison.
 
 The committed full experiment used 40 days, seeds 40000–40039, 150 requests/day, four ports, tariff ₹18/kWh, energy cost ₹9/kWh, and maximum surge 2.5. It passed **1,850** exact-solver checks: 1,500 against branch and bound, 150 against subset enumeration, and 200 full-day DP-versus-flow comparisons.
 
@@ -143,7 +143,7 @@ Times are integer minutes since midnight; start + duration must be at most 1440.
 
 This provides a dependency-free adapter for an external evaluation harness. **AEGIS-specific execution is not claimed**: the supplied report and repository do not identify an AEGIS distribution, configuration, or interface. The pure Python functions and JSON CLI expose the inputs and outputs needed for a course-specific wrapper.
 
-Interactive API documentation is at `/docs`. Main routes: `GET /api/state`, `PUT /api/state`, `POST /api/generate`, `POST /api/import?revision=...`, `POST /api/optimize`, `GET /api/runs`, and `GET /api/runs/{id}/export?format=json`.
+Interactive API documentation is at `/docs`. Main routes: `GET /api/state`, `GET /api/hubs`, `PUT /api/state`, `POST /api/generate`, `POST /api/import?revision=...`, `POST /api/optimize`, `GET /api/runs`, and `GET /api/runs/{id}/export?format=json`.
 
 ## Model boundary
 

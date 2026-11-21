@@ -130,3 +130,19 @@ def test_console_asset_update_changes_browser_cache_key(client, tmp_path, monkey
     assert first.headers["X-Volt-UI"] != second.headers["X-Volt-UI"]
     assert f'?v={first.headers["X-Volt-UI"]}' not in second.text
     assert f'?v={second.headers["X-Volt-UI"]}' in second.text
+
+
+def test_hub_network_is_solved_and_matches_loaded_station(client):
+    hubs = client.get("/api/hubs").json()
+    assert len(hubs) == 6 and len({hub["id"] for hub in hubs}) == 6
+    for hub in hubs:
+        assert hub["profit_inr"] >= hub["fcfs_inr"] > 0
+        assert 0 < hub["accepted"] <= hub["count"]
+    aerocity = next(hub for hub in hubs if hub["id"] == "aerocity")
+    state = client.get("/api/state").json()
+    response = client.post("/api/generate", json={
+        "revision": state["revision"], "count": aerocity["count"], "seed": aerocity["seed"],
+        "max_surge": aerocity["max_surge"], "settings": {**state["settings"], "ports": aerocity["ports"]}})
+    run = client.post("/api/optimize", json={"revision": response.json()["revision"]}).json()
+    assert run["selected"]["profit_inr"] == aerocity["profit_inr"]
+    assert run["selected"]["accepted"] == aerocity["accepted"]

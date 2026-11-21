@@ -38,6 +38,10 @@ let labRevision = null;
 let timelinePort = "all";
 let savedRuns = [];
 const comparedRuns = new Set();
+let hubs = [];
+let hubKey = null;
+let selectedHub = null;
+let confirmingHub = false;
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -213,6 +217,107 @@ function renderStation() {
     `${station.settings.ports} port${station.settings.ports === 1 ? "" : "s"} · ${$("#algorithm").selectedOptions[0].textContent.split(" · ")[0]}`;
   renderResults();
   renderRequestTable();
+  loadHubs().catch((error) => notify(error.message, true));
+}
+
+const shortMoney = (value) =>
+  Math.abs(value) >= 1000
+    ? `₹${(value / 1000).toFixed(value >= 100000 ? 0 : 1)}k`
+    : money(value);
+
+function currentHub() {
+  if (!station || station.source.kind !== "synthetic") return null;
+  return (
+    hubs.find(
+      (hub) =>
+        hub.seed === station.source.seed &&
+        hub.max_surge === station.source.max_surge &&
+        hub.ports === station.settings.ports &&
+        hub.count === station.requests.length,
+    ) || null
+  );
+}
+
+async function loadHubs() {
+  const key = `${station.settings.tariff}/${station.settings.energy_cost}`;
+  if (key !== hubKey) {
+    hubKey = key;
+    hubs = await api("/api/hubs");
+  }
+  renderHubs();
+}
+
+// Static scenery for the stylised Delhi NCR map: river, ring roads,
+// highways and district names. Built once; only the markers change.
+const hubScenery = `<defs><pattern id="hub-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#dfe7f2"/></pattern></defs><rect width="640" height="360" rx="14" fill="#f8fafd"/><rect width="640" height="360" rx="14" fill="url(#hub-dots)"/><path d="M430 0C418 60 452 96 440 150S468 236 452 290 470 340 476 360" fill="none" stroke="#d6e5f7" stroke-width="12" stroke-linecap="round"/><text class="hub-river" x="452" y="70" transform="rotate(78 452 70)">Yamuna</text><ellipse cx="330" cy="180" rx="118" ry="84" fill="none" stroke="#e4ebf5" stroke-width="4"/><ellipse cx="320" cy="190" rx="212" ry="140" fill="none" stroke="#edf1f8" stroke-width="3" stroke-dasharray="10 8"/><path d="M352 150 214 238 150 284 70 360M352 150 494 238 600 300M150 178 214 238M352 150 372 236" fill="none" stroke="#e7edf6" stroke-width="5" stroke-linecap="round"/><text class="hub-region" x="300" y="98">NEW DELHI</text><text class="hub-region" x="28" y="262">GURUGRAM</text><text class="hub-region" x="540" y="214">NOIDA</text>`;
+
+function renderHubs() {
+  if (!hubs.length) return;
+  const live = currentHub();
+  if (!selectedHub || !hubs.some((hub) => hub.id === selectedHub))
+    selectedHub = (live || hubs[0]).id;
+  const total = hubs.reduce((sum, hub) => sum + hub.profit_inr, 0);
+  const fcfs = hubs.reduce((sum, hub) => sum + hub.fcfs_inr, 0);
+  $("#hub-count").textContent = `${hubs.length} hubs`;
+  $("#hub-subtitle").textContent =
+    `${money(total)} optimal daily profit across the network · ${fcfs ? `+${((total / fcfs - 1) * 100).toFixed(1)}% over first come, first served` : "no FCFS baseline"}`;
+  let svg = `<svg class="hub-svg" viewBox="0 0 640 360" role="group" aria-label="Delhi NCR charging hubs"><title>Charging hubs. Select one to see its optimal day.</title>${hubScenery}`;
+  const anchor = hubs.find((hub) => hub.id === selectedHub);
+  hubs.forEach((hub) => {
+    if (hub !== anchor)
+      svg += `<line x1="${anchor.x}" y1="${anchor.y}" x2="${hub.x}" y2="${hub.y}" stroke="#c9a85a" stroke-opacity=".45" stroke-width="1.5" stroke-dasharray="3 5"/>`;
+  });
+  hubs.forEach((hub) => {
+    const selected = hub.id === selectedHub;
+    const halo = 11 + hub.ports * 2.2;
+    const label = `${hub.name}, ${hub.area}. ${hub.ports} ports. Optimal ${money(hub.profit_inr)}.${hub === live ? " Loaded station." : ""}`;
+    const meta = `${shortMoney(hub.profit_inr)} · ${hub.ports} ports`;
+    const nameWidth = Math.max(hub.name.length * 6.4, meta.length * 5.6) + 18;
+    svg += `<g class="hub${selected ? " selected" : ""}" role="button" tabindex="0" data-hub="${hub.id}" aria-pressed="${selected}" aria-label="${escapeHTML(label)}"><title>${escapeHTML(label)}</title><circle class="hub-halo" cx="${hub.x}" cy="${hub.y}" r="${halo}"/><circle class="hub-core" cx="${hub.x}" cy="${hub.y}" r="8"/>${hub === live ? `<circle cx="${hub.x + halo * 0.7}" cy="${hub.y - halo * 0.7}" r="4.5" fill="#4f9c74" stroke="#fff" stroke-width="2"/>` : ""}<rect class="hub-tag" x="${hub.x - nameWidth / 2}" y="${hub.y + halo + 4}" width="${nameWidth}" height="34" rx="8"/><text class="hub-name" x="${hub.x}" y="${hub.y + halo + 18}" text-anchor="middle">${escapeHTML(hub.name)}</text><text class="hub-meta" x="${hub.x}" y="${hub.y + halo + 32}" text-anchor="middle">${meta}</text></g>`;
+  });
+  $("#hub-map").innerHTML = svg + "</svg>";
+  renderHubDetail(anchor, live);
+}
+
+function renderHubDetail(hub, live) {
+  const isLive = hub === live;
+  const share = hub.profit_inr ? (hub.fcfs_inr / hub.profit_inr) * 100 : 100;
+  const custom = station.source.kind !== "synthetic";
+  const cta = isLive
+    ? `<button class="button secondary" type="button" disabled>Loaded in the console</button>`
+    : confirmingHub
+      ? `<p class="hub-warning">This replaces your ${custom ? "edited or imported" : "current"} ${integer(station.requests.length)} requests.</p><div class="hub-actions"><button class="button primary" type="button" data-load-hub="${hub.id}">Replace and optimize</button><button class="button secondary" type="button" data-cancel-hub>Cancel</button></div>`
+      : `<button class="button primary" type="button" data-load-hub="${hub.id}">Load this hub</button>`;
+  $("#hub-detail").innerHTML =
+    `<span class="eyebrow">${escapeHTML(hub.area.toUpperCase())}</span><div class="hub-detail-title"><h3>${escapeHTML(hub.name)}</h3>${isLive ? '<span class="pill hub-live">Live</span>' : ""}</div><dl class="hub-stats"><div><dt>Optimal profit</dt><dd>${money(hub.profit_inr)}</dd></div><div><dt>Gain over FCFS</dt><dd class="positive">${hub.gain_percent === null ? "—" : `+${hub.gain_percent.toFixed(1)}%`}</dd></div><div><dt>Vehicles served</dt><dd>${hub.accepted} / ${hub.count}</dd></div><div><dt>Utilization</dt><dd>${hub.utilization.toFixed(1)}%</dd></div><div><dt>Ports</dt><dd>${hub.ports}</dd></div><div><dt>Peak surge</dt><dd>${hub.max_surge.toFixed(1)}×</dd></div></dl><div class="hub-bars" aria-hidden="true"><span>Optimal</span><i style="width:100%"></i><span>FCFS</span><i class="fcfs" style="width:${share.toFixed(1)}%"></i></div>${cta}<p class="hub-note">Seed ${hub.seed} · ${hub.count} synthetic requests · current station prices</p>`;
+}
+
+function selectHub(id) {
+  if (!hubs.some((hub) => hub.id === id)) return;
+  confirmingHub = false;
+  selectedHub = id;
+  renderHubs();
+}
+
+async function loadHub(id) {
+  const hub = hubs.find((item) => item.id === id);
+  if (!hub) return;
+  const next = await api("/api/generate", {
+    method: "POST",
+    body: JSON.stringify({
+      revision: station.revision,
+      settings: { ...station.settings, ports: hub.ports },
+      count: hub.count,
+      seed: hub.seed,
+      max_surge: hub.max_surge,
+    }),
+  });
+  confirmingHub = false;
+  invalidate(next);
+  await optimize();
+  notify(
+    `${hub.name} loaded. ${activeRun.selected.accepted} sessions, ${money(activeRun.selected.profit_inr)} profit.`,
+  );
 }
 
 function invalidate(nextState, message) {
@@ -734,6 +839,19 @@ document.addEventListener("click", (event) => {
   if (edit && !busy) editRequest(Number(edit.dataset.edit));
   const session = event.target.closest("[data-session]");
   if (session) showSession(Number(session.dataset.session));
+  const hub = event.target.closest("[data-hub]");
+  if (hub) selectHub(hub.dataset.hub);
+  if (event.target.closest("[data-cancel-hub]")) {
+    confirmingHub = false;
+    renderHubs();
+  }
+  const load = event.target.closest("[data-load-hub]");
+  if (load && !busy) {
+    if (station.source.kind !== "synthetic" && !confirmingHub) {
+      confirmingHub = true;
+      renderHubs();
+    } else action(load, () => loadHub(load.dataset.loadHub));
+  }
   const history = event.target.closest("[data-run]");
   if (history)
     action(history, async () => {
@@ -750,6 +868,12 @@ document.addEventListener("keydown", (event) => {
   if (session && ["Enter", " "].includes(event.key)) {
     event.preventDefault();
     showSession(Number(session.dataset.session));
+  }
+  const hub = event.target.closest?.("[data-hub]");
+  if (hub && ["Enter", " "].includes(event.key)) {
+    event.preventDefault();
+    selectHub(hub.dataset.hub);
+    $(`[data-hub="${hub.dataset.hub}"]`)?.focus();
   }
 });
 $$("dialog").forEach((dialog) =>

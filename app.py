@@ -5,6 +5,7 @@ import io
 import json
 import os
 from datetime import datetime, timezone
+from functools import lru_cache
 from hashlib import sha256
 from pathlib import Path
 import sqlite3
@@ -21,6 +22,38 @@ from evsched import ALGORITHMS, Request, compare, create_request, generate_reque
 
 
 ROOT = Path(__file__).resolve().parent
+
+# Delhi NCR charging hubs. Each hub is a reproducible synthetic station:
+# its own port count, demand size, surge ceiling and seed. Map x/y are
+# positions on the console's 640 x 360 stylised map, not real coordinates.
+HUBS = [
+    {"id": "connaught", "name": "Connaught Place", "area": "Central Delhi", "x": 352, "y": 150,
+     "ports": 4, "count": 150, "seed": 2026, "max_surge": 2.5},
+    {"id": "aerocity", "name": "Aerocity", "area": "IGI Airport", "x": 214, "y": 238,
+     "ports": 6, "count": 220, "seed": 3101, "max_surge": 3.0},
+    {"id": "cybercity", "name": "Cyber City", "area": "Gurugram", "x": 150, "y": 284,
+     "ports": 5, "count": 190, "seed": 3202, "max_surge": 2.8},
+    {"id": "nehru", "name": "Nehru Place", "area": "South Delhi", "x": 372, "y": 236,
+     "ports": 3, "count": 110, "seed": 3303, "max_surge": 2.2},
+    {"id": "noida", "name": "Noida Sector 18", "area": "Noida", "x": 494, "y": 238,
+     "ports": 3, "count": 120, "seed": 3404, "max_surge": 2.3},
+    {"id": "dwarka", "name": "Dwarka", "area": "South West Delhi", "x": 150, "y": 178,
+     "ports": 2, "count": 80, "seed": 3505, "max_surge": 1.8},
+]
+
+
+@lru_cache(maxsize=16)
+def hub_summaries(tariff, energy_cost):
+    summaries = []
+    for hub in HUBS:
+        requests = generate_requests(hub["count"], hub["seed"], hub["max_surge"], tariff, energy_cost)
+        best = solve(requests, hub["ports"])
+        fcfs = solve(requests, hub["ports"], "fcfs")
+        summaries.append({**hub, "profit_inr": best["profit_inr"], "fcfs_inr": fcfs["profit_inr"],
+                          "accepted": best["accepted"], "utilization": best["utilization"],
+                          "gain_percent": (best["profit_inr"] / fcfs["profit_inr"] - 1) * 100
+                          if fcfs["profit_inr"] else None})
+    return summaries
 
 
 class Settings(BaseModel):
@@ -205,6 +238,11 @@ def create_app(db_path=None):
     @api.get("/api/requests.csv")
     def export_requests():
         return csv_response(store.read()["requests"], "volt-requests.csv")
+
+    @api.get("/api/hubs")
+    def hubs():
+        settings = store.read()["settings"]
+        return hub_summaries(float(settings["tariff"]), float(settings["energy_cost"]))
 
     @api.get("/api/algorithms")
     def algorithms():

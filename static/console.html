@@ -149,6 +149,26 @@
           class="view-panel"
           aria-label="Station overview"
         >
+          <article class="glass hub-panel" id="hub-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="title-row">
+                  <h2>Delhi NCR network</h2>
+                  <span class="pill" id="hub-count">6 hubs</span>
+                </div>
+                <p id="hub-subtitle">
+                  Choose a charging hub. Every figure is solved by the
+                  optimizer.
+                </p>
+              </div>
+            </div>
+            <div class="hub-layout">
+              <div class="hub-map" id="hub-map">
+                <p class="muted">Loading the network…</p>
+              </div>
+              <aside class="hub-detail" id="hub-detail" aria-live="polite"></aside>
+            </div>
+          </article>
           <div class="metric-grid">
             <article class="metric glass">
               <div class="metric-label">

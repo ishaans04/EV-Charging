@@ -104,7 +104,13 @@ async function main() {
       idle(),
     "initial optimization",
   );
-  assert.ok($("#timeline .slot"));
+  assert.ok($("#timeline .slot .car-body"));
+  await waitFor(
+    () => window.document.querySelectorAll("#hub-map [data-hub]").length === 6,
+    "hub network map",
+  );
+  assert.match($("#hub-detail").textContent, /Connaught Place/);
+  assert.match($("#hub-detail").textContent, /Loaded in the console/);
   assert.equal($(".sidebar"), null);
   assert.equal($(".sidebar-note"), null);
   assert.equal(
@@ -280,10 +286,25 @@ async function main() {
     () => idle() && !$("#view-overview").classList.contains("hidden"),
     "history inspector",
   );
+  const dwarka = $('[data-hub="dwarka"]');
+  dwarka.dispatchEvent(new window.MouseEvent("click", { bubbles: true }));
+  assert.match($("#hub-detail h3").textContent, /Dwarka/);
+  const hubProfit = $("#hub-detail dd").textContent;
+  $('[data-load-hub="dwarka"]').click();
+  assert.match($("#hub-detail").textContent, /edited or imported/);
+  $('[data-load-hub="dwarka"]').click();
+  await waitFor(
+    () =>
+      idle() &&
+      $("#metric-served-caption").textContent.endsWith("2 ports") &&
+      $("#metric-profit").textContent === hubProfit,
+    "load hub from map",
+  );
+  assert.match($("#hub-detail").textContent, /Loaded in the console/);
   assert.equal(errors.length, 0, errors.join("\n"));
   dom.window.close();
   console.log(
-    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection; landing unchanged.",
+    "UI integration passed: top navigation, port focus, request sorting and editing, DP explorer, flow, verification, sensitivity, benchmark, saved-run comparison and inspection, hub map; landing unchanged.",
   );
 }
 
