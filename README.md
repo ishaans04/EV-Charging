@@ -4,6 +4,8 @@ A Design and Analysis of Algorithms project. Volt decides which charging request
 
 **Live site: https://ishaans04.github.io/Volt/**
 
+![Volt landing page: an EV parked at a charger, with the one-port example earning ₹240 under the optimal schedule](assets/01-landing.png)
+
 ## The real-world problem
 
 With the rise of electric vehicles, public charging stations face overlapping charging requests. Drivers want different charging durations, are willing to pay different surge rates, and have strict deadlines to leave. A station has a limited number of ports, so it cannot serve everyone. It must accept a subset of vehicles that maximizes profit without overlapping port usage.
@@ -28,15 +30,47 @@ Open **https://ishaans04.github.io/Volt/**. Nothing to install: the site runs th
 
 1. **Landing page** — an electric car drives across the headline and parks at the charger. Toggle *First come, first served* and *Optimal* on the right-hand card: the report's example improves from ₹170 to ₹240.
 2. **Overview** — the Delhi NCR network map. Six charging hubs, each with its own ports, demand and surge, show their optimal profit and gain over first come, first served. Pick one and press **Load this hub**.
+
+   ![Overview: the Delhi NCR network map with six hubs and Connaught Place selected](assets/02-console-overview.png)
+
 3. **Port Schedule** — profit, gain, vehicles served and utilization, then the day's plan: every accepted booking is a car parked in a bay spanning its exact slot. Click any car for its details.
+
+   ![Port Schedule: ₹37,625 profit, +20.3% over FCFS, 60 of 150 vehicles across four ports](assets/03-port-schedule.png)
+
+   | Booking details | Compare algorithms |
+   | --- | --- |
+   | ![Details of accepted booking R108 on Port 3](assets/05-booking-detail.png) | ![Optimal against the four greedy rules on the same day](assets/04-compare-algorithms.png) |
+
 4. **Requests** — search, sort, edit or add bookings, or import your own CSV.
+
+   ![Requests table with booking slot, charge, profit and accepted or rejected status](assets/06-requests.png)
+
 5. **Algo Lab** — watch the algorithms work:
    - *Minimum-cost flow*: a loop diagram (time graph → Dijkstra → push one unit → residual update) and one road per Dijkstra route. Bookings taken arc above the road; bookings handed back through reverse arcs dip below it.
+
+     ![Minimum-cost flow trace: four Dijkstra routes adding up to the ₹37,625 optimum](assets/07-algo-lab-min-cost-flow.png)
+
    - *Dynamic programming* (**Load report example**): step through each decision, see which bookings fit before it, and compare *take* against *skip* while OPT(j) grows.
+
+     ![Dynamic programming trace: taking R4 gives ₹240 against ₹220 for skipping it](assets/11-algo-lab-dynamic-programming.png)
+
    - *Correctness*, *Port sensitivity* and *Runtime* run the real solvers.
+
+     | Correctness | Port sensitivity | Runtime |
+     | --- | --- | --- |
+     | ![60 verification checks, all passed](assets/08-algo-lab-correctness.png) | ![Optimal and FCFS profit from one to eight ports](assets/09-algo-lab-port-sensitivity.png) | ![Solver timings from 50 to 1,000 requests](assets/10-algo-lab-runtime.png) |
+
 6. **Run History** — every optimization is saved; compare any two side by side.
 
-A guided tour opens on the first visit and can be replayed from the **?** button.
+   | Saved runs | Side-by-side comparison |
+   | --- | --- |
+   | ![Saved runs list](assets/12-run-history.png) | ![FCFS ₹170 against dynamic programming ₹240 on the report example](assets/13-compare-runs.png) |
+
+A guided tour opens on the first visit and can be replayed from the **?** button. The landing page also works on phones.
+
+| Guided tour | Mobile |
+| --- | --- |
+| ![First step of the guided tour](assets/14-guided-tour.png) | <img src="assets/15-mobile-landing.png" alt="Landing page on a phone" width="260"> |
 
 ## Algorithms and data structures
 
@@ -101,6 +135,7 @@ static/                Landing page, console, styles, scripts, illustration and 
 tools/build_pages.py   Builds the GitHub Pages site
 tests/                 Algorithm, API, browser-service and UI tests
 figs/, results.json    Experiment charts and measurements
+assets/                Screenshots of the live site used in this README
 ```
 
 ## Tests and experiments
